@@ -8,6 +8,17 @@ Ubuntu After installation
 sudo apt install ubuntu-restricted-extras aptitude synaptic nfs-common psensors
 ```
 
+### Gnome
+
+```bash
+sudo apt install gnome-tweaks chrome-gnome-shell
+#sudo apt install gnome-shell-extensions
+```
+##install unite 
+https://github.com/hardpixel/unite-shell
+
+
+
 ### Crypto Folders
 
 ```bash
