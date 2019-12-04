@@ -122,6 +122,7 @@ rm -rf ~/.zshrc
  && cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
  && sed -ri 's/(ZSH_THEME=")([^"]*)(")/\1agnoster\3/g' ~/.zshrc
  && sed -ri 's/(plugins=\()([^\)]*)(\))/\1git git-extras git-flow gitignore ubuntu cp extract sudo systemd last-working-dir docker docker-compose web-search vscode laravel laravel5 npm yarn\3/g' ~/.zshrc
+ && mkdir -p ~/tmp && cd ~/tmp && git clone https://github.com/abertsch/Menlo-for-Powerline.git && sudo mv Menlo-for-Powerline/*.ttf /usr/share/fonts/.  && rm -rf Menlo-for-Powerline && sudo fc-cache -vf /usr/share/fonts
 ```
 
 ## TeamViewer
