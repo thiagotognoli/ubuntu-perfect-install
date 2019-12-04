@@ -6,6 +6,7 @@ Ubuntu After installation
 
 ```bash
 sudo apt install ubuntu-restricted-extras aptitude synaptic nfs-common psensors
+sudo bash -c "echo "\nfs.inotify.max_user_watches=524288" >> /etc/sysctl.conf"
 ```
 
 ### Gnome
