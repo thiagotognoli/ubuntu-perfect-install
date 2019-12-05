@@ -15,7 +15,7 @@ sudo bash -c "echo "\nfs.inotify.max_user_watches=524288" >> /etc/sysctl.conf"
 sudo apt install gnome-tweaks chrome-gnome-shell
 #sudo apt install gnome-shell-extensions
 ```
-##install unite 
+## install unite 
 https://github.com/hardpixel/unite-shell
 
 
@@ -56,17 +56,17 @@ snap install --classic slack
 ```bash
 sudo apt install git
 sudo snap install --edge node --classic
-mkdir -p ~/tmp
- && cd ~/tmp
- && git clone https://github.com/thiagotognoli/whatsapp-electron.git
- && cd whatsapp-electron
- && npm install
- && npm run build
- && mkdir -p ~/AppImage
- && mv dist/whatsapp-electron-*.AppImage ~/AppImage/whatsapp-electron.AppImage
- && chmod +x ~/AppImage/whatsapp-electron.AppImage
- && cd ..
- && rm -rfd whatsapp-electron
+mkdir -p ~/tmp \
+ && cd ~/tmp \
+ && git clone https://github.com/thiagotognoli/whatsapp-electron.git \
+ && cd whatsapp-electron \
+ && npm install \
+ && npm run build \
+ && mkdir -p ~/AppImage \
+ && mv dist/whatsapp-electron-*.AppImage ~/AppImage/whatsapp-electron.AppImage \
+ && chmod +x ~/AppImage/whatsapp-electron.AppImage \
+ && cd .. \
+ && rm -rfd whatsapp-electron \
  && echo "[Desktop Entry]
 Version=1.0
 Type=Application
@@ -90,10 +90,10 @@ sudo snap install robo3t-snap
 ## Docker - Snap
 
 ```bash
-sudo addgroup --system docker
- && sudo adduser $USER docker
- && newgrp docker
- && sudo snap install docker
+sudo addgroup --system docker \
+ && sudo adduser $USER docker \
+ && newgrp docker \
+ && sudo snap install docker \
  && docker run hello-world
 ```
 
@@ -118,11 +118,16 @@ Categories=Graphics;
 sudo apt-get install zsh fonts-powerline
 chsh -s /bin/zsh root
 sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
-rm -rf ~/.zshrc
- && cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
- && sed -ri 's/(ZSH_THEME=")([^"]*)(")/\1agnoster\3/g' ~/.zshrc
- && sed -ri 's/(plugins=\()([^\)]*)(\))/\1git git-extras git-flow gitignore ubuntu cp extract sudo systemd last-working-dir docker docker-compose web-search vscode laravel laravel5 npm yarn\3/g' ~/.zshrc
- && mkdir -p ~/tmp && cd ~/tmp && git clone https://github.com/abertsch/Menlo-for-Powerline.git && sudo mv Menlo-for-Powerline/*.ttf /usr/share/fonts/.  && rm -rf Menlo-for-Powerline && sudo fc-cache -vf /usr/share/fonts
+rm -rf ~/.zshrc \
+ && cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc \
+ && sed -ri 's/(ZSH_THEME=")([^"]*)(")/\1agnoster\3/g' ~/.zshrc \
+ && sed -ri 's/(plugins=\()([^\)]*)(\))/\1git git-extras git-flow gitignore ubuntu cp extract sudo systemd last-working-dir docker docker-compose web-search vscode laravel laravel5 npm yarn\3/g' ~/.zshrc \
+ && mkdir -p ~/tmp \
+ && cd ~/tmp \
+ && git clone https://github.com/abertsch/Menlo-for-Powerline.git \
+ && sudo mv Menlo-for-Powerline/*.ttf /usr/share/fonts/.  \
+ && rm -rf Menlo-for-Powerline \
+ && sudo fc-cache -vf /usr/share/fonts
 ```
 
 ## TeamViewer
@@ -160,9 +165,9 @@ rsync -avz /media/$USER/hd-old/home/$USER/.config/filezilla /home/$USER/.config/
 
 
 ## Refs
-https://github.com/ohmyzsh/ohmyzsh/wiki/themes
-https://github.com/agnoster/agnoster-zsh-theme
-https://github.com/powerline/fonts
-https://github.com/abertsch/Menlo-for-Powerline
+* https://github.com/ohmyzsh/ohmyzsh/wiki/themes
+* https://github.com/agnoster/agnoster-zsh-theme
+* https://github.com/powerline/fonts
+* https://github.com/abertsch/Menlo-for-Powerline
 
 
