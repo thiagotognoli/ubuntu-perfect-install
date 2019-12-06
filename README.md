@@ -7,8 +7,12 @@ Ubuntu After installation
 ```bash
 sudo apt install ubuntu-restricted-extras aptitude synaptic flatpak gnome-software-plugin-flatpak 
 sudo apt install nfs-common
+
+#Alternatives Terminals
 sudo apt install terminator
 sudo snap install --edge --classic terminology
+sudo snap install --classic cool-retro-term
+
 sudo apt install psensors
 ```
 
