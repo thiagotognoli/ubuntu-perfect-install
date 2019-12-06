@@ -8,6 +8,7 @@ Ubuntu After installation
 sudo apt install ubuntu-restricted-extras aptitude synaptic flatpak gnome-software-plugin-flatpak 
 sudo apt install nfs-common
 sudo apt install terminator
+sudo snap install --edge --classic terminology
 sudo apt install psensors
 ```
 
