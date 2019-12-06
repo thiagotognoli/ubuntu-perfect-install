@@ -5,8 +5,9 @@ Ubuntu After installation
 ## Base Isntallation
 
 ```bash
-sudo apt install ubuntu-restricted-extras aptitude synaptic nfs-common psensors
-sudo bash -c "echo "\nfs.inotify.max_user_watches=524288" >> /etc/sysctl.conf"
+sudo apt install ubuntu-restricted-extras aptitude synaptic gnome-software-plugin-flatpak 
+sudo apt install nfs-common
+sudo apt install psensors
 ```
 
 ### Gnome
@@ -81,9 +82,14 @@ Categories=Internet;" > ~/.local/share/applications/whatsapp.desktop
 
 ```bash
 sudo apt install mysql-workbench filezilla
+#vscode
 sudo snap install --classic code
+sudo bash -c "echo "\nfs.inotify.max_user_watches=524288" >> /etc/sysctl.conf" # configuração para repositórios grandes do vscode
+#netbeans
 sudo snap install --classic netbeans 
+#nodejs
 sudo snap install --edge node --classic
+#robo3t - mongodb gui
 sudo snap install robo3t-snap
 ```
 
@@ -171,3 +177,4 @@ rsync -avz /media/$USER/hd-old/home/$USER/.config/filezilla /home/$USER/.config/
 * https://github.com/abertsch/Menlo-for-Powerline
 
 
+https://hyper.is/
