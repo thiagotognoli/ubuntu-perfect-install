@@ -5,7 +5,7 @@ Ubuntu After installation
 ## Base Isntallation
 
 ```bash
-sudo apt install ubuntu-restricted-extras aptitude synaptic gnome-software-plugin-flatpak 
+sudo apt install ubuntu-restricted-extras aptitude synaptic flatpak gnome-software-plugin-flatpak 
 sudo apt install nfs-common
 sudo apt install psensors
 ```
