@@ -5,7 +5,8 @@ Ubuntu After installation
 ## Base Installation
 
 ```bash
-sudo apt install ubuntu-restricted-extras aptitude synaptic flatpak gnome-software-plugin-flatpak 
+sudo apt install ubuntu-restricted-extras aptitude synaptic flatpak gnome-software-plugin-flatpak
+sudo apt install curl
 sudo apt install nfs-common
 
 #Alternatives Terminals
@@ -106,6 +107,8 @@ sudo addgroup --system docker \
  && sudo adduser $USER docker \
  && newgrp docker \
  && sudo snap install docker \
+ && sudo curl -L "https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
+ && sudo chmod a+x /usr/local/bin/docker-compose \
  && docker run hello-world
 ```
 
