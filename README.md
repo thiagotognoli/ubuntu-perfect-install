@@ -2,7 +2,7 @@
 Ubuntu After installation
 
 
-## Base Isntallation
+## Base Installation
 
 ```bash
 sudo apt install ubuntu-restricted-extras aptitude synaptic flatpak gnome-software-plugin-flatpak 
