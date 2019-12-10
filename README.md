@@ -100,15 +100,19 @@ sudo snap install --edge node --classic
 sudo snap install robo3t-snap
 ```
 
-## Docker - Snap
+## Docker - Snap (docker-compose bug)
+
+```bash
+sudo apt install docker.io docker-compose -y
+```
+
+## Docker - Snap (docker-compose bug)
 
 ```bash
 sudo addgroup --system docker \
  && sudo adduser $USER docker \
  && newgrp docker \
  && sudo snap install docker \
- && sudo curl -L "https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
- && sudo chmod a+x /usr/local/bin/docker-compose \
  && docker run hello-world
 ```
 
