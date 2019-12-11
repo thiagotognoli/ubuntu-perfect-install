@@ -40,6 +40,12 @@ sudo apt install gocryptfs sirikali
 sudo snap install keepassxc
 ```
 
+### Authenticator
+
+```bash
+flatpak install -y flathub com.github.bilelmoussaoui.Authenticator
+```
+
 ### Graphics Tools
 
 ```bash
