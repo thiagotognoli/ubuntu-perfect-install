@@ -34,6 +34,12 @@ https://github.com/hardpixel/unite-shell
 sudo apt install gocryptfs sirikali 
 ```
 
+### KeepassXC - Password Manager
+
+```bash
+sudo snap install keepassxc
+```
+
 ### Graphics Tools
 
 ```bash
