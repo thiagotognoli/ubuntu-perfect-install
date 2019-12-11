@@ -106,6 +106,8 @@ sudo snap install --edge node --classic
 sudo snap install robo3t-snap
 ```
 
+Insomnia REST Client
+
 ## Docker - Snap (docker-compose bug)
 
 ```bash
