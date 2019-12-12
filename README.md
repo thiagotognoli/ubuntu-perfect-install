@@ -23,8 +23,47 @@ sudo apt install psensors
 sudo apt install gnome-tweaks chrome-gnome-shell
 #sudo apt install gnome-shell-extensions
 ```
-## install unite 
+#### Gnome Extensions
+##### Unite
+Gnome Extensions:
+https://extensions.gnome.org/extension/1287/unite/
+Github:
 https://github.com/hardpixel/unite-shell
+
+##### Lock Keys
+Gnome Extensions:
+https://extensions.gnome.org/extension/36/lock-keys/
+Github:
+https://github.com/kazysmaster/gnome-shell-extension-lockkeys
+
+##### KStatusNotifierItem/AppIndicator Support
+Integrates Ubuntu AppIndicators and KStatusNotifierItems (KDE's blessed successor of the systray) into GNOME Shell.
+
+Gnome Extensions:
+https://extensions.gnome.org/extension/615/appindicator-support/
+Github:
+https://github.com/ubuntu/gnome-shell-extension-appindicator
+
+##### Force Quit
+Gnome Extensions:
+https://extensions.gnome.org/extension/770/force-quit/
+Github:
+https://github.com/meghprkh/force-quit/
+
+##### Sound Input & Output Device Chooser
+Gnome Extensions:
+https://extensions.gnome.org/extension/906/sound-output-device-chooser/
+Github:
+https://github.com/kgshank/gse-sound-output-device-chooser
+
+##### OpenWeather
+Gnome Extensions:
+https://extensions.gnome.org/extension/750/openweather/
+Git:
+https://gitlab.com/jenslody/gnome-shell-extension-openweather
+
+##### See
+https://github.com/gcampax/gnome-shell-extensions
 
 
 
