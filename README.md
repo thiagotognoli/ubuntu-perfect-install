@@ -70,6 +70,7 @@ https://gitlab.com/jenslody/gnome-shell-extension-openweather
 
 ##### See
 https://gitlab.gnome.org/GNOME/gnome-shell-extensions
+https://extensions.gnome.org/extension/19/user-themes/
 
 ### Crypto Folders
 
