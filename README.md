@@ -69,9 +69,7 @@ Git:
 https://gitlab.com/jenslody/gnome-shell-extension-openweather
 
 ##### See
-https://github.com/gcampax/gnome-shell-extensions
-
-
+https://gitlab.gnome.org/GNOME/gnome-shell-extensions
 
 ### Crypto Folders
 
