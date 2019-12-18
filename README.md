@@ -68,6 +68,14 @@ https://extensions.gnome.org/extension/750/openweather/
 Git:
 https://gitlab.com/jenslody/gnome-shell-extension-openweather
 
+##### Suspend Button
+Gnome Extensions:
+https://extensions.gnome.org/extension/826/suspend-button/
+
+##### User Themes 
+Gnome Extensions:
+https://extensions.gnome.org/extension/19/user-themes/
+
 ##### See
 https://gitlab.gnome.org/GNOME/gnome-shell-extensions
 https://extensions.gnome.org/extension/19/user-themes/
