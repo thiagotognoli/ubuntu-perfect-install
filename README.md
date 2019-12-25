@@ -239,6 +239,12 @@ mkdir -p ~/tmp
  && rm ~/tmp/teamviwer.deb
 ```
 
+## Show Desktop Button
+
+```bash
+sudo apt-get install xdotool -y
+echo -e '[Desktop Entry]\n Version=1.0\n Name=Show Desktop\n Exec=xdotool key --clearmodifiers Ctrl+Super+d\n Icon=desktop\n Type=Application\n Categories=Application' | tee ~/.local/share/applications/show-desktop.desktop
+```
 
 ## Restore from old Instllation (Todo)
 
