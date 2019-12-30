@@ -170,6 +170,8 @@ sudo snap install robo3t-snap
 sudo snap install gitkraken
 #Insomnia Rest Client
 sudo snap install insomnia
+#GhostWriter - mkd editor
+flatpak install flathub io.github.wereturtle.ghostwriter -y
 ```
 GitAhead - Git Gui Client
 https://gitahead.github.io/gitahead.com/
