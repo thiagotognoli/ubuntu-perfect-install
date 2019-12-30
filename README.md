@@ -153,7 +153,10 @@ Categories=Internet;" > ~/.local/share/applications/whatsapp.desktop
 ## Devel Tools
 
 ```bash
-sudo apt install mysql-workbench filezilla
+#MySql client
+sudo apt install mysql-workbench 
+#FTP client
+sudo apt install filezilla
 #vscode
 sudo snap install --classic code
 sudo bash -c "echo "\nfs.inotify.max_user_watches=524288" >> /etc/sysctl.conf" # configuração para repositórios grandes do vscode
@@ -163,9 +166,12 @@ sudo snap install --classic netbeans
 sudo snap install --edge node --classic
 #robo3t - mongodb gui
 sudo snap install robo3t-snap
+#Git Gui Client
+sudo snap install gitkraken
+#Insomnia Rest Client
+sudo snap install insomnia
 ```
-
-Insomnia REST Client
+GitAhead - Git Gui Client
 https://gitahead.github.io/gitahead.com/
 
 ## Docker
@@ -251,6 +257,12 @@ echo -e '[Desktop Entry]\n Version=1.0\n Name=Show Desktop\n Exec=xdotool key --
 ```bash
 sudo apt-get install desktopfolder -y
 ```
+
+## Photography
+```bash
+sudo snap install darktable
+```
+
 
 ## Restore from old Instllation (Todo)
 
