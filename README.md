@@ -303,5 +303,6 @@ rsync -avz /media/$USER/hd-old/home/$USER/.config/filezilla /home/$USER/.config/
 * https://github.com/powerline/fonts
 * https://github.com/abertsch/Menlo-for-Powerline
 
-
-https://hyper.is/
+## Select audio in shell
+pacmd list-cards
+pacmd set-card-profile 1 output:analog-stereo+input:analog-stereo
