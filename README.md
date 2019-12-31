@@ -306,3 +306,5 @@ rsync -avz /media/$USER/hd-old/home/$USER/.config/filezilla /home/$USER/.config/
 ## Select audio in shell
 pacmd list-cards
 pacmd set-card-profile 1 output:analog-stereo+input:analog-stereo
+https://github.com/giner/helplinux/tree/master/scripts/switch-sound
+https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/DefaultDevice/
