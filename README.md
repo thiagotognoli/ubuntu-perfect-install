@@ -157,9 +157,6 @@ Categories=Internet;" > ~/.local/share/applications/whatsapp.desktop
 sudo apt install mysql-workbench 
 #FTP client
 sudo apt install filezilla
-#vscode
-sudo snap install --classic code
-sudo bash -c "echo "\nfs.inotify.max_user_watches=524288" >> /etc/sysctl.conf" # configuração para repositórios grandes do vscode
 #netbeans
 sudo snap install --classic netbeans 
 #nodejs
@@ -175,6 +172,16 @@ flatpak install flathub io.github.wereturtle.ghostwriter -y
 ```
 GitAhead - Git Gui Client
 https://gitahead.github.io/gitahead.com/
+
+### Visual Studio Code
+
+```bash
+#vscode
+sudo snap install --classic code
+sudo bash -c "echo "\nfs.inotify.max_user_watches=524288" >> /etc/sysctl.conf" # configuração para repositórios grandes do vscode
+```
+
+#### https://marketplace.visualstudio.com/items?itemName=humao.rest-client
 
 ## Docker
 
