@@ -17,12 +17,38 @@ sudo snap install --classic cool-retro-term
 sudo apt install psensors
 ```
 
-### Gnome
+## Gnome
 
 ```bash
 sudo apt install gnome-tweaks chrome-gnome-shell
 #sudo apt install gnome-shell-extensions
 ```
+
+### Show Desktop Button
+
+```bash
+sudo apt-get install xdotool -y
+echo -e '[Desktop Entry]\n Version=1.0\n Name=Show Desktop\n Exec=xdotool key --clearmodifiers Ctrl+Super+d\n Icon=desktop\n Type=Application\n Categories=Application' | tee ~/.local/share/applications/show-desktop.desktop
+```
+
+### Click App Icon to Minimize
+
+#### Enable
+```bash
+gsettings set org.gnome.shell.extensions.dash-to-dock click-action minimize
+```
+
+#### Restore to Default
+```bash
+gsettings reset org.gnome.shell.extensions.dash-to-dock click-action
+```
+
+### Desktop Folder
+
+```bash
+sudo apt-get install desktopfolder -y
+```
+
 #### Gnome Extensions
 ##### Unite
 Gnome Extensions:
@@ -80,7 +106,6 @@ https://extensions.gnome.org/extension/19/user-themes/
 https://gitlab.gnome.org/GNOME/gnome-shell-extensions
 
 
-
 ### Crypto Folders
 
 ```bash
@@ -104,6 +129,13 @@ flatpak install -y flathub com.github.bilelmoussaoui.Authenticator
 ```bash
 sudo snap install gimp inkscape
 ```
+
+#### Photography
+
+```bash
+sudo snap install darktable
+```
+
 
 ### Chromiun Browser
 
@@ -170,22 +202,13 @@ sudo snap install insomnia
 #GhostWriter - mkd editor
 flatpak install flathub io.github.wereturtle.ghostwriter -y
 ```
+
 GitAhead - Git Gui Client
 https://gitahead.github.io/gitahead.com/
 
-### Visual Studio Code
+### Docker
 
-```bash
-#vscode
-sudo snap install --classic code
-sudo bash -c "echo "\nfs.inotify.max_user_watches=524288" >> /etc/sysctl.conf" # configuração para repositórios grandes do vscode
-```
-
-#### https://marketplace.visualstudio.com/items?itemName=humao.rest-client
-
-## Docker
-
-### Last Version
+#### Last Version (Recomended)
 
 ```bash
 sudo apt-get remove docker docker-engine docker.io containerd runc
@@ -197,12 +220,13 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io
 sudo curl -L "https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
 ```
 
-### Old Version
+#### Old Version
 
 ```bash
 sudo apt install docker.io docker-compose -y
 ```
-### Snap (only work in $HOME)
+
+#### Snap (only work in $HOME)
 
 ```bash
 sudo addgroup --system docker \
@@ -212,22 +236,7 @@ sudo addgroup --system docker \
  && docker run hello-world
 ```
 
-## Flameshot - Screenshot
-
-```bash
-sudo apt install flameshot && echo "[Desktop Entry]
-Version=1.1
-Type=Application
-Name=Flameshot Screenshot
-Comment=Uma pequena descrição desta aplicação.
-Icon=flameshot
-Exec=flameshot gui
-Actions=
-Categories=Graphics;
-" > ~/.local/share/applications/flameshot-screenshot.desktop
-```
-
-## ZSH - Oh My ZSH
+### ZSH - Oh My ZSH
 
 ```bash
 sudo apt-get install zsh fonts-powerline
@@ -245,6 +254,31 @@ rm -rf ~/.zshrc \
  && sudo fc-cache -vf /usr/share/fonts
 ```
 
+### Visual Studio Code
+
+```bash
+#vscode
+sudo snap install --classic code
+sudo bash -c "echo "\nfs.inotify.max_user_watches=524288" >> /etc/sysctl.conf" # configuração para repositórios grandes do vscode
+```
+#### https://marketplace.visualstudio.com/items?itemName=humao.rest-client
+
+
+## Flameshot - Screenshot
+
+```bash
+sudo apt install flameshot && echo "[Desktop Entry]
+Version=1.1
+Type=Application
+Name=Flameshot Screenshot
+Comment=Uma pequena descrição desta aplicação.
+Icon=flameshot
+Exec=flameshot gui
+Actions=
+Categories=Graphics;
+" > ~/.local/share/applications/flameshot-screenshot.desktop
+```
+
 ## TeamViewer
 
 ```bash
@@ -254,23 +288,6 @@ mkdir -p ~/tmp
  && rm ~/tmp/teamviwer.deb
 ```
 
-## Show Desktop Button
-
-```bash
-sudo apt-get install xdotool -y
-echo -e '[Desktop Entry]\n Version=1.0\n Name=Show Desktop\n Exec=xdotool key --clearmodifiers Ctrl+Super+d\n Icon=desktop\n Type=Application\n Categories=Application' | tee ~/.local/share/applications/show-desktop.desktop
-```
-
-## Desktop Folder
-
-```bash
-sudo apt-get install desktopfolder -y
-```
-
-## Photography
-```bash
-sudo snap install darktable
-```
 
 
 ## Restore from old Instllation (Todo)
