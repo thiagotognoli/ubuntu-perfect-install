@@ -329,4 +329,4 @@ https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/DefaultD
 
 
 ## TkBash
-wget https://raw.githubusercontent.com/phil294/tkbash/master/tkbash && chmod +x tkbash
+sudo apt install tk && wget https://raw.githubusercontent.com/phil294/tkbash/master/tkbash && chmod +x tkbash
