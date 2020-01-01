@@ -325,3 +325,8 @@ pacmd list-cards
 pacmd set-card-profile 1 output:analog-stereo+input:analog-stereo
 https://github.com/giner/helplinux/tree/master/scripts/switch-sound
 https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/DefaultDevice/
+
+
+
+## TkBash
+wget https://raw.githubusercontent.com/phil294/tkbash/master/tkbash && chmod +x tkbash
