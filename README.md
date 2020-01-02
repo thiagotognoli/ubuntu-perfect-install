@@ -276,7 +276,7 @@ Icon=flameshot
 Exec=flameshot gui
 Actions=
 Categories=Graphics;
-" > ~/.local/share/applications/flameshot-screenshot.desktop
+" > ~/.local/share/applications/flameshot-screenshot.desktop && chmod +x ~/.local/share/applications/flameshot-screenshot.desktop
 ```
 
 ## TeamViewer
