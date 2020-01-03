@@ -311,6 +311,9 @@ rsync -avz /media/$USER/hd-old/home/$USER/snap/netbeans /home/$USER/snap/
 
 rsync -avz /media/$USER/hd-old/home/$USER/.mysql* /home/$USER/
 rsync -avz /media/$USER/hd-old/home/$USER/.config/filezilla /home/$USER/.config/
+
+#restore gnome shel extensions with configs
+rsync -avz /media/$USER/hd-old/home/$USER/.local/share/gnome-shell/extensions /home/$USER/.local/share/gnome-shell/
 ```
 
 
