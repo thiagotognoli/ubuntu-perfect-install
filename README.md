@@ -14,13 +14,13 @@ sudo apt install terminator
 sudo snap install --edge --classic terminology
 sudo snap install --classic cool-retro-term
 
-sudo apt install psensors
 ```
 
 ## Gnome
 
 ```bash
 sudo apt install gnome-tweaks chrome-gnome-shell
+sudo apt install psensors
 #sudo apt install gnome-shell-extensions
 ```
 
