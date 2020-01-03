@@ -14,13 +14,13 @@ sudo apt install terminator
 sudo snap install --edge --classic terminology
 sudo snap install --classic cool-retro-term
 
-sudo apt install psensors
 ```
 
 ## Gnome
 
 ```bash
 sudo apt install gnome-tweaks chrome-gnome-shell
+sudo apt install psensors
 #sudo apt install gnome-shell-extensions
 ```
 
@@ -276,7 +276,7 @@ Icon=flameshot
 Exec=flameshot gui
 Actions=
 Categories=Graphics;
-" > ~/.local/share/applications/flameshot-screenshot.desktop
+" > ~/.local/share/applications/flameshot-screenshot.desktop && chmod +x ~/.local/share/applications/flameshot-screenshot.desktop
 ```
 
 ## TeamViewer
@@ -311,6 +311,9 @@ rsync -avz /media/$USER/hd-old/home/$USER/snap/netbeans /home/$USER/snap/
 
 rsync -avz /media/$USER/hd-old/home/$USER/.mysql* /home/$USER/
 rsync -avz /media/$USER/hd-old/home/$USER/.config/filezilla /home/$USER/.config/
+
+#restore gnome shel extensions with configs
+rsync -avz /media/$USER/hd-old/home/$USER/.local/share/gnome-shell/extensions /home/$USER/.local/share/gnome-shell/
 ```
 
 
