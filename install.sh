@@ -251,7 +251,8 @@ function install_teamviewer() {
     mkdir -p /tmp/teamviewerdwl \
         && wget -O /tmp/teamviewerdwl/teamviwer.deb $teamViewerDownloadLastUrl \
         && sudo dpkg -i /tmp/teamviewerdwl/teamviwer.deb \
-        && rm /tmp/teamviewerdwl/teamviwer.deb
+        && sudo apt install -f \
+        && rm -rf /tmp/teamviewerdwl
 }
 
 
@@ -277,6 +278,16 @@ function install_docker() {
     # && newgrp docker \
     # && sudo snap install docker \
     # && docker run hello-world
+}
+
+function install_googlechrome() {
+    zenity --question --width=600 --height=400 --text "Instalar Google Chrome?" || return 0
+    mkdir -p /tmp/googlechrome \
+        && wget -O /tmp/googlechrome/googlechrome.deb $googleChromeDownloadLastUrl \
+        && sudo dpkg -i /tmp/googlechrome/googlechrome.deb \
+        && sudo apt install -f \
+        && rm -rf /tmp/googlechrome
+
 }
 
 function restore_from_old_install() {
