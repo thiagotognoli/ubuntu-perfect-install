@@ -66,7 +66,9 @@ function install_base() {
     sudo apt update
     sudo apt install -y ubuntu-restricted-extras
     sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
-    sudo apt install -y aptitude synaptic flatpak gnome-software-plugin-flatpak
+    sudo apt install -y aptitude synaptic
+    sudo apt install -y flatpak gnome-software-plugin-flatpak \
+        && flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
     sudo apt install -y wget curl rsync git bash dbus perl less mawk sed
     sudo apt install -y nfs-common
 
@@ -78,8 +80,8 @@ function install_base() {
 
 function install_ohmyzsh() {
     zenity --question --width=600 --height=400 --text "Instalar ZSH e OhMyZSH?" || return 0
+    #&& sudo chsh -s /bin/zsh root \
     sudo apt install zsh fonts-powerline -y \
-        && sudo chsh -s /bin/zsh root \
         && sudo -u $currentUser sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)" \
         && sudo -u $currentUser rm -rf "$currentHomeDir/.zshrc" \
         && sudo -u $currentUser cp "$currentHomeDir/.oh-my-zsh/templates/zshrc.zsh-template" "$currentHomeDir/.zshrc" \
@@ -285,9 +287,6 @@ function restore_from_old_install() {
     #sudo -u $currentUser mkdir -p "$homeDir"
 
 
-
-
-
 #zenity --file-selection --title="Select a Old Home Folder" --directory
 #oldRoot="$(sudo -u $currentUser bash -c 'cd ~ && yad --file-selection --title="Select a Old Root Directory" --directory')"
 #sudo -u $currentUser rsync -az "$oldRoot/data" "/data"
@@ -298,13 +297,15 @@ sudo -u $currentUser rsync -az "$oldHome/.ssh" "$homeDir/"
 sudo -u $currentUser rsync -az "$oldHome/.gnupg" "$homeDir/"
 sudo -u $currentUser rsync -az "$oldHome/.thunderbird" "$homeDir/"
 sudo -u $currentUser mv "$homeDir/.local/share/keyrings" "$homeDir/.local/share/keyrings.old"
+sudo -u $currentUser mkdir -p "$homeDir/.local/share/keyrings"
 sudo -u $currentUser cp -r "$oldHome/.local/share/keyrings/"{login.keyring,user.keystore} "$homeDir/.local/share/keyrings"
 sudo -u $currentUser rsync -az "$oldHome/.config/SiriKali" "$homeDir/.config/"
-
 sudo -u $currentUser bash -c  'rsync -vazhP "'$oldHome'/.SiriKali/" "'$homeDir'/.SiriKali/" --exclude "*/*" --include "*"'
 
 sudo -u $currentUser rsync -az "$oldHome/.wine" "$homeDir/"
-sudo -u $currentUser rsync -az "$oldHome/Nextcloud"* "$homeDir/"
+
+zenity --question --width=600 --height=400 --text "Recuperar Repositório NextCloud (caso recuse ele será sincronizado com o servidor, o processo será mais lento mas será feio)?" && sudo -u $currentUser rsync -az "$oldHome/Nextcloud"* "$homeDir/"
+
 sudo -u $currentUser rsync -az "$oldHome/.config/Nextcloud" "$homeDir/.config/"
 
 sudo -u $currentUser mv "$homeDir/snap/netbeans" "$homeDir/snap/netbeans.old"
@@ -317,6 +318,28 @@ sudo -u $currentUser rsync -az "$oldHome/.config/filezilla" "$homeDir/.config/"
 sudo -u $currentUser mkdir -p "$homeDir/.local/share/gnome-shell/"
 sudo -u $currentUser rsync -az "$oldHome/.local/share/gnome-shell/extensions" "$homeDir/.local/share/gnome-shell/"
 
+#backup chrome
+sudo -u $currentUser rsync -az "$oldHome/.config/google-chrome" "$homeDir/.config/"
+#backup chromiun
+#backup firfox
+sudo -u $currentUser rsync -az "$oldHome/.mozilla" "$homeDir/"
+
+sudo -u $currentUser rsync -az "$oldHome/.config/transmission" "$homeDir/.config/"
+sudo -u $currentUser rsync -az "$oldHome/.config/teamviewer" "$homeDir/.config/"
+
+#sudo -u $currentUser rsync -az "$oldHome/.config/slimbookbattery" "$homeDir/.config/"
+sudo -u $currentUser rsync -az "$oldHome/.config/libreoffice" "$homeDir/.config/"
+
+#sudo -u $currentUser rsync -az "$oldHome/.config/autostart" "$homeDir/.config/"
+
+sudo -u $currentUser rsync -az "$oldHome/.psensor" "$homeDir/"
+
+#flat packages
+sudo -u $currentUser rsync -az "$oldHome/.var" "$homeDir/"
+#snap packages
+sudo -u $currentUser rsync -az "$oldHome/snap" "$homeDir/"
+
+
 }
 
 
@@ -324,8 +347,6 @@ sudo -u $currentUser rsync -az "$oldHome/.local/share/gnome-shell/extensions" "$
 install_base
 
 restore_from_old_install
-
-exit
 
 install_ohmyzsh
 
@@ -359,6 +380,8 @@ install_docker
 
 install_teamviewer
 
+
+#install slimbookbattery
 
 #sudo -u someuser bash << EOF
 #echo "In"
