@@ -67,7 +67,7 @@ function install_base() {
     sudo apt install -y ubuntu-restricted-extras
     sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
     sudo apt install -y aptitude synaptic flatpak gnome-software-plugin-flatpak
-    sudo apt install -y wget curl rsync git bash dbus perl less awk sed
+    sudo apt install -y wget curl rsync git bash dbus perl less mawk sed
     sudo apt install -y nfs-common
 
     #Alternatives Terminals
@@ -77,6 +77,7 @@ function install_base() {
 }
 
 function install_ohmyzsh() {
+    zenity --question --width=600 --height=400 --text "Instalar ZSH e OhMyZSH?" || return 0
     sudo apt install zsh fonts-powerline -y \
         && sudo chsh -s /bin/zsh root \
         && sudo -u $currentUser sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)" \
@@ -94,6 +95,7 @@ function install_ohmyzsh() {
 }
 
 function config_gnomeshell() {
+    zenity --question --width=600 --height=400 --text "Configurar Gnome Shell?" || return 0
 
     # Install Gnome Tweaks e Chrome Gnome Shell
     sudo apt install gnome-tweaks chrome-gnome-shell -y
@@ -117,6 +119,7 @@ function config_gnomeshell() {
 }
 
 function install_gnomeshellextensions() {
+        zenity --question --width=600 --height=400 --text "Instalar Gnome Shell Extensions?" || return 0
 
         sudo apt install wget bash curl dbus perl git less -y \
         && sudo -u $currentUser mkdir -p $binDir \
@@ -143,39 +146,48 @@ function install_gnomeshellextensions() {
 }
 
 function install_cryptofolders_gocryptfs() {
+    zenity --question --width=600 --height=400 --text "Instalar Crypto Folders (gocryptfs, SiriKali)?" || return 0
     sudo apt install gocryptfs sirikali -y
 }
 
 function install_keppasxc() {
+    zenity --question --width=600 --height=400 --text "Instalar KeepasXC?" || return 0
     sudo snap install keepassxc
 }
 
 function install_authenticator() {
+    zenity --question --width=600 --height=400 --text "Instalar App Authenticator (2FA)?" || return 0
     sudo -u $currentUser flatpak install -y flathub com.github.bilelmoussaoui.Authenticator
 }
 
 function install_designtools() {
+    zenity --question --width=600 --height=400 --text "Instalar Design Tools (Inkscape, GIMP)?" || return 0
     sudo snap install gimp inkscape
 }
 
 function install_photographytools() {
+    zenity --question --width=600 --height=400 --text "Instalar Photograpy Tools (DarkTable)?" || return 0
     sudo snap install darktable
 }
 
 function install_chromiunbrowser() {
+    zenity --question --width=600 --height=400 --text "Instalar Chromiun (Browser)?" || return 0
     sudo snap install chromiun
 }
 
 function install_vlcvideoplayer() {
+    zenity --question --width=600 --height=400 --text "Instalar VLC (Video Player)?" || return 0
     sudo snap install chromiun
 }
 
 function install_chats() {
+    zenity --question --width=600 --height=400 --text "Instalar Chats Tools?" || return 0
     snap install whatsdesk telegram-desktop
     snap install --classic slack
 }
 
 function install_whatsappelectron() {
+    zenity --question --width=600 --height=400 --text "Instalar WhatsApp Electron?" || return 0
     sudo apt install git -y \
     && sudo snap install --edge node --classic \
     && sudo -u $currentUser mkdir -p "$currentHomeDir/tmp" \
@@ -194,28 +206,31 @@ function install_whatsappelectron() {
 }
 
 function install_develtools() {
+    zenity --question --width=600 --height=400 --text "Instalar Devel Tools?" || return 0
+
     #MySql client
-    sudo apt install mysql-workbench 
+    zenity --question --width=600 --height=400 --text "Instalar MySQL Workbench (Mysql GUI Client)?" && sudo apt install mysql-workbench
     #FTP client
-    sudo apt install filezilla
+    zenity --question --width=600 --height=400 --text "Instalar Filezilla (FTP GUI Client)?" && sudo apt install filezilla
     #netbeans
-    sudo snap install --classic netbeans 
+    zenity --question --width=600 --height=400 --text "Instalar IDE Netbeans?" && sudo snap install --classic netbeans 
     #nodejs
-    sudo snap install --edge node --classic
+    zenity --question --width=600 --height=400 --text "Instalar NodeJs (snap)?" && sudo snap install --edge node --classic
     #robo3t - mongodb gui
-    sudo snap install robo3t-snap
+    zenity --question --width=600 --height=400 --text "Instalar Robo3T (MongoDB Gui Client)?" && sudo snap install robo3t-snap
     #Git Gui Client
-    sudo snap install gitkraken
+    zenity --question --width=600 --height=400 --text "Instalar Git Kraken (Git Gui Client)?" && sudo snap install gitkraken
     #Insomnia Rest Client
-    sudo snap install insomnia
+    zenity --question --width=600 --height=400 --text "Instalar Insomnia (HTTP Rest Client)?" && sudo snap install insomnia
     #GhostWriter - mkd editor
-    sudo -u $currentUser flatpak install -y flathub io.github.wereturtle.ghostwriter
+    zenity --question --width=600 --height=400 --text "Instalar GhostWriter (MKD Editor)?" && sudo -u $currentUser flatpak install -y flathub io.github.wereturtle.ghostwriter
 
     #todo GitAhead - Git Gui Client https://gitahead.github.io/gitahead.com/
     install_vscode
 }
 
 function install_vscode() {
+    zenity --question --width=600 --height=400 --text "Instalar Visual Studio Code?" || return 0
     #vscode
     sudo snap install --classic code
     sudo bash -c "echo "\nfs.inotify.max_user_watches=524288" >> /etc/sysctl.conf" # configuração para repositórios grandes do vscode
@@ -223,12 +238,14 @@ function install_vscode() {
 }
 
 function install_flameshotscreenshot() {
+    zenity --question --width=600 --height=400 --text "Instalar Flameshot Screen Shot?" || return 0
     sudo apt install -y flameshot \
     && sudo -u $currentUser bash -c "echo -e '[Desktop Entry]\n Version=1.1\n Type=Application\n Name=Flameshot Screenshot\n Comment=Uma pequena descrição desta aplicação.\n Icon=flameshot\n Exec=flameshot gui\n Actions=\n Categories=Graphics;' | tee '$currentHomeDir/.local/share/applications/flameshot-screenshot.desktop'" \
     && sudo -u $currentUser chmod +x "$currentHomeDir/.local/share/applications/flameshot-screenshot.desktop"
 }
 
 function install_teamviewer() {
+    zenity --question --width=600 --height=400 --text "Instalar TeamViewer?" || return 0
     mkdir -p /tmp/teamviewerdwl \
         && wget -O /tmp/teamviewerdwl/teamviwer.deb $teamViewerDownloadLastUrl \
         && sudo dpkg -i /tmp/teamviewerdwl/teamviwer.deb \
@@ -237,6 +254,7 @@ function install_teamviewer() {
 
 
 function install_docker() {
+    zenity --question --width=600 --height=400 --text "Instalar Docker?" || return 0
     localUbuntuRelease="$ubuntuRelease"
     if [ "$localUbuntuRelease" = "eoan" ]; then
         localUbuntuRelease="disco"
@@ -260,7 +278,7 @@ function install_docker() {
 }
 
 function restore_from_old_install() {
-
+    zenity --question --width=600 --height=400 --text "Restaurar de uma instalação antiga?" || return 0
     sudo apt install -y yad
 
     homeDir="$currentHomeDir"
@@ -302,22 +320,12 @@ sudo -u $currentUser rsync -az "$oldHome/.local/share/gnome-shell/extensions" "$
 }
 
 
-#yad --list --title "Menu de manutenção V.0.1.0"\
-#--text "O que deseja fazer?"\
-#--column "Opção" --column "descrição"\
-#--width="300" --height="215" \
-#1 "Atualiza Sistema" \
-#2 "Reparar sistema" \
-#3 "Backup" \
-#4 "Iniciar programas" \
-#5 "Instalar programas" \
-#0 "Sair"
-
-
 
 install_base
 
 restore_from_old_install
+
+exit
 
 install_ohmyzsh
 
@@ -358,6 +366,18 @@ install_teamviewer
 #EOF
 
 #https://www.vivaolinux.com.br/topico/yad/Criar-menu-com-radiolist/
+
+#yad --list --title "Menu de manutenção V.0.1.0"\
+#--text "O que deseja fazer?"\
+#--column "Opção" --column "descrição"\
+#--width="300" --height="215" \
+#1 "Atualiza Sistema" \
+#2 "Reparar sistema" \
+#3 "Backup" \
+#4 "Iniciar programas" \
+#5 "Instalar programas" \
+#0 "Sair"
+
 
 <</*
 luksPartitions=`lsblk --fs`
