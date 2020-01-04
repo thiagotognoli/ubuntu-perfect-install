@@ -3,7 +3,13 @@ Ubuntu After installation
 
 ## Automatic Script
 ```bash
-cd /tmp && sudo apt install -y git && git clone https://github.com/thiagotognoli/ubuntu-perfect-install.git && cd ubuntu-perfect-install && ./run.sh && cd ~ && rm -rf /tmp/ubuntu-perfect-install
+cd /tmp \
+&& sudo apt install -y git \
+&& git clone https://github.com/thiagotognoli/ubuntu-perfect-install.git \
+&& cd ubuntu-perfect-install \
+&& ./run.sh \
+&& cd ~ \
+&& rm -rf /tmp/ubuntu-perfect-install
 ```
 
 ## Base Installation
