@@ -12,6 +12,8 @@ checkRoot
 currentUser=`logname`
 currentGroup=`id -gn $currentUser`
 
+currentHomeDir="$(sudo -u $currentUser bash -c "echo ~")"
+
 ubuntuRelease=`lsb_release -cs`
 
 currentDate=$(date +%Y-%m-%d_%H-%M-%S.%N)
@@ -61,10 +63,11 @@ function testeGui() {
 
 
 function install_base() {
+    sudo apt update
     sudo apt install -y ubuntu-restricted-extras
     sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
     sudo apt install -y aptitude synaptic flatpak gnome-software-plugin-flatpak
-    sudo apt install -y wget curl git bash dbus perl less awk sed
+    sudo apt install -y wget curl rsync git bash dbus perl less awk sed
     sudo apt install -y nfs-common
 
     #Alternatives Terminals
@@ -77,12 +80,12 @@ function install_ohmyzsh() {
     sudo apt install zsh fonts-powerline -y \
         && sudo chsh -s /bin/zsh root \
         && sudo -u $currentUser sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)" \
-        && sudo -u $currentUser rm -rf ~/.zshrc \
-        && sudo -u $currentUser cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc \
-        && sudo -u $currentUser sed -ri 's/(ZSH_THEME=")([^"]*)(")/\1agnoster\3/g' ~/.zshrc \
-        && sudo -u $currentUser sed -ri 's/(plugins=\()([^\)]*)(\))/\1git git-extras git-flow gitignore ubuntu cp extract sudo systemd last-working-dir docker docker-compose web-search vscode laravel laravel5 npm yarn\3/g' ~/.zshrc \
-        && mkdir -p ~/tmp \
-        && cd ~/tmp \
+        && sudo -u $currentUser rm -rf "$currentHomeDir/.zshrc" \
+        && sudo -u $currentUser cp "$currentHomeDir/.oh-my-zsh/templates/zshrc.zsh-template" "$currentHomeDir/.zshrc" \
+        && sudo -u $currentUser sed -ri 's/(ZSH_THEME=")([^"]*)(")/\1agnoster\3/g' "$currentHomeDir/.zshrc" \
+        && sudo -u $currentUser sed -ri 's/(plugins=\()([^\)]*)(\))/\1git git-extras git-flow gitignore ubuntu cp extract sudo systemd last-working-dir docker docker-compose web-search vscode laravel laravel5 npm yarn\3/g' "$currentHomeDir/.zshrc" \
+        && mkdir -p "$currentHomeDir/tmp" \
+        && cd "$currentHomeDir/tmp" \
         && git clone https://github.com/abertsch/Menlo-for-Powerline.git \
         && sudo mv Menlo-for-Powerline/*.ttf /usr/share/fonts/.  \
         && rm -rf Menlo-for-Powerline \
@@ -98,8 +101,8 @@ function config_gnomeshell() {
 
     # Create Show Desktop Button
     sudo apt install xdotool -y \
-    && sudo -u $currentUser bash -c "echo -e '[Desktop Entry]\n Version=1.0\n Name=Show Desktop\n Exec=xdotool key --clearmodifiers Ctrl+Super+d\n Icon=desktop\n Type=Application\n Categories=Application' | tee ~/.local/share/applications/show-desktop.desktop" \
-    && sudo -u $currentUser chmod +x ~/.local/share/applications/show-desktop.desktop
+    && sudo -u $currentUser bash -c "echo -e '[Desktop Entry]\n Version=1.0\n Name=Show Desktop\n Exec=xdotool key --clearmodifiers Ctrl+Super+d\n Icon=desktop\n Type=Application\n Categories=Application' | tee '$currentHomeDir/.local/share/applications/show-desktop.desktop'" \
+    && sudo -u $currentUser chmod +x "$currentHomeDir/.local/share/applications/show-desktop.desktop"
 
     # Config Click App Icon to Minimize
     sudo -u $currentUser gsettings set org.gnome.shell.extensions.dash-to-dock click-action minimize
@@ -175,19 +178,19 @@ function install_chats() {
 function install_whatsappelectron() {
     sudo apt install git -y \
     && sudo snap install --edge node --classic \
-    && sudo -u $currentUser mkdir -p ~/tmp \
-    && sudo -u $currentUser cd ~/tmp \
+    && sudo -u $currentUser mkdir -p "$currentHomeDir/tmp" \
+    && sudo -u $currentUser cd "$currentHomeDir/tmp" \
     && sudo -u $currentUser git clone https://github.com/thiagotognoli/whatsapp-electron.git \
     && sudo -u $currentUser cd whatsapp-electron \
     && sudo -u $currentUser npm install \
     && sudo -u $currentUser npm run build \
-    && sudo -u $currentUser mkdir -p ~/AppImage \
-    && sudo -u $currentUser mv dist/whatsapp-electron-*.AppImage ~/AppImage/whatsapp-electron.AppImage \
-    && sudo -u $currentUser chmod +x ~/AppImage/whatsapp-electron.AppImage \
+    && sudo -u $currentUser mkdir -p "$currentHomeDir/AppImage" \
+    && sudo -u $currentUser mv dist/whatsapp-electron-*.AppImage "$currentHomeDir/AppImage/whatsapp-electron.AppImage" \
+    && sudo -u $currentUser chmod +x "$currentHomeDir/AppImage/whatsapp-electron.AppImage" \
     && sudo -u $currentUser cd .. \
     && sudo -u $currentUser rm -rfd whatsapp-electron \
-    && sudo -u $currentUser -bash -c "echo -e '[Desktop Entry]\n Version=1.0\n Type=Application\n Exec=~/AppImage/whatsapp-electron.AppImage %f\n Name=WhatsApp\n Icon=WhatsApp\n Terminal=false\n Categories=Internet;' | tee ~/.local/share/applications/whatsapp.desktop" \
-    && sudo -u $currentUser chmod +x ~/.local/share/applications/whatsapp.desktop
+    && sudo -u $currentUser -bash -c "echo -e '[Desktop Entry]\n Version=1.0\n Type=Application\n Exec=~/AppImage/whatsapp-electron.AppImage %f\n Name=WhatsApp\n Icon=WhatsApp\n Terminal=false\n Categories=Internet;' | tee '$currentHomeDir/.local/share/applications/whatsapp.desktop'" \
+    && sudo -u $currentUser chmod +x "$currentHomeDir/.local/share/applications/whatsapp.desktop"
 }
 
 function install_develtools() {
@@ -221,15 +224,15 @@ function install_vscode() {
 
 function install_flameshotscreenshot() {
     sudo apt install -y flameshot \
-    && sudo -u $currentUser -bash -c "echo -e '[Desktop Entry]\n Version=1.1\n Type=Application\n Name=Flameshot Screenshot\n Comment=Uma pequena descrição desta aplicação.\n Icon=flameshot\n Exec=flameshot gui\n Actions=\n Categories=Graphics;' | tee ~/.local/share/applications/flameshot-screenshot.desktop && chmod +x ~/.local/share/applications/flameshot-screenshot.desktop" \
-    && sudo -u $currentUser chmod +x ~/.local/share/applications/flameshot-screenshot.desktop && chmod +x ~/.local/share/applications/flameshot-screenshot.desktop
+    && sudo -u $currentUser bash -c "echo -e '[Desktop Entry]\n Version=1.1\n Type=Application\n Name=Flameshot Screenshot\n Comment=Uma pequena descrição desta aplicação.\n Icon=flameshot\n Exec=flameshot gui\n Actions=\n Categories=Graphics;' | tee '$currentHomeDir/.local/share/applications/flameshot-screenshot.desktop'" \
+    && sudo -u $currentUser chmod +x "$currentHomeDir/.local/share/applications/flameshot-screenshot.desktop"
 }
 
 function install_teamviewer() {
-    mkdir -p ~/tmp \
-        && wget -O ~/tmp/teamviwer.deb $teamViewerDownloadLastUrl \
-        && sudo dpkg -i ~/tmp/teamviwer.deb \
-        && rm ~/tmp/teamviwer.deb
+    mkdir -p /tmp/teamviewerdwl \
+        && wget -O /tmp/teamviewerdwl/teamviwer.deb $teamViewerDownloadLastUrl \
+        && sudo dpkg -i /tmp/teamviewerdwl/teamviwer.deb \
+        && rm /tmp/teamviewerdwl/teamviwer.deb
 }
 
 
@@ -256,7 +259,65 @@ function install_docker() {
     # && docker run hello-world
 }
 
+function restore_from_old_install() {
+
+    sudo apt install -y yad
+
+    homeDir="$currentHomeDir"
+    #sudo -u $currentUser mkdir -p "$homeDir"
+
+
+
+
+
+#zenity --file-selection --title="Select a Old Home Folder" --directory
+#oldRoot="$(sudo -u $currentUser bash -c 'cd ~ && yad --file-selection --title="Select a Old Root Directory" --directory')"
+#sudo -u $currentUser rsync -az "$oldRoot/data" "/data"
+oldHome="$(cd "$currentHomeDir" && yad --file-selection --title="Select a Old Root Directory" --directory)"
+
+
+sudo -u $currentUser rsync -az "$oldHome/.ssh" "$homeDir/"
+sudo -u $currentUser rsync -az "$oldHome/.gnupg" "$homeDir/"
+sudo -u $currentUser rsync -az "$oldHome/.thunderbird" "$homeDir/"
+sudo -u $currentUser mv "$homeDir/.local/share/keyrings" "$homeDir/.local/share/keyrings.old"
+sudo -u $currentUser cp -r "$oldHome/.local/share/keyrings/"{login.keyring,user.keystore} "$homeDir/.local/share/keyrings"
+sudo -u $currentUser rsync -az "$oldHome/.config/SiriKali" "$homeDir/.config/"
+
+sudo -u $currentUser bash -c  'rsync -vazhP "'$oldHome'/.SiriKali/" "'$homeDir'/.SiriKali/" --exclude "*/*" --include "*"'
+
+sudo -u $currentUser rsync -az "$oldHome/.wine" "$homeDir/"
+sudo -u $currentUser rsync -az "$oldHome/Nextcloud"* "$homeDir/"
+sudo -u $currentUser rsync -az "$oldHome/.config/Nextcloud" "$homeDir/.config/"
+
+sudo -u $currentUser mv "$homeDir/snap/netbeans" "$homeDir/snap/netbeans.old"
+sudo -u $currentUser rsync -az "$oldHome/snap/netbeans" "$homeDir/snap/"
+
+sudo -u $currentUser rsync -az "$oldHome/.mysql"* "$homeDir/"
+sudo -u $currentUser rsync -az "$oldHome/.config/filezilla" "$homeDir/.config/"
+
+#restore gnome shel extensions with configs
+sudo -u $currentUser mkdir -p "$homeDir/.local/share/gnome-shell/"
+sudo -u $currentUser rsync -az "$oldHome/.local/share/gnome-shell/extensions" "$homeDir/.local/share/gnome-shell/"
+
+}
+
+
+#yad --list --title "Menu de manutenção V.0.1.0"\
+#--text "O que deseja fazer?"\
+#--column "Opção" --column "descrição"\
+#--width="300" --height="215" \
+#1 "Atualiza Sistema" \
+#2 "Reparar sistema" \
+#3 "Backup" \
+#4 "Iniciar programas" \
+#5 "Instalar programas" \
+#0 "Sair"
+
+
+
 install_base
+
+restore_from_old_install
 
 install_ohmyzsh
 
@@ -291,24 +352,30 @@ install_docker
 install_teamviewer
 
 
+#sudo -u someuser bash << EOF
+#echo "In"
+#whoami
+#EOF
 
-exit
+#https://www.vivaolinux.com.br/topico/yad/Criar-menu-com-radiolist/
 
-#lsblk --fs | grep crypto_LUKS
+<</*
+luksPartitions=`lsblk --fs`
 
-luksPartitions=`lsblk --fs | grep crypto_LUKS`
-
-echo luksPartitions | awk "{print \$1}"
-echo luksPartitions | lsblk --fs | grep crypto_LUKS | awk "{print \$3}"
-
-test -b /dev/disk/by-uuid/$(sudo cryptsetup luksUUID $DEV_LUKS) && echo "$DEV_LUKS is opened" || echo "$DEV_LUKS is not opened"
-
-
-
-#DEV_LUKS=/dev/sdb3
-#$(sudo cryptsetup luksUUID $DEV_LUKS | tr -d -)
-
-#test -b /dev/disk/by-uuid/$(sudo cryptsetup luksUUID $DEV_LUKS) && echo "$DEV_LUKS is opened" || echo "$DEV_LUKS is not opened"
-
-#cryptsetup isLuks $DEV_LUKS && echo "$DEV_LUKS is a LUKS Device" || echo "$DEV_LUKS is not a LUKS Device"
-#test -b /dev/disk/by-id/dm-uuid-*$(cryptsetup luksUUID $DEV_LUKS | tr -d -)* && echo "$DEV_LUKS is opened" || echo "$DEV_LUKS is not opened"
+while read linePartition
+do
+    partition=$(echo "$linePartition" | awk "{print \$1}" | tr -d "└─" | tr -d "├─")
+    partition_type=$(echo "$linePartition" | awk "{print \$2}")
+    partition_uuid=$(echo "$linePartition" | awk "{print \$3}")
+#    test -b /dev/disk/by-uuid/$device_uuid && echo "$partition|$partition_type|$partition_uuid is opened" || echo "$partition|$partition_type|$partition_uuid is closed"
+done <<< $( \
+echo "$luksPartitions" | grep crypto_LUKS; \
+echo "$luksPartitions" | grep ext4; \
+echo "$luksPartitions" | grep zfs; \
+echo "$luksPartitions" | grep xfs; \
+echo "$luksPartitions" | grep btrfs; \
+echo "$luksPartitions" | grep ntfs; \
+echo "$luksPartitions" | grep vfat; \
+echo "$luksPartitions" | grep exfat; \
+)
+/*
