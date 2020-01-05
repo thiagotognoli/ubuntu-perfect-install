@@ -350,9 +350,28 @@ sudo -u $currentUser rsync -az "$oldHome/.var" "$homeDir/"
 #snap packages
 sudo -u $currentUser rsync -az "$oldHome/snap" "$homeDir/"
 
+if zenity --question --width=600 --height=400 --text "Recuperar Arquivos da Home Antiga?"
+then
+            # get length of an array
+            homeFilesDirectoriesVariableslength=${#homeFilesDirectoriesVariables[@]}
+            oldDirectoyPathVars="$(cat "$oldHome/.config/user-dirs.dirs")"
+            currentDirectoyPathVars="$(cat "$homeDir/.config/user-dirs.dirs")"
+            # use for loop to read all values and indexes
+            for (( i=0; i<${homeFilesDirectoriesVariableslength}; i++ ));
+            do
+                oldDirectoyPathVar=$(echo "$oldDirectoyPathVars" | grep "${homeFilesDirectoriesVariables[$i]}")
+                currentDirectoyPathVar=$(echo "$currentDirectoyPathVars" | grep "${homeFilesDirectoriesVariables[$i]}")
+                oldDirectoyPath=$(echo ${oldDirectoyPathVar/${homeFilesDirectoriesVariables[$i]}=/""} | tr -d '"')
+                oldDirectoyPath="$(echo "${oldDirectoyPath/\$HOME/$oldHome}")"
+                currentDirectoyPath=$(echo ${currentDirectoyPathVar/${homeFilesDirectoriesVariables[$i]}=/""} | tr -d '"')
+                currentDirectoyPath="$(echo "${currentDirectoyPath/\$HOME/$homeDir}")"
+
+                zenity --question --width=600 --height=400 --text "Copiar dados da Pasta \"$oldDirectoyPath\" (Home Antiga) para a pasta \"$currentDirectoyPath\" (Home Atual)?" && sudo -u $currentUser rsync -az "$oldDirectoyPath/"* "$currentDirectoyPath/"
+            done
+fi
+
 
 }
-
 
 
 install_base
@@ -364,6 +383,8 @@ install_ohmyzsh
 config_gnomeshell
 
 install_gnomeshellextensions
+
+install_googlechrome
 
 install_flameshotscreenshot
 
@@ -390,6 +411,8 @@ install_develtools
 install_docker
 
 install_teamviewer
+
+
 
 
 #install slimbookbattery
