@@ -303,51 +303,73 @@ function restore_from_old_install() {
 #sudo -u $currentUser rsync -az "$oldRoot/data" "/data"
 oldHome="$(cd "$currentHomeDir" && yad --file-selection --title="Select a Old Root Directory" --directory)"
 
-
+echo "----->SSH config"
 sudo -u $currentUser rsync -az "$oldHome/.ssh" "$homeDir/"
+echo "----->GNU PG"
 sudo -u $currentUser rsync -az "$oldHome/.gnupg" "$homeDir/"
+echo "----->Thunderbir config"
 sudo -u $currentUser rsync -az "$oldHome/.thunderbird" "$homeDir/"
+echo "----->Gnome Keyrings"
 sudo -u $currentUser mv "$homeDir/.local/share/keyrings" "$homeDir/.local/share/keyrings.old"
 sudo -u $currentUser mkdir -p "$homeDir/.local/share/keyrings"
 sudo -u $currentUser cp -r "$oldHome/.local/share/keyrings/"{login.keyring,user.keystore} "$homeDir/.local/share/keyrings"
+echo "----->SiriKali config and Repo structure"
 sudo -u $currentUser rsync -az "$oldHome/.config/SiriKali" "$homeDir/.config/"
 sudo -u $currentUser bash -c  'rsync -vazhP "'$oldHome'/.SiriKali/" "'$homeDir'/.SiriKali/" --exclude "*/*" --include "*"'
 
+echo "----->Wine"
 sudo -u $currentUser rsync -az "$oldHome/.wine" "$homeDir/"
 
-zenity --question --width=600 --height=400 --text "Recuperar Repositório NextCloud (caso recuse ele será sincronizado com o servidor, o processo será mais lento mas será feio)?" && sudo -u $currentUser rsync -az "$oldHome/Nextcloud"* "$homeDir/"
+if zenity --question --width=600 --height=400 --text "Recuperar Repositório NextCloud (caso recuse ele será sincronizado com o servidor, o processo será mais lento mas será feio)?"
+then
+    echo "NextCloud Repositories"
+    sudo -u $currentUser rsync -az "$oldHome/Nextcloud"* "$homeDir/"
+fi
 
+echo "NextCloud config"
 sudo -u $currentUser rsync -az "$oldHome/.config/Nextcloud" "$homeDir/.config/"
 
+echo "Netbeans Snap config"
 sudo -u $currentUser mv "$homeDir/snap/netbeans" "$homeDir/snap/netbeans.old"
 sudo -u $currentUser rsync -az "$oldHome/snap/netbeans" "$homeDir/snap/"
 
+echo "MySQL Client config"
 sudo -u $currentUser rsync -az "$oldHome/.mysql"* "$homeDir/"
+echo "Filezzila config"
 sudo -u $currentUser rsync -az "$oldHome/.config/filezilla" "$homeDir/.config/"
 
 #restore gnome shel extensions with configs
+echo "Gnome Shell Extensions"
 sudo -u $currentUser mkdir -p "$homeDir/.local/share/gnome-shell/"
 sudo -u $currentUser rsync -az "$oldHome/.local/share/gnome-shell/extensions" "$homeDir/.local/share/gnome-shell/"
 
 #backup chrome
+echo "Google Chrome config"
 sudo -u $currentUser rsync -az "$oldHome/.config/google-chrome" "$homeDir/.config/"
 #backup chromiun
 #backup firfox
+echo "Mozilla Firefox config"
 sudo -u $currentUser rsync -az "$oldHome/.mozilla" "$homeDir/"
 
+echo "Transmission config"
 sudo -u $currentUser rsync -az "$oldHome/.config/transmission" "$homeDir/.config/"
+echo "Team Viewer config"
 sudo -u $currentUser rsync -az "$oldHome/.config/teamviewer" "$homeDir/.config/"
 
 #sudo -u $currentUser rsync -az "$oldHome/.config/slimbookbattery" "$homeDir/.config/"
+echo "Libre Office config"
 sudo -u $currentUser rsync -az "$oldHome/.config/libreoffice" "$homeDir/.config/"
 
 #sudo -u $currentUser rsync -az "$oldHome/.config/autostart" "$homeDir/.config/"
 
+echo "PSensor config"
 sudo -u $currentUser rsync -az "$oldHome/.psensor" "$homeDir/"
 
 #flat packages
+echo "All Flat Packages with configs"
 sudo -u $currentUser rsync -az "$oldHome/.var" "$homeDir/"
 #snap packages
+echo "All Snap Packages with configs"
 sudo -u $currentUser rsync -az "$oldHome/snap" "$homeDir/"
 
 if zenity --question --width=600 --height=400 --text "Recuperar Arquivos da Home Antiga?"
@@ -366,7 +388,11 @@ then
                 currentDirectoyPath=$(echo ${currentDirectoyPathVar/${homeFilesDirectoriesVariables[$i]}=/""} | tr -d '"')
                 currentDirectoyPath="$(echo "${currentDirectoyPath/\$HOME/$homeDir}")"
 
-                zenity --question --width=600 --height=400 --text "Copiar dados da Pasta \"$oldDirectoyPath\" (Home Antiga) para a pasta \"$currentDirectoyPath\" (Home Atual)?" && sudo -u $currentUser rsync -az "$oldDirectoyPath/"* "$currentDirectoyPath/"
+                if zenity --question --width=600 --height=400 --text "Copiar dados da Pasta \"$oldDirectoyPath\" (Home Antiga) para a pasta \"$currentDirectoyPath\" (Home Atual)?"
+                then
+                    echo "Copyng of \"$oldDirectoyPath\" to  \"$currentDirectoyPath\"."
+                    sudo -u $currentUser rsync -az "$oldDirectoyPath/"* "$currentDirectoyPath/"
+                fi
             done
 fi
 
