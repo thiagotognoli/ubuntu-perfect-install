@@ -539,7 +539,7 @@ function restoreSnaps() {
     #pegar os snaps de /var e /home
 }
 
-#install_base
+install_base
 
 installApps
 
