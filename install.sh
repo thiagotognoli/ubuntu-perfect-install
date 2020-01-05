@@ -486,36 +486,6 @@ function restoreSnaps() {
     #https://forum.snapcraft.io/t/where-is-a-snap-stored-and-how-can-i-change-that/3194/3
 <</*
     #install options to fill
-
-       --channel
-              Use this channel instead of stable
-
-       --edge Install from the edge channel
-
-       --beta Install from the beta channel
-
-       --candidate
-              Install from the candidate channel
-
-       --stable
-              Install from the stable channel
-
-       --devmode
-              Put snap in development mode and disable security confinement
-
-       --jailmode
-              Put snap in enforced confinement mode
-
-       --classic
-              Put snap in classic mode and disable security confinement
-
-       --revision
-              Install the given revision of a snap, to which you must have developer access
-
-       --dangerous
-              Install the given snap file even if there are no pre-acknowledged signatures for it, meaning it was not verified and could be dangerous (--de‐
-              vmode implies this)
-
        --unaliased
               Install the given snap without enabling its automatic aliases
 
@@ -523,12 +493,27 @@ function restoreSnaps() {
 
        --cohort
               Install the snap in the given cohort
-
-              list 
-              base,disabled - separar por , e verificar disabled - se for - install simples
-
 /*
 
+    snapList=$(snap list | tail -n +2 | egrep -v '^core |^core18 |^gtk-common-themes |^gtk2-common-themes |^snapcraft ')
+
+    echo "$snapList" \
+    | while read -r name version revision channel publisher options ; do
+
+        optionsStr="$(
+            for option in ${options//,/ }; do
+                if echo "$option" | grep -E -q "classic|jailmode|devmode|dangerous"
+                then
+                    echo "--$option "
+                fi
+            done
+        )" 
+        eval "sudo snap install --$channel $optionsStr --revision $revision $name"
+        if echo "$options" | grep -q "disabled"
+        then
+            eval "sudo snap disable $name"
+        fi
+    done
     #copy /var/lib/snapd and ~/snap resolve ?
     #montar jaula snap com base na instalaçao antiga
     # /var/lib/snapd/snaps | $HOME/snap
@@ -545,6 +530,7 @@ installApps
 
 restore_from_old_install
 
+#restoreSnaps
 
 <</*
 #projeto para montar luks antigo
