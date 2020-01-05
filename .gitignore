@@ -1,1 +1,3 @@
-bin/tkbash
+bin/*
+tmp/*
+!tmp/test.sh

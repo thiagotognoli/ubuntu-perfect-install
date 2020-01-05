@@ -32,7 +32,107 @@ source $basePath/conf.conf
 set +a # stop exporting
 
 
+function installApps() {
+#geany
+#notepad++
+#slimbookbattery
+#nextcloud
+#mackup
+#anbox
 
+#todo GitAhead - Git Gui Client https://gitahead.github.io/gitahead.com/
+
+##Installing Unite Gnome Shell Extension
+##[1287] Obtaining extension info
+##ERROR: Use your package manager to update this extension
+
+    options_id=(\
+        install_alternativeterminals \
+        install_ohmyzsh \
+        config_gnomeshell \
+        install_gnomeshellextensions \
+        install_googlechrome \
+        install_chromiumbrowser \
+        install_flameshotscreenshot \
+        install_cryptofolders_gocryptfs \
+        install_keppasxc \
+        install_authenticator \
+        install_designtools \
+        install_photographytools \
+        install_vlcvideoplayer \
+        install_chats \
+        install_whatsappelectron \
+        install_develtools \
+        install_docker \
+        install_teamviewer)
+
+    options_title=(\
+        "Alternative Terminals (terminator, terminology, cool-retro-term)"
+        "ZSH & Oh My ZSH" \
+        "Config Gnome Shell" \
+        "Gnome Shell Extensions" \
+        "Google Chrome" \
+        "Chromium Browser" \
+        "Flameshot Screen Shot" \
+        "Crypto Folders (gocryptfs, SiriKali)" \
+        "KeePassXC" \
+        "Authenticator (2FA)" \
+        "Design Tools (Inkscape, GIMP)" \
+        "Photography Tools (DarkTable)" \
+        "VLC Video Player" \
+        "Chats (WhatsDesk, Telegram Desktop, Slack)" \
+        "Whatsapp Electron" \
+        "Devel Tools" \
+        "Docker" \
+        "Team Viewer")
+
+    options_selected=(\
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        FALSE \
+        TRUE \
+        TRUE \
+        TRUE)
+
+
+    optionsLength=${#options_id[@]}
+    optionsToShow=();
+    for (( i=0; i<${optionsLength}; i++ ));
+    do
+        optionsToShow+=(${options_selected[$i]} "${options_title[$i]}")
+    done
+
+    appsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione os APPs para instalar" \
+        --checklist \
+        --column "Marcar" \
+        --column "App" \
+        "${optionsToShow[@]}")
+
+    callAppsFunctions "$appsSelected"
+}
+
+function callAppsFunctions() {
+    local IFS="|"
+    for app in $1;
+    do
+        for (( i=0; i<${optionsLength}; i++ ));
+        do
+            [[ "${options_title[$i]}" == "$app" ]] && eval "${options_id[$i]}"
+        done
+    done
+}
 
 function install_base() {
     sudo apt update
@@ -44,10 +144,12 @@ function install_base() {
     sudo apt install -y wget curl rsync git bash dbus perl less mawk sed
     sudo apt install -y nfs-common
 
-    #Alternatives Terminals
+}
+
+function install_alternativeterminals() {
     sudo apt install terminator -y
-    #sudo snap install --edge --classic terminology
-    #sudo snap install --classic cool-retro-term
+    sudo snap install --edge --classic terminology
+    sudo snap install --classic cool-retro-term
 }
 
 function install_ohmyzsh() {
@@ -156,8 +258,8 @@ function install_vlcvideoplayer() {
 
 function install_chats() {
     #zenity --question --width=600 --height=400 --text "Instalar Chats Tools?" || return 0
-    snap install whatsdesk telegram-desktop
-    snap install --classic slack
+    sudo snap install whatsdesk telegram-desktop
+    sudo snap install --classic slack
 }
 
 function install_whatsappelectron() {
@@ -264,16 +366,16 @@ function install_googlechrome() {
 
 function restore_from_old_install() {
     zenity --question --width=600 --height=400 --text "Restaurar de uma instalação antiga?" || return 0
-    sudo apt install -y yad
+    #sudo apt install -y yad
 
     homeDir="$currentHomeDir"
     #sudo -u $currentUser mkdir -p "$homeDir"
 
 
     #zenity --file-selection --title="Select a Old Home Folder" --directory
-    #oldRoot="$(sudo -u $currentUser bash -c 'cd ~ && yad --file-selection --title="Select a Old Root Directory" --directory')"
+    #oldRoot="$(sudo -u $currentUser bash -c 'cd ~ && zenity --file-selection --title="Select a Old Root Directory" --directory')"
     #sudo -u $currentUser rsync -az "$oldRoot/data" "/data"
-    oldHome="$(cd "$currentHomeDir" && yad --file-selection --title="Select a Old Root Directory" --directory)"
+    oldHome="$(cd "$currentHomeDir" && zenity --file-selection --title="Select a Old Root Directory" --directory)"
 
     echo "----->SSH config"
     sudo -u $currentUser rsync -az "$oldHome/.ssh" "$homeDir/"
@@ -374,135 +476,78 @@ function restore_from_old_install() {
 }
 
 
-install_base
+function restoreSnaps() {
+    #https://forum.snapcraft.io/t/install-snaps-backup-or-export-and-relocation-to-new-pc/11777
+    #https://github.com/nextcloud/nextcloud-snap/issues/489
+    #https://forums.rocket.chat/t/migrate-snap-to-snap-installations/467
+    #https://bugs.launchpad.net/ubuntu/+source/snapd/+bug/1575053
+    #https://forum.snapcraft.io/t/how-do-i-move-a-snap-to-a-new-server/3981
+    #https://forum.snapcraft.io/t/where-is-a-snap-stored-and-how-can-i-change-that/3194/4
+    #https://forum.snapcraft.io/t/where-is-a-snap-stored-and-how-can-i-change-that/3194/3
+<</*
+    #install options to fill
+
+       --channel
+              Use this channel instead of stable
+
+       --edge Install from the edge channel
+
+       --beta Install from the beta channel
+
+       --candidate
+              Install from the candidate channel
+
+       --stable
+              Install from the stable channel
+
+       --devmode
+              Put snap in development mode and disable security confinement
+
+       --jailmode
+              Put snap in enforced confinement mode
+
+       --classic
+              Put snap in classic mode and disable security confinement
+
+       --revision
+              Install the given revision of a snap, to which you must have developer access
+
+       --dangerous
+              Install the given snap file even if there are no pre-acknowledged signatures for it, meaning it was not verified and could be dangerous (--de‐
+              vmode implies this)
+
+       --unaliased
+              Install the given snap without enabling its automatic aliases
+
+       --name Install the snap file under the given instance name
+
+       --cohort
+              Install the snap in the given cohort
+
+              list 
+              base,disabled - separar por , e verificar disabled - se for - install simples
+
+/*
+
+    #copy /var/lib/snapd and ~/snap resolve ?
+    #montar jaula snap com base na instalaçao antiga
+    # /var/lib/snapd/snaps | $HOME/snap
+    #listar os snaps
+    #listar as info das snaps, pegando o chanell --classic e etc
+    #instalar os snaps no novo sistema - desabilitar os desabilitados
+    #copiar o diretorio snap antigo ou fazer snapshot
+    #pegar os snaps de /var e /home
+}
+
+#install_base
+
+installApps
 
 restore_from_old_install
 
-options_id=(\
-install_ohmyzsh \
-config_gnomeshell \
-install_gnomeshellextensions \
-install_googlechrome \
-install_chromiumbrowser \
-install_flameshotscreenshot \
-install_cryptofolders_gocryptfs \
-install_keppasxc \
-install_authenticator \
-install_designtools \
-install_photographytools \
-install_vlcvideoplayer \
-install_chats \
-install_whatsappelectron \
-install_develtools \
-install_docker \
-install_teamviewer \
-)
-
-options_title=(\
-"Oh My ZSH" \
-"Config Gnome Shell" \
-"Gnome Shell Extensions" \
-"Google Chrome" \
-"Chromium Browser" \
-"Flameshot Screen Shot" \
-"Crypto Folders (gocryptfs, SiriKali)" \
-"KeePassXC" \
-"Authenticator (2FA)" \
-"Design Tools (Inkscape, GIMP)" \
-"Photography Tools (DarkTable)" \
-"VLC Video Player" \
-"Chats (WhatsDesk, Telegram Desktop, Slack)" \
-"Whatsapp Electron" \
-"Devel Tools" \
-"Docker" \
-"Team Viewer" \
-)
-
-options_selected=(\
-TRUE \
-TRUE \
-TRUE \
-TRUE \
-TRUE \
-TRUE \
-TRUE \
-TRUE \
-TRUE \
-TRUE \
-TRUE \
-TRUE \
-TRUE \
-FALSE \
-TRUE \
-TRUE \
-TRUE \
-)
-
-
-optionsLength=${#options_id[@]}
-optionsToShow=();
-for (( i=0; i<${optionsLength}; i++ ));
-do
-    optionsToShow+=(${options_selected[$i]} "${options_title[$i]}")
-done
-#echo "$optionsToShow"
-
-#echo "Seu sistema operacional favorito é o $ITEM_SELECIONADO";
-
-
-function callAppsFunctions() {
-    local IFS="|"
-    for app in $1;
-    do
-        for (( i=0; i<${optionsLength}; i++ ));
-        do
-            [[ "${options_title[$i]}" == "$app" ]] && eval "${options_id[$i]}"
-        done
-        #eval "$app";
-    done
-}
-
-appsSelected=$(zenity  --list  --text "Selecione os APPs para instalar" \
-    --checklist \
-    --column "Marcar" \
-    --column "App" \
-    "${optionsToShow[@]}")
-
-callAppsFunctions "$appsSelected"
-
-#geany
-#notepad++
-#slimbookbattery
-#nextcloud
-    #todo GitAhead - Git Gui Client https://gitahead.github.io/gitahead.com/
-
-##Installing Unite Gnome Shell Extension
-##[1287] Obtaining extension info
-##ERROR: Use your package manager to update this extension
-
-
-#install slimbookbattery
-
-#sudo -u someuser bash << EOF
-#echo "In"
-#whoami
-#EOF
-
-#https://www.vivaolinux.com.br/topico/yad/Criar-menu-com-radiolist/
-
-#yad --list --title "Menu de manutenção V.0.1.0"\
-#--text "O que deseja fazer?"\
-#--column "Opção" --column "descrição"\
-#--width="300" --height="215" \
-#1 "Atualiza Sistema" \
-#2 "Reparar sistema" \
-#3 "Backup" \
-#4 "Iniciar programas" \
-#5 "Instalar programas" \
-#0 "Sair"
-
 
 <</*
+#projeto para montar luks antigo
 luksPartitions=`lsblk --fs`
 
 while read linePartition
