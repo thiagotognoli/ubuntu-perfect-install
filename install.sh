@@ -322,54 +322,54 @@ sudo -u $currentUser rsync -az "$oldHome/.wine" "$homeDir/"
 
 if zenity --question --width=600 --height=400 --text "Recuperar Repositório NextCloud (caso recuse ele será sincronizado com o servidor, o processo será mais lento mas será feio)?"
 then
-    echo "NextCloud Repositories"
+    echo "----->NextCloud Repositories"
     sudo -u $currentUser rsync -az "$oldHome/Nextcloud"* "$homeDir/"
 fi
 
-echo "NextCloud config"
+echo "----->NextCloud config"
 sudo -u $currentUser rsync -az "$oldHome/.config/Nextcloud" "$homeDir/.config/"
 
-echo "Netbeans Snap config"
+echo "----->Netbeans Snap config"
 sudo -u $currentUser mv "$homeDir/snap/netbeans" "$homeDir/snap/netbeans.old"
 sudo -u $currentUser rsync -az "$oldHome/snap/netbeans" "$homeDir/snap/"
 
-echo "MySQL Client config"
+echo "----->MySQL Client config"
 sudo -u $currentUser rsync -az "$oldHome/.mysql"* "$homeDir/"
-echo "Filezzila config"
+echo "----->Filezzila config"
 sudo -u $currentUser rsync -az "$oldHome/.config/filezilla" "$homeDir/.config/"
 
 #restore gnome shel extensions with configs
-echo "Gnome Shell Extensions"
+echo "----->Gnome Shell Extensions"
 sudo -u $currentUser mkdir -p "$homeDir/.local/share/gnome-shell/"
 sudo -u $currentUser rsync -az "$oldHome/.local/share/gnome-shell/extensions" "$homeDir/.local/share/gnome-shell/"
 
 #backup chrome
-echo "Google Chrome config"
+echo "----->Google Chrome config"
 sudo -u $currentUser rsync -az "$oldHome/.config/google-chrome" "$homeDir/.config/"
 #backup chromiun
 #backup firfox
-echo "Mozilla Firefox config"
+echo "----->Mozilla Firefox config"
 sudo -u $currentUser rsync -az "$oldHome/.mozilla" "$homeDir/"
 
-echo "Transmission config"
+echo "----->Transmission config"
 sudo -u $currentUser rsync -az "$oldHome/.config/transmission" "$homeDir/.config/"
-echo "Team Viewer config"
+echo "----->Team Viewer config"
 sudo -u $currentUser rsync -az "$oldHome/.config/teamviewer" "$homeDir/.config/"
 
 #sudo -u $currentUser rsync -az "$oldHome/.config/slimbookbattery" "$homeDir/.config/"
-echo "Libre Office config"
+echo "----->Libre Office config"
 sudo -u $currentUser rsync -az "$oldHome/.config/libreoffice" "$homeDir/.config/"
 
 #sudo -u $currentUser rsync -az "$oldHome/.config/autostart" "$homeDir/.config/"
 
-echo "PSensor config"
+echo "----->PSensor config"
 sudo -u $currentUser rsync -az "$oldHome/.psensor" "$homeDir/"
 
 #flat packages
-echo "All Flat Packages with configs"
+echo "----->All Flat Packages with configs"
 sudo -u $currentUser rsync -az "$oldHome/.var" "$homeDir/"
 #snap packages
-echo "All Snap Packages with configs"
+echo "----->All Snap Packages with configs"
 sudo -u $currentUser rsync -az "$oldHome/snap" "$homeDir/"
 
 if zenity --question --width=600 --height=400 --text "Recuperar Arquivos da Home Antiga?"
@@ -390,7 +390,7 @@ then
 
                 if zenity --question --width=600 --height=400 --text "Copiar dados da Pasta \"$oldDirectoyPath\" (Home Antiga) para a pasta \"$currentDirectoyPath\" (Home Atual)?"
                 then
-                    echo "Copyng of \"$oldDirectoyPath\" to  \"$currentDirectoyPath\"."
+                    echo "----->Copying of \"$oldDirectoyPath\" to  \"$currentDirectoyPath\"."
                     sudo -u $currentUser rsync -az "$oldDirectoyPath/"* "$currentDirectoyPath/"
                 fi
             done
