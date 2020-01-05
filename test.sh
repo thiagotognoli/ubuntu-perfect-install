@@ -1,6 +1,19 @@
 #!/bin/bash
-installGroupsApps("Graphics" "" "Devel")
-installApps=("Gimp" "Inkscape" "")
-#if [ -z ${var+x} ]; then echo "var is unset"; else echo "var is set to '$var'"; fi
+# Usando uma lista com botões de rádio com o Zenity
+#ITEM_SELECIONADO=$(zenity  --list  --text "Selecione seu sistema favorito" \
+#    --radiolist \
+#    --column "Marcar" \
+#    --column "Sistemas" \
+#    FALSE BSD TRUE Linux FALSE "OS X" FALSE Windows);
+#echo "Seu sistema operacional favorito é o $ITEM_SELECIONADO";
 
-function 
+
+# Usando uma lista com botões de rádio com o Zenity
+#ITEM_SELECIONADO=$(zenity  --list  --text "Selecione seu sistema favorito" \
+#    --checklist \
+#    --column "Marcar" \
+#    --column "App" \
+#    TRUE "Oh My ZSH" TRUE Linux FALSE "OS X" FALSE Windows);
+#echo "Seu sistema operacional favorito é o $ITEM_SELECIONADO";
+
+

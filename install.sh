@@ -26,40 +26,12 @@ basePath=${argScript%/*}
 
 binDir="${basePath}/bin"
 
-guiName="gui11"
 
 set -a # export all variables created next
 source $basePath/conf.conf
 set +a # stop exporting
 
-function tkbash() {
-    /bin/bash $binDir/tkbash "$@"
-}
 
-function testeGui() {
-    sudo apt install bash tk wget -y \
-        && mkdir -p $binDir \
-        && rm -rf $binDir/tkbash \
-        && wget https://raw.githubusercontent.com/phil294/tkbash/master/tkbash -O $binDir/tkbash \
-        && chmod +x $binDir/tkbash
-            
-    tkbash $guiName --theme clam --title "Ubuntu Perfect Install" --icon icon.png --resizable 0 -w 640 -h 480
-    tkbash $guiName --tkcommand "wm iconname .w TT"
-    tkbash $guiName --tkcommand "wm attributes .w -type normal"
-    tkbash $guiName --hotkey Escape --command 'tkbash gui1 --close'
-    # elements
-    tkbash $guiName label  label1  -x 5   -y 5   -w 130 -h 30  --text "I like bananas."
-    tkbash $guiName select select1 -x 5   -y 40  -w 130 -h 30  --text "Me too|I prefer cookies||Apples|???"
-    tkbash $guiName button button1 -x 140 -y 5   -w 130 -h 30  --text "Say hello" --command "notify-send hi"
-    tkbash $guiName edit   edit1   -x 140 -y 40  -w 115 -h 94  --text "Yorem Lipsum yolo git amet" \
-        --scrollbar 1 --background "grey" --foreground "yellow" --style "font:verdana 12"
-    #tkbash gui image  image1  -x 275 -y 5   -w 125 -h 127 --image "kitten.png"
-    tkbash $guiName radio  radio1  -x 5   -y 140 -w 130 -h 30  --text "Option 0" --group group1
-    tkbash $guiName radio  radio2  -x 5   -y 175 -w 130 -h 30  --text "Option 1" --group group1 --selected
-    tkbash $guiName radio  radio3  -x 5   -y 210 -w 130 -h 30  --text "Option 2" --group group1 \
-        --command 'tkbash gui1 label2 --text "You selected option $(tkbash gui1 get radio1)."'
-    tkbash $guiName label  label2  -x 140 -y 175 -w 395 -h 30 --text "?" --fg '#ff5555'
-}
 
 
 function install_base() {
@@ -79,10 +51,10 @@ function install_base() {
 }
 
 function install_ohmyzsh() {
-    zenity --question --width=600 --height=400 --text "Instalar ZSH e OhMyZSH?" || return 0
+    #zenity --question --width=600 --height=400 --text "Instalar ZSH e OhMyZSH?" || return 0
     #&& sudo chsh -s /bin/zsh root \
     sudo apt install zsh fonts-powerline -y \
-        && sudo -u $currentUser sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)" \
+        && sudo -u $currentUser sh -c "RUNZSH='no' $(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)" \
         && sudo -u $currentUser rm -rf "$currentHomeDir/.zshrc" \
         && sudo -u $currentUser cp "$currentHomeDir/.oh-my-zsh/templates/zshrc.zsh-template" "$currentHomeDir/.zshrc" \
         && sudo -u $currentUser sed -ri 's/(ZSH_THEME=")([^"]*)(")/\1agnoster\3/g' "$currentHomeDir/.zshrc" \
@@ -97,7 +69,7 @@ function install_ohmyzsh() {
 }
 
 function config_gnomeshell() {
-    zenity --question --width=600 --height=400 --text "Configurar Gnome Shell?" || return 0
+    #zenity --question --width=600 --height=400 --text "Configurar Gnome Shell?" || return 0
 
     # Install Gnome Tweaks e Chrome Gnome Shell
     sudo apt install gnome-tweaks chrome-gnome-shell -y
@@ -121,75 +93,75 @@ function config_gnomeshell() {
 }
 
 function install_gnomeshellextensions() {
-        zenity --question --width=600 --height=400 --text "Instalar Gnome Shell Extensions?" || return 0
+    #zenity --question --width=600 --height=400 --text "Instalar Gnome Shell Extensions?" || return 0
 
-        sudo apt install wget bash curl dbus perl git less -y \
-        && sudo -u $currentUser mkdir -p $binDir \
-        && sudo -u $currentUser rm -rf $binDir/gnome-shell-extension-installer \
-        && sudo -u $currentUser wget https://raw.githubusercontent.com/brunelli/gnome-shell-extension-installer/master/gnome-shell-extension-installer -O $binDir/gnome-shell-extension-installer \
-        && sudo -u $currentUser chmod +x $binDir/gnome-shell-extension-installer
+    sudo apt install wget bash curl dbus perl git less -y \
+    && sudo -u $currentUser mkdir -p $binDir \
+    && sudo -u $currentUser rm -rf $binDir/gnome-shell-extension-installer \
+    && sudo -u $currentUser wget https://raw.githubusercontent.com/brunelli/gnome-shell-extension-installer/master/gnome-shell-extension-installer -O $binDir/gnome-shell-extension-installer \
+    && sudo -u $currentUser chmod +x $binDir/gnome-shell-extension-installer
 
-        if [ $? -eq 0 ]; then
-            echo "Installing Extensions"
+    if [ $? -eq 0 ]; then
+        echo "Installing Extensions"
 
-            # get length of an array
-            gnomeExtensionslength=${#gnomeExtensions_Id[@]}
-            # use for loop to read all values and indexes
-            for (( i=0; i<${gnomeExtensionslength}; i++ ));
-            do
-                echo "Installing ${gnomeExtensions_Name[$i]} Gnome Shell Extension"
-                sudo -u $currentUser $binDir/gnome-shell-extension-installer ${gnomeExtensions_Id[$i]}
-            done
-            #gnome-shell --replace -d $DISPLAY ##restart gnome-shell and close all programs confirm
-            ##DISPLAY=$(w| grep "$USER"| awk "{print \$3}"|grep ":"|head -1)
-        else
-            echo "Fail to install pre-requisites to Gnome Extensions"
-        fi
+        # get length of an array
+        gnomeExtensionslength=${#gnomeExtensions_Id[@]}
+        # use for loop to read all values and indexes
+        for (( i=0; i<${gnomeExtensionslength}; i++ ));
+        do
+            echo "Installing ${gnomeExtensions_Name[$i]} Gnome Shell Extension"
+            sudo -u $currentUser $binDir/gnome-shell-extension-installer ${gnomeExtensions_Id[$i]}
+        done
+        #gnome-shell --replace -d $DISPLAY ##restart gnome-shell and close all programs confirm
+        ##DISPLAY=$(w| grep "$USER"| awk "{print \$3}"|grep ":"|head -1)
+    else
+        echo "Fail to install pre-requisites to Gnome Extensions"
+    fi
 }
 
 function install_cryptofolders_gocryptfs() {
-    zenity --question --width=600 --height=400 --text "Instalar Crypto Folders (gocryptfs, SiriKali)?" || return 0
+    #zenity --question --width=600 --height=400 --text "Instalar Crypto Folders (gocryptfs, SiriKali)?" || return 0
     sudo apt install gocryptfs sirikali -y
 }
 
 function install_keppasxc() {
-    zenity --question --width=600 --height=400 --text "Instalar KeepasXC?" || return 0
+    #zenity --question --width=600 --height=400 --text "Instalar KeepasXC?" || return 0
     sudo snap install keepassxc
 }
 
 function install_authenticator() {
-    zenity --question --width=600 --height=400 --text "Instalar App Authenticator (2FA)?" || return 0
+    #zenity --question --width=600 --height=400 --text "Instalar App Authenticator (2FA)?" || return 0
     sudo -u $currentUser flatpak install -y flathub com.github.bilelmoussaoui.Authenticator
 }
 
 function install_designtools() {
-    zenity --question --width=600 --height=400 --text "Instalar Design Tools (Inkscape, GIMP)?" || return 0
+    #zenity --question --width=600 --height=400 --text "Instalar Design Tools (Inkscape, GIMP)?" || return 0
     sudo snap install gimp inkscape
 }
 
 function install_photographytools() {
-    zenity --question --width=600 --height=400 --text "Instalar Photograpy Tools (DarkTable)?" || return 0
+    #zenity --question --width=600 --height=400 --text "Instalar Photograpy Tools (DarkTable)?" || return 0
     sudo snap install darktable
 }
 
-function install_chromiunbrowser() {
-    zenity --question --width=600 --height=400 --text "Instalar Chromiun (Browser)?" || return 0
-    sudo snap install chromiun
+function install_chromiumbrowser() {
+    #zenity --question --width=600 --height=400 --text "Instalar Chromium (Browser)?" || return 0
+    sudo snap install chromium
 }
 
 function install_vlcvideoplayer() {
-    zenity --question --width=600 --height=400 --text "Instalar VLC (Video Player)?" || return 0
-    sudo snap install chromiun
+    #zenity --question --width=600 --height=400 --text "Instalar VLC (Video Player)?" || return 0
+    sudo snap install vlc
 }
 
 function install_chats() {
-    zenity --question --width=600 --height=400 --text "Instalar Chats Tools?" || return 0
+    #zenity --question --width=600 --height=400 --text "Instalar Chats Tools?" || return 0
     snap install whatsdesk telegram-desktop
     snap install --classic slack
 }
 
 function install_whatsappelectron() {
-    zenity --question --width=600 --height=400 --text "Instalar WhatsApp Electron?" || return 0
+    #zenity --question --width=600 --height=400 --text "Instalar WhatsApp Electron?" || return 0
     sudo apt install git -y \
     && sudo snap install --edge node --classic \
     && sudo -u $currentUser mkdir -p "$currentHomeDir/tmp" \
@@ -208,12 +180,12 @@ function install_whatsappelectron() {
 }
 
 function install_develtools() {
-    zenity --question --width=600 --height=400 --text "Instalar Devel Tools?" || return 0
+    #zenity --question --width=600 --height=400 --text "Instalar Devel Tools?" || return 0
 
     #MySql client
-    zenity --question --width=600 --height=400 --text "Instalar MySQL Workbench (Mysql GUI Client)?" && sudo apt install mysql-workbench
+    zenity --question --width=600 --height=400 --text "Instalar MySQL Workbench (Mysql GUI Client)?" && sudo apt install -y mysql-workbench
     #FTP client
-    zenity --question --width=600 --height=400 --text "Instalar Filezilla (FTP GUI Client)?" && sudo apt install filezilla
+    zenity --question --width=600 --height=400 --text "Instalar Filezilla (FTP GUI Client)?" && sudo apt install -y filezilla
     #netbeans
     zenity --question --width=600 --height=400 --text "Instalar IDE Netbeans?" && sudo snap install --classic netbeans 
     #nodejs
@@ -226,13 +198,13 @@ function install_develtools() {
     zenity --question --width=600 --height=400 --text "Instalar Insomnia (HTTP Rest Client)?" && sudo snap install insomnia
     #GhostWriter - mkd editor
     zenity --question --width=600 --height=400 --text "Instalar GhostWriter (MKD Editor)?" && sudo -u $currentUser flatpak install -y flathub io.github.wereturtle.ghostwriter
-
-    #todo GitAhead - Git Gui Client https://gitahead.github.io/gitahead.com/
-    install_vscode
+    
+    zenity --question --width=600 --height=400 --text "Instalar Visual Studio Code?" && install_vscode
 }
 
 function install_vscode() {
-    zenity --question --width=600 --height=400 --text "Instalar Visual Studio Code?" || return 0
+    #see native instalation some resources not working zsh ??
+    #zenity --question --width=600 --height=400 --text "Instalar Visual Studio Code?" || return 0
     #vscode
     sudo snap install --classic code
     sudo bash -c "echo "\nfs.inotify.max_user_watches=524288" >> /etc/sysctl.conf" # configuração para repositórios grandes do vscode
@@ -240,24 +212,24 @@ function install_vscode() {
 }
 
 function install_flameshotscreenshot() {
-    zenity --question --width=600 --height=400 --text "Instalar Flameshot Screen Shot?" || return 0
+    #zenity --question --width=600 --height=400 --text "Instalar Flameshot Screen Shot?" || return 0
     sudo apt install -y flameshot \
     && sudo -u $currentUser bash -c "echo -e '[Desktop Entry]\n Version=1.1\n Type=Application\n Name=Flameshot Screenshot\n Comment=Uma pequena descrição desta aplicação.\n Icon=flameshot\n Exec=flameshot gui\n Actions=\n Categories=Graphics;' | tee '$currentHomeDir/.local/share/applications/flameshot-screenshot.desktop'" \
     && sudo -u $currentUser chmod +x "$currentHomeDir/.local/share/applications/flameshot-screenshot.desktop"
 }
 
 function install_teamviewer() {
-    zenity --question --width=600 --height=400 --text "Instalar TeamViewer?" || return 0
+    #zenity --question --width=600 --height=400 --text "Instalar TeamViewer?" || return 0
     mkdir -p /tmp/teamviewerdwl \
         && wget -O /tmp/teamviewerdwl/teamviwer.deb $teamViewerDownloadLastUrl \
-        && sudo dpkg -i /tmp/teamviewerdwl/teamviwer.deb \
-        && sudo apt install -f \
-        && rm -rf /tmp/teamviewerdwl
+        && sudo dpkg -i /tmp/teamviewerdwl/teamviwer.deb
+        sudo apt install -f
+        rm -rf /tmp/teamviewerdwl
 }
 
 
 function install_docker() {
-    zenity --question --width=600 --height=400 --text "Instalar Docker?" || return 0
+    #zenity --question --width=600 --height=400 --text "Instalar Docker?" || return 0
     localUbuntuRelease="$ubuntuRelease"
     if [ "$localUbuntuRelease" = "eoan" ]; then
         localUbuntuRelease="disco"
@@ -281,12 +253,12 @@ function install_docker() {
 }
 
 function install_googlechrome() {
-    zenity --question --width=600 --height=400 --text "Instalar Google Chrome?" || return 0
+    #zenity --question --width=600 --height=400 --text "Instalar Google Chrome?" || return 0
     mkdir -p /tmp/googlechrome \
         && wget -O /tmp/googlechrome/googlechrome.deb $googleChromeDownloadLastUrl \
-        && sudo dpkg -i /tmp/googlechrome/googlechrome.deb \
-        && sudo apt install -f \
-        && rm -rf /tmp/googlechrome
+        && sudo dpkg -i /tmp/googlechrome/googlechrome.deb
+        sudo apt install -f
+        rm -rf /tmp/googlechrome
 
 }
 
@@ -298,105 +270,107 @@ function restore_from_old_install() {
     #sudo -u $currentUser mkdir -p "$homeDir"
 
 
-#zenity --file-selection --title="Select a Old Home Folder" --directory
-#oldRoot="$(sudo -u $currentUser bash -c 'cd ~ && yad --file-selection --title="Select a Old Root Directory" --directory')"
-#sudo -u $currentUser rsync -az "$oldRoot/data" "/data"
-oldHome="$(cd "$currentHomeDir" && yad --file-selection --title="Select a Old Root Directory" --directory)"
+    #zenity --file-selection --title="Select a Old Home Folder" --directory
+    #oldRoot="$(sudo -u $currentUser bash -c 'cd ~ && yad --file-selection --title="Select a Old Root Directory" --directory')"
+    #sudo -u $currentUser rsync -az "$oldRoot/data" "/data"
+    oldHome="$(cd "$currentHomeDir" && yad --file-selection --title="Select a Old Root Directory" --directory)"
 
-echo "----->SSH config"
-sudo -u $currentUser rsync -az "$oldHome/.ssh" "$homeDir/"
-echo "----->GNU PG"
-sudo -u $currentUser rsync -az "$oldHome/.gnupg" "$homeDir/"
-echo "----->Thunderbir config"
-sudo -u $currentUser rsync -az "$oldHome/.thunderbird" "$homeDir/"
-echo "----->Gnome Keyrings"
-sudo -u $currentUser mv "$homeDir/.local/share/keyrings" "$homeDir/.local/share/keyrings.old"
-sudo -u $currentUser mkdir -p "$homeDir/.local/share/keyrings"
-sudo -u $currentUser cp -r "$oldHome/.local/share/keyrings/"{login.keyring,user.keystore} "$homeDir/.local/share/keyrings"
-echo "----->SiriKali config and Repo structure"
-sudo -u $currentUser rsync -az "$oldHome/.config/SiriKali" "$homeDir/.config/"
-sudo -u $currentUser bash -c  'rsync -vazhP "'$oldHome'/.SiriKali/" "'$homeDir'/.SiriKali/" --exclude "*/*" --include "*"'
+    echo "----->SSH config"
+    sudo -u $currentUser rsync -az "$oldHome/.ssh" "$homeDir/"
+    echo "----->GNU PG"
+    sudo -u $currentUser rsync -az "$oldHome/.gnupg" "$homeDir/"
+    echo "----->Thunderbir config"
+    sudo -u $currentUser rsync -az "$oldHome/.thunderbird" "$homeDir/"
+    echo "----->Gnome Keyrings"
+    sudo -u $currentUser mv "$homeDir/.local/share/keyrings" "$homeDir/.local/share/keyrings.old"
+    sudo -u $currentUser mkdir -p "$homeDir/.local/share/keyrings"
+    sudo -u $currentUser cp -r "$oldHome/.local/share/keyrings/"{login.keyring,user.keystore} "$homeDir/.local/share/keyrings"
+    echo "----->SiriKali config and Repo structure"
+    sudo -u $currentUser rsync -az "$oldHome/.config/SiriKali" "$homeDir/.config/"
+    sudo -u $currentUser bash -c  'rsync -vazhP "'$oldHome'/.SiriKali/" "'$homeDir'/.SiriKali/" --exclude "*/*" --include "*"'
 
-echo "----->Wine"
-sudo -u $currentUser rsync -az "$oldHome/.wine" "$homeDir/"
+    echo "----->Wine"
+    sudo -u $currentUser rsync -az "$oldHome/.wine" "$homeDir/"
 
-if zenity --question --width=600 --height=400 --text "Recuperar Repositório NextCloud (caso recuse ele será sincronizado com o servidor, o processo será mais lento mas será feio)?"
-then
-    echo "----->NextCloud Repositories"
-    sudo -u $currentUser rsync -az "$oldHome/Nextcloud"* "$homeDir/"
-fi
+    if zenity --question --width=600 --height=400 --text "Recuperar Repositório NextCloud (caso recuse ele será sincronizado com o servidor, o processo será mais lento mas será feito)?"
+    then
+        echo "----->NextCloud Repositories"
+        sudo -u $currentUser rsync -az "$oldHome/Nextcloud"* "$homeDir/"
+    fi
 
-echo "----->NextCloud config"
-sudo -u $currentUser rsync -az "$oldHome/.config/Nextcloud" "$homeDir/.config/"
+    echo "----->NextCloud config"
+    sudo -u $currentUser rsync -az "$oldHome/.config/Nextcloud" "$homeDir/.config/"
 
-echo "----->Netbeans Snap config"
-sudo -u $currentUser mv "$homeDir/snap/netbeans" "$homeDir/snap/netbeans.old"
-sudo -u $currentUser rsync -az "$oldHome/snap/netbeans" "$homeDir/snap/"
+    echo "----->Netbeans Snap config"
+    sudo -u $currentUser mv "$homeDir/snap/netbeans" "$homeDir/snap/netbeans.old"
+    sudo -u $currentUser rsync -az "$oldHome/snap/netbeans" "$homeDir/snap/"
 
-echo "----->MySQL Client config"
-sudo -u $currentUser rsync -az "$oldHome/.mysql"* "$homeDir/"
-echo "----->Filezzila config"
-sudo -u $currentUser rsync -az "$oldHome/.config/filezilla" "$homeDir/.config/"
+    echo "----->MySQL Client config"
+    sudo -u $currentUser rsync -az "$oldHome/.mysql"* "$homeDir/"
+    echo "----->Filezzila config"
+    sudo -u $currentUser rsync -az "$oldHome/.config/filezilla" "$homeDir/.config/"
 
-#restore gnome shel extensions with configs
-echo "----->Gnome Shell Extensions"
-sudo -u $currentUser mkdir -p "$homeDir/.local/share/gnome-shell/"
-sudo -u $currentUser rsync -az "$oldHome/.local/share/gnome-shell/extensions" "$homeDir/.local/share/gnome-shell/"
+    #restore gnome shel extensions with configs
+    echo "----->Gnome Shell Extensions"
+    sudo -u $currentUser mkdir -p "$homeDir/.local/share/gnome-shell/"
+    sudo -u $currentUser rsync -az "$oldHome/.local/share/gnome-shell/extensions" "$homeDir/.local/share/gnome-shell/"
 
-#backup chrome
-echo "----->Google Chrome config"
-sudo -u $currentUser rsync -az "$oldHome/.config/google-chrome" "$homeDir/.config/"
-#backup chromiun
-#backup firfox
-echo "----->Mozilla Firefox config"
-sudo -u $currentUser rsync -az "$oldHome/.mozilla" "$homeDir/"
+    #backup chrome
+    echo "----->Google Chrome config"
+    sudo -u $currentUser rsync -az "$oldHome/.config/google-chrome" "$homeDir/.config/"
+    #backup chromium
+    #backup firfox
+    echo "----->Mozilla Firefox config"
+    sudo -u $currentUser rsync -az "$oldHome/.mozilla" "$homeDir/"
 
-echo "----->Transmission config"
-sudo -u $currentUser rsync -az "$oldHome/.config/transmission" "$homeDir/.config/"
-echo "----->Team Viewer config"
-sudo -u $currentUser rsync -az "$oldHome/.config/teamviewer" "$homeDir/.config/"
+    echo "----->Transmission config"
+    sudo -u $currentUser rsync -az "$oldHome/.config/transmission" "$homeDir/.config/"
+    echo "----->Team Viewer config"
+    sudo -u $currentUser rsync -az "$oldHome/.config/teamviewer" "$homeDir/.config/"
 
-#sudo -u $currentUser rsync -az "$oldHome/.config/slimbookbattery" "$homeDir/.config/"
-echo "----->Libre Office config"
-sudo -u $currentUser rsync -az "$oldHome/.config/libreoffice" "$homeDir/.config/"
+    #sudo -u $currentUser rsync -az "$oldHome/.config/slimbookbattery" "$homeDir/.config/"
+    echo "----->Libre Office config"
+    sudo -u $currentUser rsync -az "$oldHome/.config/libreoffice" "$homeDir/.config/"
 
-#sudo -u $currentUser rsync -az "$oldHome/.config/autostart" "$homeDir/.config/"
+    #sudo -u $currentUser rsync -az "$oldHome/.config/autostart" "$homeDir/.config/"
 
-echo "----->PSensor config"
-sudo -u $currentUser rsync -az "$oldHome/.psensor" "$homeDir/"
-
-#flat packages
-echo "----->All Flat Packages with configs"
-sudo -u $currentUser rsync -az "$oldHome/.var" "$homeDir/"
-#snap packages
-echo "----->All Snap Packages with configs"
-sudo -u $currentUser rsync -az "$oldHome/snap" "$homeDir/"
-
-if zenity --question --width=600 --height=400 --text "Recuperar Arquivos da Home Antiga?"
-then
-            # get length of an array
-            homeFilesDirectoriesVariableslength=${#homeFilesDirectoriesVariables[@]}
-            oldDirectoyPathVars="$(cat "$oldHome/.config/user-dirs.dirs")"
-            currentDirectoyPathVars="$(cat "$homeDir/.config/user-dirs.dirs")"
-            # use for loop to read all values and indexes
-            for (( i=0; i<${homeFilesDirectoriesVariableslength}; i++ ));
-            do
-                oldDirectoyPathVar=$(echo "$oldDirectoyPathVars" | grep "${homeFilesDirectoriesVariables[$i]}")
-                currentDirectoyPathVar=$(echo "$currentDirectoyPathVars" | grep "${homeFilesDirectoriesVariables[$i]}")
-                oldDirectoyPath=$(echo ${oldDirectoyPathVar/${homeFilesDirectoriesVariables[$i]}=/""} | tr -d '"')
-                oldDirectoyPath="$(echo "${oldDirectoyPath/\$HOME/$oldHome}")"
-                currentDirectoyPath=$(echo ${currentDirectoyPathVar/${homeFilesDirectoriesVariables[$i]}=/""} | tr -d '"')
-                currentDirectoyPath="$(echo "${currentDirectoyPath/\$HOME/$homeDir}")"
-
-                if zenity --question --width=600 --height=400 --text "Copiar dados da Pasta \"$oldDirectoyPath\" (Home Antiga) para a pasta \"$currentDirectoyPath\" (Home Atual)?"
-                then
-                    echo "----->Copying of \"$oldDirectoyPath\" to  \"$currentDirectoyPath\"."
-                    sudo -u $currentUser rsync -az "$oldDirectoyPath/"* "$currentDirectoyPath/"
-                fi
-            done
-fi
+    echo "----->PSensor config"
+    sudo -u $currentUser rsync -az "$oldHome/.psensor" "$homeDir/"
 
 
+    echo "----->Fonts (User)"
+    sudo -u $currentUser rsync -az "$oldHome/.fonts" "$homeDir/"
+
+    #flat packages
+    echo "----->All Flat Packages with configs"
+    sudo -u $currentUser rsync -az "$oldHome/.var" "$homeDir/"
+    #snap packages
+    echo "----->All Snap Packages with configs"
+    sudo -u $currentUser rsync -az "$oldHome/snap" "$homeDir/"
+
+    if zenity --question --width=600 --height=400 --text "Recuperar Arquivos da Home Antiga?"
+    then
+        # get length of an array
+        homeFilesDirectoriesVariableslength=${#homeFilesDirectoriesVariables[@]}
+        oldDirectoyPathVars="$(cat "$oldHome/.config/user-dirs.dirs")"
+        currentDirectoyPathVars="$(cat "$homeDir/.config/user-dirs.dirs")"
+        # use for loop to read all values and indexes
+        for (( i=0; i<${homeFilesDirectoriesVariableslength}; i++ ));
+        do
+            oldDirectoyPathVar=$(echo "$oldDirectoyPathVars" | grep "${homeFilesDirectoriesVariables[$i]}")
+            currentDirectoyPathVar=$(echo "$currentDirectoyPathVars" | grep "${homeFilesDirectoriesVariables[$i]}")
+            oldDirectoyPath=$(echo ${oldDirectoyPathVar/${homeFilesDirectoriesVariables[$i]}=/""} | tr -d '"')
+            oldDirectoyPath="$(echo "${oldDirectoyPath/\$HOME/$oldHome}")"
+            currentDirectoyPath=$(echo ${currentDirectoyPathVar/${homeFilesDirectoriesVariables[$i]}=/""} | tr -d '"')
+            currentDirectoyPath="$(echo "${currentDirectoyPath/\$HOME/$homeDir}")"
+
+            if zenity --question --width=600 --height=400 --text "Copiar dados da Pasta \"$oldDirectoyPath\" (Home Antiga) para a pasta \"$currentDirectoyPath\" (Home Atual)?"
+            then
+                echo "----->Copying of \"$oldDirectoyPath\" to  \"$currentDirectoyPath\"."
+                sudo -u $currentUser rsync -az "$oldDirectoyPath/"* "$currentDirectoyPath/"
+            fi
+        done
+    fi
 }
 
 
@@ -404,41 +378,107 @@ install_base
 
 restore_from_old_install
 
-install_ohmyzsh
+options_id=(\
+install_ohmyzsh \
+config_gnomeshell \
+install_gnomeshellextensions \
+install_googlechrome \
+install_chromiumbrowser \
+install_flameshotscreenshot \
+install_cryptofolders_gocryptfs \
+install_keppasxc \
+install_authenticator \
+install_designtools \
+install_photographytools \
+install_vlcvideoplayer \
+install_chats \
+install_whatsappelectron \
+install_develtools \
+install_docker \
+install_teamviewer \
+)
 
-config_gnomeshell
+options_title=(\
+"Oh My ZSH" \
+"Config Gnome Shell" \
+"Gnome Shell Extensions" \
+"Google Chrome" \
+"Chromium Browser" \
+"Flameshot Screen Shot" \
+"Crypto Folders (gocryptfs, SiriKali)" \
+"KeePassXC" \
+"Authenticator (2FA)" \
+"Design Tools (Inkscape, GIMP)" \
+"Photography Tools (DarkTable)" \
+"VLC Video Player" \
+"Chats (WhatsDesk, Telegram Desktop, Slack)" \
+"Whatsapp Electron" \
+"Devel Tools" \
+"Docker" \
+"Team Viewer" \
+)
 
-install_gnomeshellextensions
-
-install_googlechrome
-
-install_flameshotscreenshot
-
-install_cryptofolders_gocryptfs
-
-install_keppasxc
-
-install_authenticator
-
-install_designtools
-
-install_photographytools
-
-install_chromiunbrowser
-
-install_vlcvideoplayer
-
-install_chats
-
-#install_whatsappelectron
-
-install_develtools
-
-install_docker
-
-install_teamviewer
+options_selected=(\
+TRUE \
+TRUE \
+TRUE \
+TRUE \
+TRUE \
+TRUE \
+TRUE \
+TRUE \
+TRUE \
+TRUE \
+TRUE \
+TRUE \
+TRUE \
+FALSE \
+TRUE \
+TRUE \
+TRUE \
+)
 
 
+optionsLength=${#options_id[@]}
+optionsToShow=();
+for (( i=0; i<${optionsLength}; i++ ));
+do
+    optionsToShow+=(${options_selected[$i]} "${options_title[$i]}")
+done
+#echo "$optionsToShow"
+
+#echo "Seu sistema operacional favorito é o $ITEM_SELECIONADO";
+
+
+function callAppsFunctions() {
+    local IFS="|"
+    for app in $1;
+    do
+        for (( i=0; i<${optionsLength}; i++ ));
+        do
+            [[ "${options_title[$i]}" == "$app" ]] && eval "${options_id[$i]}"
+        done
+        #eval "$app";
+    done
+}
+
+appsSelected=$(zenity  --list  --text "Selecione os APPs para instalar" \
+    --checklist \
+    --column "Marcar" \
+    --column "App" \
+    "${optionsToShow[@]}")
+
+callAppsFunctions "$appsSelected"
+
+#geany
+#notepad++
+#slimbookbattery
+#nextcloud
+    #todo GitAhead - Git Gui Client https://gitahead.github.io/gitahead.com/
+
+##Installing Unite Gnome Shell Extension
+##[1287] Obtaining extension info
+##ERROR: Use your package manager to update this extension
 
 
 #install slimbookbattery
@@ -481,4 +521,36 @@ echo "$luksPartitions" | grep ntfs; \
 echo "$luksPartitions" | grep vfat; \
 echo "$luksPartitions" | grep exfat; \
 )
+
+
+
+guiName="gui11"
+function tkbash() {
+    /bin/bash $binDir/tkbash "$@"
+}
+
+function testeGui() {
+    sudo apt install bash tk wget -y \
+        && mkdir -p $binDir \
+        && rm -rf $binDir/tkbash \
+        && wget https://raw.githubusercontent.com/phil294/tkbash/master/tkbash -O $binDir/tkbash \
+        && chmod +x $binDir/tkbash
+            
+    tkbash $guiName --theme clam --title "Ubuntu Perfect Install" --icon icon.png --resizable 0 -w 640 -h 480
+    tkbash $guiName --tkcommand "wm iconname .w TT"
+    tkbash $guiName --tkcommand "wm attributes .w -type normal"
+    tkbash $guiName --hotkey Escape --command 'tkbash gui1 --close'
+    # elements
+    tkbash $guiName label  label1  -x 5   -y 5   -w 130 -h 30  --text "I like bananas."
+    tkbash $guiName select select1 -x 5   -y 40  -w 130 -h 30  --text "Me too|I prefer cookies||Apples|???"
+    tkbash $guiName button button1 -x 140 -y 5   -w 130 -h 30  --text "Say hello" --command "notify-send hi"
+    tkbash $guiName edit   edit1   -x 140 -y 40  -w 115 -h 94  --text "Yorem Lipsum yolo git amet" \
+        --scrollbar 1 --background "grey" --foreground "yellow" --style "font:verdana 12"
+    #tkbash gui image  image1  -x 275 -y 5   -w 125 -h 127 --image "kitten.png"
+    tkbash $guiName radio  radio1  -x 5   -y 140 -w 130 -h 30  --text "Option 0" --group group1
+    tkbash $guiName radio  radio2  -x 5   -y 175 -w 130 -h 30  --text "Option 1" --group group1 --selected
+    tkbash $guiName radio  radio3  -x 5   -y 210 -w 130 -h 30  --text "Option 2" --group group1 \
+        --command 'tkbash gui1 label2 --text "You selected option $(tkbash gui1 get radio1)."'
+    tkbash $guiName label  label2  -x 140 -y 175 -w 395 -h 30 --text "?" --fg '#ff5555'
+}
 /*
