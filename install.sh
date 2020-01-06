@@ -447,7 +447,7 @@ function restore_from_old_install() {
     echo "----->All Flat Packages with configs"
     sudo -u $currentUser rsync -az "$oldHome/.var" "$homeDir/"
     #snap packages
-    echo "----->All Snap Packages with configs"
+    echo "----->All Snap Packages configs"
     sudo -u $currentUser rsync -az "$oldHome/snap" "$homeDir/"
 
     if zenity --question --width=600 --height=400 --text "Recuperar Arquivos da Home Antiga?"
@@ -495,8 +495,7 @@ function restoreSnaps() {
               Install the snap in the given cohort
 /*
 
-    snapList=$(snap list | tail -n +2 | egrep -v '^core |^core18 |^gtk-common-themes |^gtk2-common-themes |^snapcraft ')
-
+    snapList=snapList=$(snap list | tail -n +2 | egrep -v '^core |^core18' | grep -v ' stable/… ')# |^gtk-common-themes |^gtk2-common-themes |^snapcraft ')
     echo "$snapList" \
     | while read -r name version revision channel publisher options ; do
 
@@ -508,10 +507,10 @@ function restoreSnaps() {
                 fi
             done
         )" 
-        eval "sudo snap install --$channel $optionsStr --revision $revision $name"
+        echo "sudo snap install --$channel $optionsStr --revision $revision $name"
         if echo "$options" | grep -q "disabled"
         then
-            eval "sudo snap disable $name"
+            echo "sudo snap disable $name"
         fi
     done
     #copy /var/lib/snapd and ~/snap resolve ?
