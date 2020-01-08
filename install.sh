@@ -4,7 +4,10 @@
 
 #backup e restore e com hd antigo, backup home toda ?, criptografar ? comprimir ?
 #perguntar o que restaurar , e do home tbm
-#grive, sshuttle, notepad++ (snap), geany, slimbookbattery, nextcloud, mackup , anbox, gitahead
+#grive, sshuttle and sshoot(snap), notepad++ (snap), geany, slimbookbattery, nextcloud, mackup , anbox, gitahead
+#? tmux, fetch bash 
+# https://github.com/ohmybash/oh-my-bash
+# https://github.com/powerline/powerline
 #todo GitAhead - Git Gui Client https://gitahead.github.io/gitahead.com/
 ##Installing Unite Gnome Shell Extension
 ##[1287] Obtaining extension info
