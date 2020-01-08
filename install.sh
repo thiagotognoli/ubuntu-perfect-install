@@ -1,5 +1,17 @@
 #!/bin/bash
 
+#todo snap, com e sem maquina antiga
+
+#backup e restore e com hd antigo, backup home toda ?, criptografar ? comprimir ?
+#perguntar o que restaurar , e do home tbm
+#grive, sshuttle, notepad++ (snap), geany, slimbookbattery, nextcloud, mackup , anbox, gitahead
+#todo GitAhead - Git Gui Client https://gitahead.github.io/gitahead.com/
+##Installing Unite Gnome Shell Extension
+##[1287] Obtaining extension info
+##ERROR: Use your package manager to update this extension
+
+#configs .bashrc, .profile, .gitconfig git global user.name, user.email
+
 function checkRoot() {
     if [ "$EUID" -ne 0 ]
         then echo "Please run as root"
@@ -33,18 +45,7 @@ set +a # stop exporting
 
 
 function installApps() {
-#geany
-#notepad++
-#slimbookbattery
-#nextcloud
-#mackup
-#anbox
 
-#todo GitAhead - Git Gui Client https://gitahead.github.io/gitahead.com/
-
-##Installing Unite Gnome Shell Extension
-##[1287] Obtaining extension info
-##ERROR: Use your package manager to update this extension
 
     options_id=(\
         install_alternativeterminals \
