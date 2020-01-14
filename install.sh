@@ -9,6 +9,9 @@
 # https://github.com/ohmybash/oh-my-bash
 # https://github.com/powerline/powerline
 #todo GitAhead - Git Gui Client https://gitahead.github.io/gitahead.com/
+#todo clip grab
+#https://clipgrab.org/
+#apt install ffmpeg
 ##Installing Unite Gnome Shell Extension
 ##[1287] Obtaining extension info
 ##ERROR: Use your package manager to update this extension
