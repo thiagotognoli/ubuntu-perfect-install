@@ -16,6 +16,9 @@
 ##[1287] Obtaining extension info
 ##ERROR: Use your package manager to update this extension
 
+# snap install --edge sqlitebrowser
+
+
 #configs .bashrc, .profile, .gitconfig git global user.name, user.email
 
 function checkRoot() {
