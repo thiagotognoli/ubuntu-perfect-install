@@ -178,6 +178,10 @@ function install_ohmyzsh() {
         && rm -rf Menlo-for-Powerline \
         && sudo fc-cache -vf /usr/share/fonts
         ##sudo -u $currentUser chsh -s /bin/zsh root \
+        
+        #https://github.com/romkatv/powerlevel10k
+        #sudo -u $currentUser git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k
+        #sudo -u $currentUser sed -ri 's/(ZSH_THEME=")([^"]*)(")/\1powerlevel10k\/powerlevel10k\3/g' "$currentHomeDir/.zshrc" \
 }
 
 function config_gnomeshell() {
