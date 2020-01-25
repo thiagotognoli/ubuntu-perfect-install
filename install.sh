@@ -180,8 +180,14 @@ function install_ohmyzsh() {
         ##sudo -u $currentUser chsh -s /bin/zsh root \
         
         #https://github.com/romkatv/powerlevel10k
-        #sudo -u $currentUser git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k
-        #sudo -u $currentUser sed -ri 's/(ZSH_THEME=")([^"]*)(")/\1powerlevel10k\/powerlevel10k\3/g' "$currentHomeDir/.zshrc" \
+        sudo -u $currentUser git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k \
+        && sudo -u $currentUser sed -ri 's/(ZSH_THEME=")([^"]*)(")/\1powerlevel10k\/powerlevel10k\3/g' "$currentHomeDir/.zshrc"
+        sudo wget wget -P /usr/share/fonts/. \
+            https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts/MesloLGS%20NF%20Regular.ttf \
+            https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts/MesloLGS%20NF%20Bold.ttf \
+            https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts/MesloLGS%20NF%20Italic.ttf \
+            https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts/MesloLGS%20NF%20Bold%20Italic.ttf
+        sudo fc-cache -vf /usr/share/fonts
 }
 
 function config_gnomeshell() {
@@ -393,6 +399,11 @@ function restore_from_old_install() {
     #oldRoot="$(sudo -u $currentUser bash -c 'cd ~ && zenity --file-selection --title="Select a Old Root Directory" --directory')"
     #sudo -u $currentUser rsync -az "$oldRoot/data" "/data"
     oldHome="$(cd "$currentHomeDir" && zenity --file-selection --title="Select a Old Root Directory" --directory)"
+
+    echo "----->ZSH config"
+    sudo -u $currentUser rsync -az "$oldHome/.zshrc" "$homeDir/"
+    echo "----->Powerline 10K"
+    sudo -u $currentUser rsync -az "$oldHome/.p10k.zsh" "$homeDir/"
 
     echo "----->SSH config"
     sudo -u $currentUser rsync -az "$oldHome/.ssh" "$homeDir/"
