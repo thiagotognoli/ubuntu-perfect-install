@@ -19,8 +19,6 @@
 # snap install sqlitebrowser-casept
 
 
-#configs .bashrc, .profile, .gitconfig git global user.name, user.email
-
 function checkRoot() {
     if [ "$EUID" -ne 0 ]
         then echo "Please run as root"
@@ -399,6 +397,15 @@ function restore_from_old_install() {
     #oldRoot="$(sudo -u $currentUser bash -c 'cd ~ && zenity --file-selection --title="Select a Old Root Directory" --directory')"
     #sudo -u $currentUser rsync -az "$oldRoot/data" "/data"
     oldHome="$(cd "$currentHomeDir" && zenity --file-selection --title="Select a Old Root Directory" --directory)"
+
+    #echo "----->Bash config"
+    #sudo -u $currentUser rsync -az "$oldHome/.bashrc" "$homeDir/"
+    
+    #echo "----->Profile config"
+    #sudo -u $currentUser rsync -az "$oldHome/.profile" "$homeDir/"
+
+    echo "----->Git config"
+    sudo -u $currentUser rsync -az "$oldHome/.gitconfig" "$homeDir/"
 
     echo "----->ZSH config"
     sudo -u $currentUser rsync -az "$oldHome/.zshrc" "$homeDir/"
