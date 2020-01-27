@@ -194,6 +194,7 @@ function config_gnomeshell() {
     # Install Gnome Tweaks e Chrome Gnome Shell
     sudo apt install gnome-tweaks chrome-gnome-shell -y
     #sudo apt install gnome-shell-extensions
+    sudo apt install font-manager -y
 
     # Create Show Desktop Button
     sudo apt install xdotool -y \
