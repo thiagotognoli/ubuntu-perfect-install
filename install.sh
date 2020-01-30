@@ -188,6 +188,13 @@ function install_ohmyzsh() {
         sudo fc-cache -vf /usr/share/fonts
 }
 
+function install_lsd() {
+    sudo -u $currentUser mkdir -p "$currentHomeDir/tmp" \
+    && sudo -u $currentUser wget https://github.com/Peltoche/lsd/releases/download/0.16.0/lsd_0.16.0_amd64.deb -O "$currentHomeDir/tmp/lsd.deb" \
+    && sudo dpkg -i "$currentHomeDir/tmp/lsd.deb" \
+    && sudo -u $currentUser rm -rf "$currentHomeDir/tmp"
+}
+
 function config_gnomeshell() {
     #zenity --question --width=600 --height=400 --text "Configurar Gnome Shell?" || return 0
 
