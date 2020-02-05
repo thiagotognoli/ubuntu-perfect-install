@@ -496,18 +496,18 @@ function restore_from_old_install() {
 
     if zenity --question --width=600 --height=400 --text "Recuperar Arquivos da Home Antiga?"
     then
-        # get length of an array
-        homeFilesDirectoriesVariableslength=${#homeFilesDirectoriesVariables[@]}
         oldDirectoyPathVars="$(cat "$oldHome/.config/user-dirs.dirs")"
         currentDirectoyPathVars="$(cat "$homeDir/.config/user-dirs.dirs")"
+        # get length of an array
+        currentDirectoyPathVarsLength=${#currentDirectoyPathVars[@]}
         # use for loop to read all values and indexes
-        for (( i=0; i<${homeFilesDirectoriesVariableslength}; i++ ));
+        for (( i=0; i<${currentDirectoyPathVarsLength}; i++ ));
         do
-            oldDirectoyPathVar=$(echo "$oldDirectoyPathVars" | grep "${homeFilesDirectoriesVariables[$i]}")
-            currentDirectoyPathVar=$(echo "$currentDirectoyPathVars" | grep "${homeFilesDirectoriesVariables[$i]}")
-            oldDirectoyPath=$(echo ${oldDirectoyPathVar/${homeFilesDirectoriesVariables[$i]}=/""} | tr -d '"')
+            oldDirectoyPathVar=$(echo "$oldDirectoyPathVars" | grep "${oldDirectoyPathVars[$i]}")
+            currentDirectoyPathVar=$(echo "$currentDirectoyPathVars" | grep "${currentDirectoyPathVars[$i]}")
+            oldDirectoyPath=$(echo ${oldDirectoyPathVar/${oldDirectoyPathVars[$i]}=/""} | tr -d '"')
             oldDirectoyPath="$(echo "${oldDirectoyPath/\$HOME/$oldHome}")"
-            currentDirectoyPath=$(echo ${currentDirectoyPathVar/${homeFilesDirectoriesVariables[$i]}=/""} | tr -d '"')
+            currentDirectoyPath=$(echo ${currentDirectoyPathVar/${currentDirectoyPathVars[$i]}=/""} | tr -d '"')
             currentDirectoyPath="$(echo "${currentDirectoyPath/\$HOME/$homeDir}")"
 
             if zenity --question --width=600 --height=400 --text "Copiar dados da Pasta \"$oldDirectoyPath\" (Home Antiga) para a pasta \"$currentDirectoyPath\" (Home Atual)?"
@@ -519,6 +519,22 @@ function restore_from_old_install() {
     fi
 }
 
+function createTemplates() {
+        currentDirectoyPathVars="$(cat "$homeDir/.config/user-dirs.dirs")"
+        currentDirectoyPathVarsLength=${#currentDirectoyPathVars[@]}
+        
+        # use for loop to read all values and indexes
+        for (( i=0; i<${currentDirectoyPathVarsLength}; i++ ));
+        do
+            currentDirectoyPathVar=$(echo "$currentDirectoyPathVars" | grep "${currentDirectoyPathVars[$i]}")
+            if [ "$currentDirectoyPathVar" == "XDG_TEMPLATES_DIR" ]; then
+                currentDirectoyPath=$(echo ${currentDirectoyPathVar/${currentDirectoyPathVars[$i]}=/""} | tr -d '"')
+                currentDirectoyPath="$(echo "${currentDirectoyPath/\$HOME/$homeDir}")"
+                touch "$currentDirectoyPath/novo.txt"
+            fi
+        done
+    fi
+}    
 
 function restoreSnaps() {
     #https://forum.snapcraft.io/t/install-snaps-backup-or-export-and-relocation-to-new-pc/11777
@@ -570,6 +586,8 @@ function restoreSnaps() {
 install_base
 
 installApps
+
+createTemplates
 
 restore_from_old_install
 
