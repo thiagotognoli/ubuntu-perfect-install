@@ -57,6 +57,8 @@ function installApps() {
     options_id=(\
         install_alternativeterminals \
         install_ohmyzsh \
+        install_lsd \
+        install_mackup \
         config_gnomeshell \
         install_gnomeshellextensions \
         install_googlechrome \
@@ -77,6 +79,8 @@ function installApps() {
     options_title=(\
         "Alternative Terminals (terminator, terminology, cool-retro-term)"
         "ZSH & Oh My ZSH" \
+        "LSD" \
+        "Mackup" \
         "Config Gnome Shell" \
         "Gnome Shell Extensions" \
         "Google Chrome" \
@@ -95,6 +99,8 @@ function installApps() {
         "Team Viewer")
 
     options_selected=(\
+        TRUE \
+        TRUE \
         TRUE \
         TRUE \
         TRUE \
@@ -187,6 +193,11 @@ function install_ohmyzsh() {
             https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts/MesloLGS%20NF%20Bold%20Italic.ttf
         sudo fc-cache -vf /usr/share/fonts
 }
+
+function install_mackup() {
+    sudo snap install mackup --classic
+}
+
 
 function install_lsd() {
     sudo -u $currentUser mkdir -p "$currentHomeDir/tmp" \
@@ -335,8 +346,8 @@ function install_develtools() {
 
 function install_golang() {
     sudo snap install --classic code
-    if !sudo -u $currentUser bash -c 'grep -q "\$HOME/go" ~/.profile;' then
-        sudo -u thiago bash -c "echo -e '\n#set GOPATH and GO_BIN\nif [ -d \"$HOME/go\" ] ; then\n  export GO_PATH=\"$HOME/go\"\n   # set PATH so it includes user'\''s go bin if it exists\n  if [ -d \"$GO_PATH/bin\" ] ; then\n     PATH=\"$GO_PATH/bin:$PATH\"\n   fi\nfi' >> $currentHomeDir/.profile"
+    if ! sudo -u $currentUser bash -c "grep -q \"\$HOME/go\" $currentHomeDir/.profile"; then
+        sudo -u thiago bash -c "echo -e '\n#set GOPATH and GO_BIN\nif [ -d \"\$HOME/go\" ] ; then\n  export GO_PATH=\"\$HOME/go\"\n   # set PATH so it includes user'\''s go bin if it exists\n  if [ -d \"\$GO_PATH/bin\" ] ; then\n     PATH=\"\$GO_PATH/bin:$PATH\"\n   fi\nfi' >> $currentHomeDir/.profile"
     fi
     go get -u github.com/containous/yaegi/cmd/yaegi
 }
@@ -430,6 +441,9 @@ function restore_from_old_install() {
     sudo -u $currentUser rsync -az "$oldHome/.zshrc" "$homeDir/"
     echo "----->Powerline 10K"
     sudo -u $currentUser rsync -az "$oldHome/.p10k.zsh" "$homeDir/"
+
+    echo "----->Mackup"
+    sudo -u $currentUser rsync -az "$oldHome/.mackup.cfg" "$homeDir/"
 
     echo "----->SSH config"
     sudo -u $currentUser rsync -az "$oldHome/.ssh" "$homeDir/"
