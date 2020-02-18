@@ -55,7 +55,8 @@ function installApps() {
 
 
     options_id=(\
-        install_alternativeterminals \
+        install_alternative_terminals \
+        install_monitor_tools \
         install_ohmyzsh \
         install_lsd \
         install_mackup \
@@ -77,7 +78,8 @@ function installApps() {
         install_teamviewer)
 
     options_title=(\
-        "Alternative Terminals (terminator, terminology, cool-retro-term)"
+        "Alternative Terminals (terminator, terminology, cool-retro-term)"\
+        "Monitor Tools (htop, iotop)"\
         "ZSH & Oh My ZSH" \
         "LSD" \
         "Mackup" \
@@ -160,10 +162,14 @@ function install_base() {
 
 }
 
-function install_alternativeterminals() {
+function install_alternative_terminals() {
     sudo apt install terminator -y
     sudo snap install --edge --classic terminology
     sudo snap install --classic cool-retro-term
+}
+
+function install_monitor_tools() {
+    sudo apt install htop iotop -y
 }
 
 function install_ohmyzsh() {
