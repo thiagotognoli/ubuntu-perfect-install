@@ -75,7 +75,8 @@ function installApps() {
         install_whatsappelectron \
         install_develtools \
         install_docker \
-        install_teamviewer)
+        install_teamviewer \
+    )
 
     options_title=(\
         "Alternative Terminals (terminator, terminology, cool-retro-term)"\
@@ -101,6 +102,7 @@ function installApps() {
         "Team Viewer")
 
     options_selected=(\
+        TRUE \
         TRUE \
         TRUE \
         TRUE \
@@ -311,17 +313,18 @@ function install_whatsappelectron() {
     sudo apt install git -y \
     && sudo snap install --edge node --classic \
     && sudo -u $currentUser mkdir -p "$currentHomeDir/tmp" \
-    && sudo -u $currentUser cd "$currentHomeDir/tmp" \
+    && cd "$currentHomeDir/tmp" \
+    && sudo -u $currentUser bash -c "[ -e '$currentHomeDir/tmp/whatsapp-electron' ] && rm -rf '$currentHomeDir/tmp/whatsapp-electron' || true" \
     && sudo -u $currentUser git clone https://github.com/thiagotognoli/whatsapp-electron.git \
-    && sudo -u $currentUser cd whatsapp-electron \
+    && cd whatsapp-electron \
     && sudo -u $currentUser npm install \
     && sudo -u $currentUser npm run build \
     && sudo -u $currentUser mkdir -p "$currentHomeDir/AppImage" \
     && sudo -u $currentUser mv dist/whatsapp-electron-*.AppImage "$currentHomeDir/AppImage/whatsapp-electron.AppImage" \
     && sudo -u $currentUser chmod +x "$currentHomeDir/AppImage/whatsapp-electron.AppImage" \
-    && sudo -u $currentUser cd .. \
-    && sudo -u $currentUser rm -rfd whatsapp-electron \
-    && sudo -u $currentUser -bash -c "echo -e '[Desktop Entry]\n Version=1.0\n Type=Application\n Exec=~/AppImage/whatsapp-electron.AppImage %f\n Name=WhatsApp\n Icon=WhatsApp\n Terminal=false\n Categories=Internet;' | tee '$currentHomeDir/.local/share/applications/whatsapp.desktop'" \
+    && cd .. \
+    && sudo -u $currentUser rm -rf "$currentHomeDir/tmp/whatsapp-electron" \
+    && sudo -u $currentUser bash -c "echo -e '[Desktop Entry]\n Version=1.0\n Type=Application\n Exec=~/AppImage/whatsapp-electron.AppImage %f\n Name=WhatsApp\n Icon=WhatsApp\n Terminal=false\n Categories=Internet;' | tee '$currentHomeDir/.local/share/applications/whatsapp.desktop'" \
     && sudo -u $currentUser chmod +x "$currentHomeDir/.local/share/applications/whatsapp.desktop"
 }
 
@@ -353,7 +356,7 @@ function install_develtools() {
 function install_golang() {
     sudo snap install --classic code
     if ! sudo -u $currentUser bash -c "grep -q \"\$HOME/go\" $currentHomeDir/.profile"; then
-        sudo -u thiago bash -c "echo -e '\n#set GOPATH and GO_BIN\nif [ -d \"\$HOME/go\" ] ; then\n  export GO_PATH=\"\$HOME/go\"\n   # set PATH so it includes user'\''s go bin if it exists\n  if [ -d \"\$GO_PATH/bin\" ] ; then\n     PATH=\"\$GO_PATH/bin:$PATH\"\n   fi\nfi' >> $currentHomeDir/.profile"
+        sudo -u $currentUser bash -c "echo -e '\n#set GOPATH and GO_BIN\nif [ -d \"\$HOME/go\" ] ; then\n  export GO_PATH=\"\$HOME/go\"\n   # set PATH so it includes user'\''s go bin if it exists\n  if [ -d \"\$GO_PATH/bin\" ] ; then\n     PATH=\"\$GO_PATH/bin:$PATH\"\n   fi\nfi' >> $currentHomeDir/.profile"
     fi
     go get -u github.com/containous/yaegi/cmd/yaegi
 }
@@ -550,6 +553,8 @@ function restore_from_old_install() {
 }
 
 function createTemplates() {
+    if zenity --question --width=600 --height=400 --text "Criar Templates?"
+    then
         currentDirectoyPathVars="$(cat "$homeDir/.config/user-dirs.dirs")"
         currentDirectoyPathVarsLength=${#currentDirectoyPathVars[@]}
         
@@ -585,7 +590,8 @@ function restoreSnaps() {
               Install the snap in the given cohort
 /*
 
-    snapList=snapList=$(snap list | tail -n +2 | egrep -v '^core |^core18' | grep -v ' stable/… ')# |^gtk-common-themes |^gtk2-common-themes |^snapcraft ')
+    snapList=snapList=$(snap list | tail -n +2 | egrep -v '^core |^core18' | grep -v ' stable/… ')
+    # |^gtk-common-themes |^gtk2-common-themes |^snapcraft ')
     echo "$snapList" \
     | while read -r name version revision channel publisher options ; do
 
@@ -613,15 +619,18 @@ function restoreSnaps() {
     #pegar os snaps de /var e /home
 }
 
-install_base
 
-installApps
+install_whatsappelectron
 
-createTemplates
+#install_base
 
-restore_from_old_install
+#installApps
 
-#restoreSnaps
+#createTemplates
+
+#restore_from_old_install
+
+##restoreSnaps
 
 <</*
 #projeto para montar luks antigo
@@ -643,36 +652,4 @@ echo "$luksPartitions" | grep ntfs; \
 echo "$luksPartitions" | grep vfat; \
 echo "$luksPartitions" | grep exfat; \
 )
-
-
-
-guiName="gui11"
-function tkbash() {
-    /bin/bash $binDir/tkbash "$@"
-}
-
-function testeGui() {
-    sudo apt install bash tk wget -y \
-        && mkdir -p $binDir \
-        && rm -rf $binDir/tkbash \
-        && wget https://raw.githubusercontent.com/phil294/tkbash/master/tkbash -O $binDir/tkbash \
-        && chmod +x $binDir/tkbash
-            
-    tkbash $guiName --theme clam --title "Ubuntu Perfect Install" --icon icon.png --resizable 0 -w 640 -h 480
-    tkbash $guiName --tkcommand "wm iconname .w TT"
-    tkbash $guiName --tkcommand "wm attributes .w -type normal"
-    tkbash $guiName --hotkey Escape --command 'tkbash gui1 --close'
-    # elements
-    tkbash $guiName label  label1  -x 5   -y 5   -w 130 -h 30  --text "I like bananas."
-    tkbash $guiName select select1 -x 5   -y 40  -w 130 -h 30  --text "Me too|I prefer cookies||Apples|???"
-    tkbash $guiName button button1 -x 140 -y 5   -w 130 -h 30  --text "Say hello" --command "notify-send hi"
-    tkbash $guiName edit   edit1   -x 140 -y 40  -w 115 -h 94  --text "Yorem Lipsum yolo git amet" \
-        --scrollbar 1 --background "grey" --foreground "yellow" --style "font:verdana 12"
-    #tkbash gui image  image1  -x 275 -y 5   -w 125 -h 127 --image "kitten.png"
-    tkbash $guiName radio  radio1  -x 5   -y 140 -w 130 -h 30  --text "Option 0" --group group1
-    tkbash $guiName radio  radio2  -x 5   -y 175 -w 130 -h 30  --text "Option 1" --group group1 --selected
-    tkbash $guiName radio  radio3  -x 5   -y 210 -w 130 -h 30  --text "Option 2" --group group1 \
-        --command 'tkbash gui1 label2 --text "You selected option $(tkbash gui1 get radio1)."'
-    tkbash $guiName label  label2  -x 140 -y 175 -w 395 -h 30 --text "?" --fg '#ff5555'
-}
 /*
