@@ -225,7 +225,7 @@ function config_gnomeshell() {
 
     # Create Show Desktop Button
     sudo apt install xdotool -y \
-    && sudo -u $currentUser bash -c "echo -e '[Desktop Entry]\n Version=1.0\n Name=Show Desktop\n Exec=xdotool key --clearmodifiers Ctrl+Super+d\n Icon=desktop\n Type=Application\n Categories=Application' | tee '$currentHomeDir/.local/share/applications/show-desktop.desktop'" \
+    && sudo -u $currentUser bash -c "echo -e '[Desktop Entry]\nVersion=1.0\nName=Show Desktop\nExec=xdotool key --clearmodifiers Ctrl+Super+d\nIcon=desktop\nType=Application\nCategories=Application' | tee '$currentHomeDir/.local/share/applications/show-desktop.desktop'" \
     && sudo -u $currentUser chmod +x "$currentHomeDir/.local/share/applications/show-desktop.desktop"
 
     # Config Click App Icon to Minimize
@@ -319,13 +319,16 @@ function install_whatsappelectron() {
     && cd whatsapp-electron \
     && sudo -u $currentUser npm install \
     && sudo -u $currentUser npm run build \
-    && sudo -u $currentUser mkdir -p "$currentHomeDir/AppImage" \
-    && sudo -u $currentUser mv dist/whatsapp-electron-*.AppImage "$currentHomeDir/AppImage/whatsapp-electron.AppImage" \
-    && sudo -u $currentUser chmod +x "$currentHomeDir/AppImage/whatsapp-electron.AppImage" \
+    && sudo mkdir -p "/opt/AppImage" \
+    && sudo mv dist/whatsapp-electron-*.AppImage "/opt/AppImage/whatsapp-electron.AppImage" \
+    && sudo chmod a+x "/opt/AppImage/whatsapp-electron.AppImage" \
     && cd .. \
     && sudo -u $currentUser rm -rf "$currentHomeDir/tmp/whatsapp-electron" \
-    && sudo -u $currentUser bash -c "echo -e '[Desktop Entry]\n Version=1.0\n Type=Application\n Exec=~/AppImage/whatsapp-electron.AppImage %f\n Name=WhatsApp\n Icon=WhatsApp\n Terminal=false\n Categories=Internet;' | tee '$currentHomeDir/.local/share/applications/whatsapp.desktop'" \
-    && sudo -u $currentUser chmod +x "$currentHomeDir/.local/share/applications/whatsapp.desktop"
+    && sudo mkdir -p /opt/AppImage/icons \
+    && sudo wget -O "/opt/AppImage/icons/whatsapp.svg" https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg \
+    && sudo chmod a+r "/opt/AppImage/icons/whatsapp.svg" \
+    && sudo bash -c "echo -e '[Desktop Entry]\nVersion=1.1\nType=Application\nName=WhatsApp\nComment=WhatsApp Web.\nIcon=/opt/AppImage/icons/whatsapp.svg\nExec=/opt/AppImage/whatsapp-electron.AppImage\nActions=\nTerminal=false\nCategories=Network;' | tee '/usr/share/applications/whatsapp.desktop'"
+#    && sudo -u $currentUser chmod +x "$currentHomeDir/.local/share/applications/whatsapp.desktop"
 }
 
 function install_develtools() {
@@ -373,7 +376,7 @@ function install_vscode() {
 function install_flameshotscreenshot() {
     #zenity --question --width=600 --height=400 --text "Instalar Flameshot Screen Shot?" || return 0
     sudo apt install -y flameshot \
-    && sudo -u $currentUser bash -c "echo -e '[Desktop Entry]\n Version=1.1\n Type=Application\n Name=Flameshot Screenshot\n Comment=Uma pequena descrição desta aplicação.\n Icon=flameshot\n Exec=flameshot gui\n Actions=\n Categories=Graphics;' | tee '$currentHomeDir/.local/share/applications/flameshot-screenshot.desktop'" \
+    && sudo -u $currentUser bash -c "echo -e '[Desktop Entry]\nVersion=1.1\nType=Application\nName=Flameshot Screenshot\nComment=Screenshot.\nIcon=flameshot\nExec=flameshot gui\nActions=\nCategories=Graphics;' | tee '$currentHomeDir/.local/share/applications/flameshot-screenshot.desktop'" \
     && sudo -u $currentUser chmod +x "$currentHomeDir/.local/share/applications/flameshot-screenshot.desktop"
 }
 
@@ -620,15 +623,15 @@ function restoreSnaps() {
 }
 
 
-install_whatsappelectron
+#install_whatsappelectron
 
-#install_base
+install_base
 
-#installApps
+installApps
 
-#createTemplates
+createTemplates
 
-#restore_from_old_install
+restore_from_old_install
 
 ##restoreSnaps
 
