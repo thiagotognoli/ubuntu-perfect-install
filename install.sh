@@ -327,8 +327,12 @@ function install_whatsappelectron() {
     && sudo mkdir -p /opt/AppImage/icons \
     && sudo wget -O "/opt/AppImage/icons/whatsapp.svg" https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg \
     && sudo chmod a+r "/opt/AppImage/icons/whatsapp.svg" \
-    && sudo bash -c "echo -e '[Desktop Entry]\nVersion=1.1\nType=Application\nName=WhatsApp\nComment=WhatsApp Web.\nIcon=/opt/AppImage/icons/whatsapp.svg\nExec=/opt/AppImage/whatsapp-electron.AppImage\nActions=\nTerminal=false\nCategories=Network;' | tee '/usr/share/applications/whatsapp.desktop'"
+    && sudo bash -c "echo -e '[Desktop Entry]\nName=Whatsapp Electron\nExec=/opt/AppImage/whatsapp-electron.AppImage\nTerminal=false\nType=Application\nIcon=/opt/AppImage/icons/whatsapp.svg\nStartupWMClass=whatsapp-electron\nX-AppImage-Version=1.1.0\nComment=Unofficial desktop client for WhatsApp Web\nCategories=Network;\n\nTryExec=/opt/AppImage/whatsapp-electron.AppImage\nActions=' | tee '/usr/share/applications/whatsapp.desktop'"
+#    && sudo bash -c "echo -e '[Desktop Entry]\nVersion=1.1\nType=Application\nName=WhatsApp\nComment=WhatsApp Web.\nIcon=/opt/AppImage/icons/whatsapp.svg\nExec=/opt/AppImage/whatsapp-electron.AppImage\nActions=\nTerminal=false\nCategories=Network;' | tee '/usr/share/applications/whatsapp.desktop'"
 #    && sudo -u $currentUser chmod +x "$currentHomeDir/.local/share/applications/whatsapp.desktop"
+
+
+
 }
 
 function install_develtools() {
