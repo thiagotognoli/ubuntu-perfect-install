@@ -21,10 +21,16 @@ Depois de terminar a intalação antes de reiniciar:
 Alt+F2 (abrir o terminal)
 
 ```bash
+targetDir=/target # if rebooted $targetDir=/
 rootDevice=$(mount | grep "/target " | cut -d " " -f 1)
 bootDevice=$(mount | grep "/target/boot/efi" | cut -d " " -f 1)
+rootDeviceUuid=$(cat /target/etc/fstab | grep -E "^.* \/ btrfs" | cut -d " " -f 1)
+bootDeviceUuid=$(cat /target/etc/fstab | grep -E "^.* \/boot\/efi " | cut -d " " -f 1)
 
-cd /target
+cd $targetDir && btrfs subvolume create @home
+btrfs subvolume snapshot $targetDir $targetDir/@
+
+
 
 #btrfs subvolume create @
 btrfs subvolume create @home
