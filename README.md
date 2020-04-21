@@ -23,10 +23,21 @@ Alt+F2 (abrir o terminal)
 ```bash
 rootDevice=$(mount | grep "/target " | cut -d " " -f 1)
 bootDevice=$(mount | grep "/target/boot/efi" | cut -d " " -f 1)
-umount /target/boot/efi
+
 cd /target
-btrfs subvolume create @
+
+#btrfs subvolume create @
 btrfs subvolume create @home
+
+# cd /target && chroot .
+btrfs subvolume snapshot /target /target/@
+mkdir /target/snapshots
+nano /etc/fstab 
+zlo -> ZSTD 
+
+
+
+umount /target/boot/efi
 
 rsync -vaHAXPxh --numeric-ids --exclude='@' --exclude='@home' .  @ && find * -maxdepth 0 -not \( -path @ -o -path @home \) -exec rm -rf {} \;
 umount /target
