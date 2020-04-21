@@ -11,6 +11,54 @@ cd /tmp \
 && cd ~ \
 && rm -rf /tmp/ubuntu-perfect-install
 ```
+
+## BTRFS
+https://work-work.work/blog/2018/12/01/ubuntu-1804-btrfs.html
+https://unix.stackexchange.com/questions/62802/move-a-linux-installation-using-btrfs-on-the-default-subvolume-subvolid-0-to-a
+
+Depois de terminar a intalação antes de reiniciar:
+
+Alt+F2 (abrir o terminal)
+
+```bash
+rootDevice=$(mount | grep "/target " | cut -d " " -f 1)
+bootDevice=$(mount | grep "/target/boot/efi" | cut -d " " -f 1)
+umount /target/boot/efi
+cd /target
+btrfs subvolume create @
+btrfs subvolume create @home
+
+rsync -vaHAXPxh --numeric-ids --exclude='@' --exclude='@home' .  @ && find * -maxdepth 0 -not \( -path @ -o -path @home \) -exec rm -rf {} \;
+umount /target
+mount -o compress=lzo,ssd,noatime,nodiratime,space_cache,discard,subvol=@ $rootDevice /target
+mount -o compress=lzo,ssd,noatime,nodiratime,space_cache,discard,subvol=@home $rootDevice /target/home
+mount $bootDevice /target/boot/efi
+mount --bind /proc /target/proc
+mount --bind /dev /target/dev
+mount --bind /sys /target/sys
+
+
+# -v = increase verbosity
+# -a = archive mode; equals -rlptgoD (no -H,-A,-X)
+# -H = preserve hard links
+# -A = preserve ACLs (implies -p)
+# -X =  preserve extended attributes
+# -P = The -P option is equivalent to --partial --progress. Its purpose is to make it much easier to specify these two options for a long transfer that may be interrupted.
+# -x, --one-file-system = don't cross filesystem boundaries
+# -h = output numbers in a human-readable format
+# --numeric-ids = don't map uid/gid values by user/group name
+# --exclude='/dev' --exclude='/proc' --exclude='/sys'
+# -z compress file data during the transfer - use if backup remote
+# backup: rsync -vaHAXPxhz 
+
+#mv -t @ b* d* e* h* i* l* m* o* p* r* s* t* u* v*
+#rsync -axvP --remove-source-files sourcedirectory/ targetdirectory
+#rsync -zahP /mnt/ /mnt2/
+#rsync -avP --numeric-ids --exclude='/dev' --exclude='/proc' --exclude='/sys' root@failedharddrivehost:/ /path/to/destination/
+
+
+```
+
 <!--
 ## Base Installation
 
