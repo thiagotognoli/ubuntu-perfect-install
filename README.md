@@ -11,7 +11,7 @@ cd /tmp \
 && cd ~ \
 && rm -rf /tmp/ubuntu-perfect-install
 ```
-
+<!--
 ## Base Installation
 
 ```bash
@@ -343,3 +343,4 @@ https://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/DefaultD
 
 ## TkBash
 sudo apt install tk && wget https://raw.githubusercontent.com/phil294/tkbash/master/tkbash && chmod +x tkbash
+-->
