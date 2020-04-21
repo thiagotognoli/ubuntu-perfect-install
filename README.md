@@ -1,6 +1,8 @@
 # Ubuntu Perfect Install
 Ubuntu After installation
 
+TO-DO: viertual box and skype, replace snap with flat option
+
 ## Automatic Script
 ```bash
 cd /tmp \
@@ -21,6 +23,7 @@ Depois de terminar a intalação antes de reiniciar:
 Alt+F2 (abrir o terminal)
 
 ```bash
+sudo su
 targetDir=/target # if rebooted $targetDir=/
 rootDevice=$(mount | grep "/target " | cut -d " " -f 1)
 bootDevice=$(mount | grep "/target/boot/efi" | cut -d " " -f 1)
@@ -29,6 +32,11 @@ bootDeviceUuid=$(cat /target/etc/fstab | grep -E "^.* \/boot\/efi " | cut -d " "
 
 cd $targetDir && btrfs subvolume create @home
 btrfs subvolume snapshot $targetDir $targetDir/@
+sed -E -i 's@^('$rootDeviceUuid')(.*)@#\1\2@' $targetDir/etc/fstab
+#sed -E -i '\@^(#'$rootDeviceUuid')@a '"$rootDeviceUuid"' / btrfs compress=lzo,noatime,nodiratime,space_cache,ssd,discard,subvol=@ 0 0\n'"$rootDeviceUuid"' /home btrfs compress=lzo,noatime,nodiratime,space_cache,ssd,discard,subvol=@home 0 0' $targetDir/etc/fstab
+sed -E -i '\@^(#'$rootDeviceUuid')@a '"$rootDeviceUuid"' / btrfs compress=lzo,space_cache,discard,subvol=@ 0 0\n'"$rootDeviceUuid"' /home btrfs compress=lzo,space_cache,discard,subvol=@home 0 0' $targetDir/etc/fstab
+
+
 
 
 
