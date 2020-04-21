@@ -25,17 +25,26 @@ Alt+F2 (abrir o terminal)
 ```bash
 sudo su
 targetDir=/target # if rebooted $targetDir=/
-rootDevice=$(mount | grep "/target " | cut -d " " -f 1)
-bootDevice=$(mount | grep "/target/boot/efi" | cut -d " " -f 1)
-rootDeviceUuid=$(cat /target/etc/fstab | grep -E "^.* \/ btrfs" | cut -d " " -f 1)
-bootDeviceUuid=$(cat /target/etc/fstab | grep -E "^.* \/boot\/efi " | cut -d " " -f 1)
+rootDevice=$(mount | grep "$targetDir " | cut -d " " -f 1)
+bootDevice=$(mount | grep "$targetDir/boot/efi" | cut -d " " -f 1)
+rootDeviceUuid=$(cat "$targetDir/etc/fstab" | grep -E "^.* \/ btrfs" | cut -d " " -f 1)
+bootDeviceUuid=$(cat "$targetDir/etc/fstab" | grep -E "^.* \/boot\/efi " | cut -d " " -f 1)
 
-cd $targetDir && btrfs subvolume create @home
 btrfs subvolume snapshot $targetDir $targetDir/@
+cd "$targetDir" && btrfs subvolume create @home
+
 sed -E -i 's@^('$rootDeviceUuid')(.*)@#\1\2@' $targetDir/etc/fstab
-#sed -E -i '\@^(#'$rootDeviceUuid')@a '"$rootDeviceUuid"' / btrfs compress=lzo,noatime,nodiratime,space_cache,ssd,discard,subvol=@ 0 0\n'"$rootDeviceUuid"' /home btrfs compress=lzo,noatime,nodiratime,space_cache,ssd,discard,subvol=@home 0 0' $targetDir/etc/fstab
 sed -E -i '\@^(#'$rootDeviceUuid')@a '"$rootDeviceUuid"' / btrfs compress=lzo,space_cache,discard,subvol=@ 0 0\n'"$rootDeviceUuid"' /home btrfs compress=lzo,space_cache,discard,subvol=@home 0 0' $targetDir/etc/fstab
 
+chroot "$targetDir"
+update-initramfs -u -k all  
+grub-install --recheck /dev/sda
+update-grub
+
+
+
+#UUID=xxxxx /mnt/btrfs_ssd  btrfs compress=lzo,degraded,noatime,nodiratime,space_cache,ssd,discard     0 0
+#sed -E -i '\@^(#'$rootDeviceUuid')@a '"$rootDeviceUuid"' / btrfs compress=lzo,noatime,nodiratime,space_cache,ssd,discard,subvol=@ 0 0\n'"$rootDeviceUuid"' /home btrfs compress=lzo,noatime,nodiratime,space_cache,ssd,discard,subvol=@home 0 0' $targetDir/etc/fstab
 
 
 
