@@ -27,7 +27,7 @@ cd "$targetDir" \
  && sed -E -i 's@^('$rootDeviceUuid')(.*)@#\1\2@' "$targetDir/etc/fstab" \
  && sed -E -i '\@^(#'$rootDeviceUuid')@a '"$rootDeviceUuid"' / btrfs compress=lzo,space_cache,discard 0 0\n'"$rootDeviceUuid"' /home btrfs compress=lzo,space_cache,discard,subvol=@home 0 0' "$targetDir/etc/fstab" \
  && rootBtrfsVolumeId=$(btrfs subvolume list "$targetDir" | grep -E " path @$" | cut -d " " -f 2) \
- && btrfs subvolume set-default $rootBtrfsVolumeId /
+ && btrfs subvolume set-default $rootBtrfsVolumeId
  
 exit;
 
