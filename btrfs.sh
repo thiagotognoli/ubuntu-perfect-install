@@ -10,12 +10,53 @@ function checkRoot() {
 
 checkRoot
 
+
+#ssdOptionsMount=ssd,noatime,nodiratime,
+#optionsMount=
+mntDirRootfs="/tmp/rootfs"
+
 targetDir="/" # if not rebooted targetDir="/target"
 targetDirSeparator="" # if not rebooted targetDir="/target"
 rootDevice=$(mount | grep "$targetDir " | cut -d " " -f 1)
 bootDevice=$(mount | grep "$targetDir/boot/efi" | cut -d " " -f 1)
 rootDeviceUuid=$(cat "$targetDir/etc/fstab" | grep -E "^.* \/ btrfs" | cut -d " " -f 1)
 bootDeviceUuid=$(cat "$targetDir/etc/fstab" | grep -E "^.* \/boot\/efi " | cut -d " " -f 1)
+
+$ mount -o compress=lzo,ssd,noatime,nodiratime,space_cache,discard,subvol=@ /dev/sda2 /target  
+UUID=xxxxx / btrfs compress=lzo,noatime,nodiratime,space_cache,ssd,discard,subvol=@ 0 0  
+UUID=xxxxx /home btrfs compress=lzo,noatime,nodiratime,space_cache,ssd,discard,subvol=@home 0 0  
+UUID=xxxxx /boot/efi vfat umask=0077 0 1
+UUID=xxxxx /mnt/btrfs_ssd  btrfs compress=lzo,degraded,noatime,nodiratime,space_cache,ssd,discard     0 0
+
+
+mkdir -p "$mntDirRootfs" \
+ && mount 
+ && cd "$targetDir" \
+ && btrfs subvolume snapshot . "$targetDir$targetDirSeparator"@rootfs_tmp \
+ && btrfs subvolume create @ \
+ && btrfs subvolume create @home \
+ && echo "Volumes Criados" \
+ && cd "$targetDir$targetDirSeparator@rootfs_tmp" \
+ && rsync -vaHAXPxh --numeric-ids --exclude={"@","@home","boot/*","dev/*","proc/*","sys/*","tmp/*","run/*","mnt/*","media/*","lost+found"} -- *  "$targetDir$targetDirSeparator"@/ \
+ && echo "Volume root duplicado" \
+ && cd "$targetDir$targetDirSeparator@rootfs_tmp/home" \
+ && rsync -vaHAXPxh --numeric-ids -- *  "$targetDir$targetDirSeparator"@home/ \
+ && echo "Volume home duplicado" \
+ && sed -E -i 's@^('"$rootDeviceUuid"')(.*)@#\1\2@' "$targetDir$targetDirSeparator@/etc/fstab" \
+ && sed -E -i '\@^(#'"$rootDeviceUuid"')@a '"$rootDeviceUuid"' / btrfs compress=lzo,space_cache,discard 0 0\n'"$rootDeviceUuid"' /home btrfs compress=lzo,space_cache,discard,subvol=@home 0 0' "$targetDir$targetDirSeparator@/etc/fstab" \
+ && echo "/etc/fstab editado" \
+ && rootBtrfsVolumeId=$(btrfs subvolume list "$targetDir" | grep -E " path @$" | cut -d " " -f 2) \
+ && btrfs subvolume set-default "$rootBtrfsVolumeId" / \
+ && echo "Subvolume root setado para ID: $rootBtrfsVolumeId" \
+ && cd "$targetDir$targetDirSeparator" \
+ && find * -maxdepth 0 -not \( -path "@" -o -path "@rootfs_tmp" -o -path "@home" -o -path "run"  -o -path "boot" -o -path "cdrom" \) \
+ && exit \
+ && btrfs subvolume delete "$targetDir$targetDirSeparator"@rootfs_tmp \
+ && find * -maxdepth 0 -not \( -path "@" -o -path "@rootfs_tmp" -o -path "@home" -o -path "run"  -o -path "boot" -o -path "cdrom" \) -exec rm -rf {} \;
+
+
+
+exit
 
 cd "$targetDir" \
  && btrfs subvolume snapshot . "$targetDir$targetDirSeparator"@rootfs_tmp \
