@@ -11,8 +11,10 @@ function checkRoot() {
 checkRoot
 
 
-#ssdOptionsMount=ssd,noatime,nodiratime,
-#optionsMount=
+#ssdOptionsMount=,ssd,discard
+optionsMount=lzo,space_cache,noatime,nodiratime
+#degraded - para raid
+#noatime,nodirtime => em tudo ou somente ssd, mas a náo ser que seja necessário
 mntDirRootfs="/tmp/rootfs"
 
 targetDir="/" # if not rebooted targetDir="/target"
