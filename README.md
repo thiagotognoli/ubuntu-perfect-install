@@ -23,18 +23,37 @@ Depois de terminar a intalação antes de reiniciar:
 Alt+F2 (abrir o terminal)
 
 ```bash
-sudo su
+
 targetDir=/target # if rebooted $targetDir=/
 rootDevice=$(mount | grep "$targetDir " | cut -d " " -f 1)
 bootDevice=$(mount | grep "$targetDir/boot/efi" | cut -d " " -f 1)
 rootDeviceUuid=$(cat "$targetDir/etc/fstab" | grep -E "^.* \/ btrfs" | cut -d " " -f 1)
 bootDeviceUuid=$(cat "$targetDir/etc/fstab" | grep -E "^.* \/boot\/efi " | cut -d " " -f 1)
 
-btrfs subvolume snapshot $targetDir $targetDir/@
-cd "$targetDir" && btrfs subvolume create @home
+cd "$targetDir" \
+ && btrfs subvolume snapshot . "$targetDir/@rootfs_tmp" \
+ && btrfs subvolume create @ \
+ && btrfs subvolume create @home \
+ && rsync -vaHAXPxh --numeric-ids --exclude='@' --exclude='@home' --exclude='@rootfs_tmp' --exclude='home' --exclude='/dev' --exclude='/proc' --exclude='/sys' --exclude='/run' @rootfs_tmp  @ \
+ && rsync -vaHAXPxh --numeric-ids @rootfs_tmp/home  @home \
+ && btrfs subvolume delete "$targetDir/@rootfs_tmp" \
+ && find * -maxdepth 0 -not \( -path @ -o -path @home -path run \) -exec rm -rf {} \; \
+ && sed -E -i 's@^('$rootDeviceUuid')(.*)@#\1\2@' "$targetDir/etc/fstab" \
+ && sed -E -i '\@^(#'$rootDeviceUuid')@a '"$rootDeviceUuid"' / btrfs compress=lzo,space_cache,discard 0 0\n'"$rootDeviceUuid"' /home btrfs compress=lzo,space_cache,discard,subvol=@home 0 0' "$targetDir/etc/fstab" \
+ && rootBtrfsVolumeId=$(btrfs subvolume list "$targetDir" | grep -E " path @$" | cut -d " " -f 2) \
+ && btrfs subvolume set-default $rootBtrfsVolumeId /
+ 
 
+
+ && mkdir -p "$targetDir/snapshots" \
+ 
 sed -E -i 's@^('$rootDeviceUuid')(.*)@#\1\2@' $targetDir/etc/fstab
 sed -E -i '\@^(#'$rootDeviceUuid')@a '"$rootDeviceUuid"' / btrfs compress=lzo,space_cache,discard,subvol=@ 0 0\n'"$rootDeviceUuid"' /home btrfs compress=lzo,space_cache,discard,subvol=@home 0 0' $targetDir/etc/fstab
+
+
+#mkdir /snapshots
+
+mount -o subvol=@ /dev/sdXX /media/temporary
 
 chroot "$targetDir"
 update-initramfs -u -k all  
@@ -50,7 +69,7 @@ update-grub
 
 
 #btrfs subvolume create @
-btrfs subvolume create @home
+#btrfs subvolume create @home
 
 # cd /target && chroot .
 btrfs subvolume snapshot /target /target/@
