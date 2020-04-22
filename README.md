@@ -18,6 +18,8 @@ cd /tmp \
 https://work-work.work/blog/2018/12/01/ubuntu-1804-btrfs.html
 https://unix.stackexchange.com/questions/62802/move-a-linux-installation-using-btrfs-on-the-default-subvolume-subvolid-0-to-a
 
+<!--
+
 Depois de terminar a intalação antes de reiniciar:
 
 Alt+F2 (abrir o terminal)
@@ -112,7 +114,7 @@ mount --bind /sys /target/sys
 
 ```
 
-<!--
+
 ## Base Installation
 
 ```bash
