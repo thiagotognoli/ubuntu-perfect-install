@@ -37,30 +37,24 @@ currentBtrfsSubvolumeId=$(btrfs subvolume get-default / | cut -d " " -f 2)
 
 mkdir -p "$mntDirRootfs" \
  && mount -o "$optionsMount" "$rootDeviceUuid" "$mntDirRootfs"
- && cd "$targetDir" \
+ && cd "$mntDirRootfs" \
  && btrfs subvolume create @ \
  && btrfs subvolume create @home \
  && echo "Volumes Criados" \
- && cd "$targetDir$targetDirSeparator@rootfs_tmp" \
- && rsync -vaHAXPxh --numeric-ids --exclude={"@","@home","boot/*","dev/*","proc/*","sys/*","tmp/*","run/*","mnt/*","media/*","lost+found"} -- *  "$targetDir$targetDirSeparator"@/ \
- && echo "Volume root duplicado" \
- && cd "$targetDir$targetDirSeparator@rootfs_tmp/home" \
- && rsync -vaHAXPxh --numeric-ids -- *  "$targetDir$targetDirSeparator"@home/ \
- && echo "Volume home duplicado" \
- && sed -E -i 's@^('"$rootDeviceUuid"')(.*)@#\1\2@' "$targetDir$targetDirSeparator@/etc/fstab" \
- && sed -E -i '\@^(#'"$rootDeviceUuid"')@a '"$rootDeviceUuid"' / btrfs compress=lzo,space_cache,discard 0 0\n'"$rootDeviceUuid"' /home btrfs compress=lzo,space_cache,discard,subvol=@home 0 0' "$targetDir$targetDirSeparator@/etc/fstab" \
- && echo "/etc/fstab editado" \
- && rootBtrfsVolumeId=$(btrfs subvolume list "$targetDir" | grep -E " path @$" | cut -d " " -f 2) \
+ && find * -maxdepth 0 -not \( -path "@*" -o -path "home" \) -exec cp --reflink -a {} @/. \; \
+ && echo "Root Copiado" \
+ && cd home \
+ && find * -maxdepth 0 -exec cp --reflink -a {} ../@home/. \; \ 
+ && echo "Home Copiado" \
+ && cd .. \
+ && rootBtrfsVolumeId=$(btrfs subvolume list / | grep -E " path @$" | cut -d " " -f 2) \
  && btrfs subvolume set-default "$rootBtrfsVolumeId" / \
  && echo "Subvolume root setado para ID: $rootBtrfsVolumeId" \
- && cd "$targetDir$targetDirSeparator" \
- && find * -maxdepth 0 -not \( -path "@" -o -path "@rootfs_tmp" -o -path "@home" -o -path "run"  -o -path "boot" -o -path "cdrom" \) \
- && exit \
- && btrfs subvolume delete "$targetDir$targetDirSeparator"@rootfs_tmp \
- && find * -maxdepth 0 -not \( -path "@" -o -path "@rootfs_tmp" -o -path "@home" -o -path "run"  -o -path "boot" -o -path "cdrom" \) -exec rm -rf {} \;
-
-
-
+ && chroot /@ \
+ && find * -maxdepth 0 -not \( -path "@*" \) -exec rm -rf {} \; \ 
+ && echo "Arquivos excluídos" \
+ && echo "Finalizando"
+ 
 exit
 
 cd "$targetDir" \
