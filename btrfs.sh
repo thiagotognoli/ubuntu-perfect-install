@@ -11,8 +11,10 @@ function checkRoot() {
 checkRoot
 
 
-#ssdOptionsMount=,ssd,discard
-optionsMount=lzo,space_cache,noatime,nodiratime
+ssd=false
+ssdOptionsMount=ssd,discard
+optionsMount="compress=lzo,space_cache,noatime,nodiratime"
+if [[ "$ssd" = "true" ]]; then  optionsMount="$optionsMount,$ssdOptionsMount"; fi;
 #degraded - para raid
 #noatime,nodirtime => em tudo ou somente ssd, mas a náo ser que seja necessário
 mntDirRootfs="/tmp/rootfs"
