@@ -15,6 +15,7 @@ ssd=false
 ssdOptionsMount=ssd,discard
 optionsMount="compress=lzo,space_cache,noatime,nodiratime"
 if [[ "$ssd" = "true" ]]; then  optionsMount="$optionsMount,$ssdOptionsMount"; fi;
+#discard => para ssd
 #degraded - para raid
 #noatime,nodirtime => em tudo ou somente ssd, mas a náo ser que seja necessário
 mntDirRootfs="/tmp/rootfs"
@@ -25,18 +26,18 @@ rootDevice=$(mount | grep "$targetDir " | cut -d " " -f 1)
 bootDevice=$(mount | grep "$targetDir/boot/efi" | cut -d " " -f 1)
 rootDeviceUuid=$(cat "$targetDir/etc/fstab" | grep -E "^.* \/ btrfs" | cut -d " " -f 1)
 bootDeviceUuid=$(cat "$targetDir/etc/fstab" | grep -E "^.* \/boot\/efi " | cut -d " " -f 1)
+currentBtrfsSubvolumeId=$(btrfs subvolume get-default / | cut -d " " -f 2)
 
-$ mount -o compress=lzo,ssd,noatime,nodiratime,space_cache,discard,subvol=@ /dev/sda2 /target  
-UUID=xxxxx / btrfs compress=lzo,noatime,nodiratime,space_cache,ssd,discard,subvol=@ 0 0  
-UUID=xxxxx /home btrfs compress=lzo,noatime,nodiratime,space_cache,ssd,discard,subvol=@home 0 0  
-UUID=xxxxx /boot/efi vfat umask=0077 0 1
-UUID=xxxxx /mnt/btrfs_ssd  btrfs compress=lzo,degraded,noatime,nodiratime,space_cache,ssd,discard     0 0
+#$ mount -o compress=lzo,ssd,noatime,nodiratime,space_cache,discard,subvol=@ /dev/sda2 /target  
+#UUID=xxxxx / btrfs compress=lzo,noatime,nodiratime,space_cache,ssd,discard,subvol=@ 0 0  
+#UUID=xxxxx /home btrfs compress=lzo,noatime,nodiratime,space_cache,ssd,discard,subvol=@home 0 0  
+#UUID=xxxxx /boot/efi vfat umask=0077 0 1
+#UUID=xxxxx /mnt/btrfs_ssd  btrfs compress=lzo,degraded,noatime,nodiratime,space_cache,ssd,discard     0 0
 
 
 mkdir -p "$mntDirRootfs" \
- && mount 
+ && mount -o "$optionsMount" "$rootDeviceUuid" "$mntDirRootfs"
  && cd "$targetDir" \
- && btrfs subvolume snapshot . "$targetDir$targetDirSeparator"@rootfs_tmp \
  && btrfs subvolume create @ \
  && btrfs subvolume create @home \
  && echo "Volumes Criados" \
