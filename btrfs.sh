@@ -50,6 +50,7 @@ mkdir -p "$mntDirRootfs" \
  && rootBtrfsVolumeId=$(btrfs subvolume list / | grep -E " path @$" | cut -d " " -f 2) \
  && btrfs subvolume set-default "$rootBtrfsVolumeId" / \
  && echo "Subvolume root setado para ID: $rootBtrfsVolumeId" \ 
+ && sync \
  && echo "Finalizando"
  
 exit
