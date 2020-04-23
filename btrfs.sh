@@ -47,15 +47,19 @@ mkdir -p "$mntDirRootfs" \
  && find * -maxdepth 0 -exec cp --reflink -a {} ../@home/. \; \ 
  && echo "Home Copiado" \
  && cd .. \
- && rootBtrfsVolumeId=$(btrfs subvolume list / | grep -E " path @$" | cut -d " " -f 2) \
+ && mount -t proc /proc @/proc/ \
+ && mount --rbind /sys @/sys/ \
+ && mount --rbind /dev @/dev/ \
+ && mount --rbind /run @/run/ \
  && chroot "$mntDirRootfs"/@ \
  && mkdir -p "$mntDirRootfs"
  && mount -o "$optionsMount" "$rootDeviceUuid" "$mntDirRootfs"
  && cd "$mntDirRootfs" \
+ && rootBtrfsVolumeId=$(btrfs subvolume list / | grep -E " path @$" | cut -d " " -f 2) \
+ && btrfs subvolume set-default "$rootBtrfsVolumeId" / \
+ && echo "Subvolume root setado para ID: $rootBtrfsVolumeId" \  
  && find * -maxdepth 0 -not \( -path "@*" \) -exec rm -rf {} \; \ 
  && echo "Arquivos excluídos" \
- && btrfs subvolume set-default "$rootBtrfsVolumeId" / \
- && echo "Subvolume root setado para ID: $rootBtrfsVolumeId" \ 
  && echo "Finalizando"
  
 exit
