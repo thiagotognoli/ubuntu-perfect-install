@@ -28,12 +28,6 @@ rootDeviceUuid=$(cat "$targetDir/etc/fstab" | grep -E "^.* \/ btrfs" | cut -d " 
 bootDeviceUuid=$(cat "$targetDir/etc/fstab" | grep -E "^.* \/boot\/efi " | cut -d " " -f 1)
 currentBtrfsSubvolumeId=$(btrfs subvolume get-default / | cut -d " " -f 2)
 
-#$ mount -o compress=lzo,ssd,noatime,nodiratime,space_cache,discard,subvol=@ /dev/sda2 /target  
-#UUID=xxxxx / btrfs compress=lzo,noatime,nodiratime,space_cache,ssd,discard,subvol=@ 0 0  
-#UUID=xxxxx /home btrfs compress=lzo,noatime,nodiratime,space_cache,ssd,discard,subvol=@home 0 0  
-#UUID=xxxxx /boot/efi vfat umask=0077 0 1
-#UUID=xxxxx /mnt/btrfs_ssd  btrfs compress=lzo,degraded,noatime,nodiratime,space_cache,ssd,discard     0 0
-
 
 mkdir -p "$mntDirRootfs" \
  && mount -o "$optionsMount" "$rootDeviceUuid" "$mntDirRootfs"
@@ -47,6 +41,9 @@ mkdir -p "$mntDirRootfs" \
  && find * -maxdepth 0 -exec cp --reflink -a {} ../@home/. \; \ 
  && echo "Home Copiado" \
  && cd .. \
+ && sed -E -i 's@^('"$rootDeviceUuid"')(.*)@#\1\2@' "@/etc/fstab" \
+ && sed -E -i '\@^(#'"$rootDeviceUuid"')@a '"$rootDeviceUuid"' / btrfs '"$optionsMount"' 0 0\n'"$rootDeviceUuid"' /home btrfs '"$optionsMount"',subvol=@home 0 0' "@/etc/fstab" \
+ && echo "/etc/fstab editado" \ 
  && rootBtrfsVolumeId=$(btrfs subvolume list / | grep -E " path @$" | cut -d " " -f 2) \
  && btrfs subvolume set-default "$rootBtrfsVolumeId" / \
  && echo "Subvolume root setado para ID: $rootBtrfsVolumeId" \ 
@@ -55,49 +52,7 @@ mkdir -p "$mntDirRootfs" \
  
 exit
 
-#after reboot
-#!/bin/bash
-
-
-function checkRoot() {
-    if [ "$EUID" -ne 0 ]
-        then echo "Please run as root"
-        exit
-    fi
-}
-
-checkRoot
-
-
-ssd=false
-ssdOptionsMount=ssd,discard
-optionsMount="compress=lzo,space_cache,noatime,nodiratime"
-if [[ "$ssd" = "true" ]]; then  optionsMount="$optionsMount,$ssdOptionsMount"; fi;
-#discard => para ssd
-#degraded - para raid
-#noatime,nodirtime => em tudo ou somente ssd, mas a náo ser que seja necessário
-mntDirRootfs="/tmp/rootfs"
-
-targetDir="/" # if not rebooted targetDir="/target"
-targetDirSeparator="" # if not rebooted targetDir="/target"
-rootDevice=$(mount | grep "$targetDir " | cut -d " " -f 1)
-bootDevice=$(mount | grep "$targetDir/boot/efi" | cut -d " " -f 1)
-rootDeviceUuid=$(cat "$targetDir/etc/fstab" | grep -E "^.* \/ btrfs" | cut -d " " -f 1)
-bootDeviceUuid=$(cat "$targetDir/etc/fstab" | grep -E "^.* \/boot\/efi " | cut -d " " -f 1)
-currentBtrfsSubvolumeId=$(btrfs subvolume get-default / | cut -d " " -f 2)
-
-
-mkdir -p "$mntDirRootfs" \
-    && rootBtrfsVolumeId=$(btrfs subvolume list / | grep -E " path @$" | cut -d " " -f 7) \
-    && mount -o "$optionsMount,subvolid=$rootBtrfsVolumeId" "$rootDeviceUuid" "$mntDirRootfs" \
-    && cd "$mntDirRootfs" \
-    && find * -maxdepth 0 -not \( -path "@*" -o -path "boot" \) -exec rm -rf {} \; \ 
-    && echo "Arquivos excluídos" \
-    && sync \
-    && cd / \
-    && umount "$mntDirRootfs" \
-    && echo "Finalizando"
-exit    
+ 
 
 
 
