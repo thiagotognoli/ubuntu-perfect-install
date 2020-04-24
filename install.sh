@@ -1,6 +1,44 @@
 #!/bin/bash
 
-#todo snap, com e sem maquina antiga
+#https://askubuntu.com/questions/16225/how-can-i-accept-the-microsoft-eula-agreement-for-ttf-mscorefonts-installer
+#sending incremental file list
+#created directory /home/thiago/.SiriKali
+#./
+#kpc/
+#
+#sent 92 bytes  received 68 bytes  320.00 bytes/sec
+#total size is 0  speedup is 0.00
+#mv: não foi possível obter estado de '/home/thiago/snap/netbeans': Arquivo ou diretório inexistente
+#rsync: link_stat "/media/thiago/c339c156-38f0-4710-83b6-f02e83243f69/home/thiago/.config/filezilla" failed: No such file or directory (2)
+#rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1207) [sender=3.1.3]
+#rsync: link_stat "/media/thiago/c339c156-38f0-4710-83b6-f02e83243f69/home/thiago/Público/*" failed: No such file or directory (2)
+#rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1207) [sender=3.1.3]
+#rsync: opendir "/media/thiago/c339c156-38f0-4710-83b6-f02e83243f69/home/thiago/Documentos/antigo/.aptitude" failed: Permission denied (13)
+#rsync: opendir "/media/thiago/c339c156-38f0-4710-83b6-f02e83243f69/home/thiago/Documentos/antigo/.cache/dconf" failed: Permission denied (13)
+#rsync: opendir "/media/thiago/c339c156-38f0-4710-83b6-f02e83243f69/home/thiago/Documentos/antigo/.cache/doc" failed: Permission denied (13)
+#rsync: opendir "/media/thiago/c339c156-38f0-4710-83b6-f02e83243f69/home/thiago/Documentos/antigo/.dbus" failed: Permission denied (13)
+#rsync: opendir "/media/thiago/c339c156-38f0-4710-83b6-f02e83243f69/home/thiago/Documentos/antigo/.gvfs" failed: Permission denied (13)
+#rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1207) [sender=3.1.3]
+#rsync: link_stat "/media/thiago/c339c156-38f0-4710-83b6-f02e83243f69/home/thiago/Música/*" failed: No such file or directory (2)
+#rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1207) [sender=3.1.3]
+
+#TODO: fontes hackeadas corretamente
+#TODO: automatizar tt mscorefonts
+#TODO: extensoes shell perguntar de uma vez somente e add as novas indicadas aqui
+#TODO: erros de nao existe, do rsync, ver se diretorio origem esta va\io, se tiver nao fazer
+#TODO: java - jre - jdk
+#TODO: https://github.com/tliron/em-dash e dash to dock
+#TODO: adicionar parametros no rsync, igual do script btrfs, ver o user do rsync, esta dando erro em alguns arquivos
+#TODO: quebrando instalação de programas, provavelmente pelo fato das novas subjanelas usarem as mesmas variaveis
+#TODO: dashtodocker gnomeshellextension
+#TODO: snap, com e sem maquina antiga
+#TODO: virtualbox
+#TODO: criar snapshot zfs, opcional
+#TODO: separa aplgumas aplicações, com outra tela perguntando, por exemplo gráfico perguntar gimp e inkscape
+#TODO: melhorar e colocar whatsapp
+#TODO: fazer app de backup
+#TODO: fazer seleção de base o q instar, loja loja com snap loja com flatpack por exemplo
+#TODO: validar se home antiga realmente eh home, validar se home antiga tem o arquivo pra restaurar, por exemplo se nao tiver team viewer nao mostrar opcao
 
 #backup e restore e com hd antigo, backup home toda ?, criptografar ? comprimir ?
 #perguntar o que restaurar , e do home tbm
@@ -15,7 +53,6 @@
 ##Installing Unite Gnome Shell Extension
 ##[1287] Obtaining extension info
 ##ERROR: Use your package manager to update this extension
-
 # snap install sqlitebrowser-casept
 
 
@@ -72,7 +109,6 @@ function installApps() {
         install_photographytools \
         install_vlcvideoplayer \
         install_chats \
-        install_whatsappelectron \
         install_develtools \
         install_docker \
         install_teamviewer \
@@ -81,24 +117,23 @@ function installApps() {
     options_title=(\
         "Alternative Terminals (terminator, terminology, cool-retro-term)"\
         "Monitor Tools (htop, iotop)"\
-        "ZSH & Oh My ZSH" \
-        "LSD" \
-        "Mackup" \
-        "Config Gnome Shell" \
-        "Gnome Shell Extensions" \
-        "Google Chrome" \
-        "Chromium Browser" \
-        "Flameshot Screen Shot" \
-        "Crypto Folders (gocryptfs, SiriKali)" \
-        "KeePassXC" \
-        "Authenticator (2FA)" \
-        "Design Tools (Inkscape, GIMP)" \
-        "Photography Tools (DarkTable)" \
-        "VLC Video Player" \
-        "Chats (WhatsDesk, Telegram Desktop, Slack)" \
-        "Whatsapp Electron" \
-        "Devel Tools" \
-        "Docker" \
+        "ZSH & Oh My ZSH"\
+        "LSD"\
+        "Mackup"\
+        "Config Gnome Shell"\
+        "Gnome Shell Extensions"\
+        "Google Chrome"\
+        "Chromium Browser"\
+        "Flameshot Screen Shot"\
+        "Crypto Folders (gocryptfs, SiriKali)"\
+        "KeePassXC"\
+        "Authenticator (2FA)"\
+        "Design Tools (Inkscape, GIMP)"\
+        "Photography Tools (DarkTable)"\
+        "VLC Video Player"\
+        "Chats (Skype, Teams, WhatsDesk, Telegram Desktop, Slack, Whatsapp Electron, Discord)"\
+        "Devel Tools"\
+        "Docker"\
         "Team Viewer")
 
     options_selected=(\
@@ -119,7 +154,6 @@ function installApps() {
         TRUE \
         TRUE \
         TRUE \
-        FALSE \
         TRUE \
         TRUE \
         TRUE)
@@ -142,32 +176,77 @@ function installApps() {
 }
 
 function callAppsFunctions() {
+	local _optionsTitles=("${options_title[@]}")
+	local _optionsCommands=("${options_id[@]}")
+	local _optionsLength=("${optionsLength[@]}")
+	
     local IFS="|"
     for app in $1;
     do
-        for (( i=0; i<${optionsLength}; i++ ));
+        for (( i=0; i<${_optionsLength}; i++ ));
         do
-            [[ "${options_title[$i]}" == "$app" ]] && eval "${options_id[$i]}"
+            [[ "${_optionsTitles[$i]}" == "$app" ]] && eval "${_optionsCommands[$i]}"
         done
     done
 }
 
 function install_base() {
     sudo apt update
+
+    echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
     sudo apt install -y ubuntu-restricted-extras
+
     sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
-    sudo apt install -y aptitude synaptic
+    sudo apt install -y aptitude synaptic gnome-software gnome-software-plugin-snap
     sudo apt install -y flatpak gnome-software-plugin-flatpak \
         && flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
     sudo apt install -y wget curl rsync git bash dbus perl less mawk sed
     sudo apt install -y nfs-common
+}
 
+function install_alternative_terminals_terminator() {
+	sudo apt install terminator -y
+}
+function install_alternative_terminals_terminology() {
+	sudo snap install --edge --classic terminology
+}
+function install_alternative_terminals_coolretroterm() {
+	sudo snap install --classic cool-retro-term
 }
 
 function install_alternative_terminals() {
-    sudo apt install terminator -y
-    sudo snap install --edge --classic terminology
-    sudo snap install --classic cool-retro-term
+    	
+   options_id=(\
+        install_alternative_terminals_terminator \
+        install_alternative_terminals_terminology \
+        install_alternative_terminals_coolretroterm \
+    )
+
+    options_title=(\
+        "Terminator"\
+        "Terminology"\
+        "Cool Retro Term")
+
+    options_selected=(\
+        TRUE \
+        TRUE \
+        TRUE)
+
+
+    optionsLength=${#options_id[@]}
+    optionsToShow=();
+    for (( i=0; i<${optionsLength}; i++ ));
+    do
+        optionsToShow+=(${options_selected[$i]} "${options_title[$i]}")
+    done
+
+    appsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione os APPs para instalar" \
+        --checklist \
+        --column "Marcar" \
+        --column "App" \
+        "${optionsToShow[@]}")
+
+    callAppsFunctions "$appsSelected"
 }
 
 function install_monitor_tools() {
@@ -232,16 +311,16 @@ function config_gnomeshell() {
     sudo -u $currentUser gsettings set org.gnome.shell.extensions.dash-to-dock click-action minimize
     ## Restore to default action
     #sudo -u $currentUser gsettings reset org.gnome.shell.extensions.dash-to-dock click-action
-
-    # Install Desktop Folder https://github.com/spheras/desktopfolder
-    sudo apt install desktopfolder -y
-
-    # Install psensor https://wpitchoune.net/psensor/
-    sudo apt install psensor -y
 }
 
 function install_gnomeshellextensions() {
     #zenity --question --width=600 --height=400 --text "Instalar Gnome Shell Extensions?" || return 0
+
+    # Install Desktop Folder https://github.com/spheras/desktopfolder
+    zenity --question --width=600 --height=400 --text "Instalar Gnome Shell Extensions - Desktop Folder ?" && sudo apt install desktopfolder -y
+
+    # Install psensor https://wpitchoune.net/psensor/
+    zenity --question --width=600 --height=400 --text "Instalar Gnome Shell Extensions - PSensor ?" && sudo apt install psensor -y
 
     sudo apt install wget bash curl dbus perl git less -y \
     && sudo -u $currentUser mkdir -p $binDir \
@@ -258,10 +337,8 @@ function install_gnomeshellextensions() {
         for (( i=0; i<${gnomeExtensionslength}; i++ ));
         do
             echo "Installing ${gnomeExtensions_Name[$i]} Gnome Shell Extension"
-            sudo -u $currentUser $binDir/gnome-shell-extension-installer ${gnomeExtensions_Id[$i]}
+            zenity --question --width=600 --height=400 --text "Instalar Gnome Shell Extensions - ${gnomeExtensions_Name[$i]} ?" && sudo -u $currentUser $binDir/gnome-shell-extension-installer ${gnomeExtensions_Id[$i]}
         done
-        #gnome-shell --replace -d $DISPLAY ##restart gnome-shell and close all programs confirm
-        ##DISPLAY=$(w| grep "$USER"| awk "{print \$3}"|grep ":"|head -1)
     else
         echo "Fail to install pre-requisites to Gnome Extensions"
     fi
@@ -274,7 +351,8 @@ function install_cryptofolders_gocryptfs() {
 
 function install_keppasxc() {
     #zenity --question --width=600 --height=400 --text "Instalar KeepasXC?" || return 0
-    sudo snap install keepassxc
+    #sudo snap install keepassxc
+    sudo -u $currentUser flatpak install -y flathub org.keepassxc.KeePassXC
 }
 
 function install_authenticator() {
@@ -303,12 +381,88 @@ function install_vlcvideoplayer() {
 }
 
 function install_chats() {
-    #zenity --question --width=600 --height=400 --text "Instalar Chats Tools?" || return 0
-    sudo snap install whatsdesk telegram-desktop
+   options_id=(\
+        install_chats_whatsdesk \
+        install_chats_telegramdesktop \
+        install_chats_skype \
+        install_chats_slack \
+        install_chats_teams \
+        install_chats_whatsappelectron \
+        "sudo -u $currentUser flatpak install -y flathub com.discordapp.Discord"\
+    )
+
+    options_title=(\
+        "WhatsDesk"\
+        "Telegram desktop"\
+        "Skype"\
+        "Slack"\
+        "Teams Microsoft"\
+        "WhatsApp Electrom"\
+        "Discord")
+
+    options_selected=(\
+        FALSE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        FALSE \
+        FALSE)
+
+
+    optionsLength=${#options_id[@]}
+    optionsToShow=();
+    for (( i=0; i<${optionsLength}; i++ ));
+    do
+        optionsToShow+=(${options_selected[$i]} "${options_title[$i]}")
+    done
+
+    appsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione os APPs para instalar" \
+        --checklist \
+        --column "Marcar" \
+        --column "App" \
+        "${optionsToShow[@]}")
+
+    callAppsFunctions "$appsSelected"
+    
+}
+
+function install_chats_whatsdesk() {
+    sudo snap install whatsdesk
+}
+
+function install_chats_telegramdesktop() {
+    sudo snap install telegram-desktop
+}
+
+function install_chats_skype() {
+    sudo snap install --classic skype
+}
+
+function install_chats_slack() {
     sudo snap install --classic slack
 }
 
-function install_whatsappelectron() {
+function install_chats_teams() {
+    teamsDebBaseURL="https://packages.microsoft.com/repos/ms-teams/pool/main/t/teams/";
+    teamsLastData=0;
+    teamsLastURL="";
+    while read line; do
+		data=$(sed -r 's/(.*)(<\/a>)(\s*)([^ ]*)(.*)/\4/' <<<  "$line" ); data=$(date -d"$data" +%Y%m%d);
+		if (( data > teamsLastData )); then 
+			teamsLastURL=$(sed -r 's/(.*)(href\=\")([^\"]*)(.*)/\3/' <<<  "$line" );
+			teamsLastData="$data";
+		fi;
+	done <<< $(wget -qO- "$teamsDebBaseURL" | grep -E '<a href="teams');
+    mkdir -p /tmp/teamsmicrosoftinstall \
+        && wget -O /tmp/teamsmicrosoftinstall/teams.deb "$teamsDebBaseURL$teamsLastURL" \
+        && sudo dpkg -i /tmp/teamsmicrosoftinstall/teams.deb
+    sudo apt install -f
+    rm -rf /tmp/teamsmicrosoftinstall
+}
+
+
+function install_chats_whatsappelectron() {
     #zenity --question --width=600 --height=400 --text "Instalar WhatsApp Electron?" || return 0
     sudo apt install git -y \
     && sudo snap install --edge node --classic \
@@ -333,37 +487,69 @@ function install_whatsappelectron() {
 #    && sudo bash -c "echo -e '[Desktop Entry]\nVersion=1.1\nType=Application\nName=WhatsApp\nComment=WhatsApp Web.\nIcon=/opt/AppImage/icons/whatsapp.svg\nExec=/opt/AppImage/whatsapp-electron.AppImage\nActions=\nTerminal=false\nCategories=Network;' | tee '/usr/share/applications/whatsapp.desktop'"
 #    && sudo -u $currentUser chmod +x "$currentHomeDir/.local/share/applications/whatsapp.desktop"
 
-
-
 }
 
 function install_develtools() {
-    #zenity --question --width=600 --height=400 --text "Instalar Devel Tools?" || return 0
+   options_id=(\
+		"install_vscode" \
+        "sudo apt install -y mysql-workbench" \
+        "sudo apt install -y filezilla" \
+        "sudo snap install --classic netbeans" \
+        "sudo snap install --edge node --classic" \
+        "install_golang" \
+        "sudo snap install robo3t-snap" \
+        "sudo snap install gitkraken" \
+        "sudo snap install insomnia"\
+        "sudo -u $currentUser flatpak install -y flathub io.github.wereturtle.ghostwriter"\
+    )
 
-    #MySql client
-    zenity --question --width=600 --height=400 --text "Instalar MySQL Workbench (Mysql GUI Client)?" && sudo apt install -y mysql-workbench
-    #FTP client
-    zenity --question --width=600 --height=400 --text "Instalar Filezilla (FTP GUI Client)?" && sudo apt install -y filezilla
-    #netbeans
-    zenity --question --width=600 --height=400 --text "Instalar IDE Netbeans?" && sudo snap install --classic netbeans 
-    #nodejs
-    zenity --question --width=600 --height=400 --text "Instalar NodeJs (snap)?" && sudo snap install --edge node --classic
-    #robo3t - mongodb gui
-    zenity --question --width=600 --height=400 --text "Instalar Robo3T (MongoDB Gui Client)?" && sudo snap install robo3t-snap
-    #Git Gui Client
-    zenity --question --width=600 --height=400 --text "Instalar Git Kraken (Git Gui Client)?" && sudo snap install gitkraken
-    #Insomnia Rest Client
-    zenity --question --width=600 --height=400 --text "Instalar Insomnia (HTTP Rest Client)?" && sudo snap install insomnia
-    #GhostWriter - mkd editor
-    zenity --question --width=600 --height=400 --text "Instalar GhostWriter (MKD Editor)?" && sudo -u $currentUser flatpak install -y flathub io.github.wereturtle.ghostwriter
     
-    zenity --question --width=600 --height=400 --text "Instalar Visual Studio Code?" && install_vscode
-    
-    zenity --question --width=600 --height=400 --text "Instalar Go Lang?" && install_golang
+    options_title=(\
+		"Visual Studio Code [snap]"\
+        "MySQL Workbench (Mysql GUI Client) [apt]"\
+        "Filezilla (FTP GUI Client) [apt]"\
+        "Netbeans [snap]"\
+        "NodeJS [snap]"\
+        "Go Lang [snap]"\
+        "Robot3t (MongoDB Gui Client) [snap]"\
+        "Git Kraken (Git Gui Client) [snap]"\
+        "Insomnia (HTTP Rest Client) [snap]"\
+        "GhostWriter (MKD Editor) [flat]"\
+    )
+
+    options_selected=(\
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+    )
+
+
+    optionsLength=${#options_id[@]}
+    optionsToShow=();
+    for (( i=0; i<${optionsLength}; i++ ));
+    do
+        optionsToShow+=(${options_selected[$i]} "${options_title[$i]}")
+    done
+
+    appsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione os APPs para instalar" \
+        --checklist \
+        --column "Marcar" \
+        --column "App" \
+        "${optionsToShow[@]}")
+
+    callAppsFunctions "$appsSelected"
+
 }
 
 function install_golang() {
-    sudo snap install --classic code
+	sudo snap install --classic go
     if ! sudo -u $currentUser bash -c "grep -q \"\$HOME/go\" $currentHomeDir/.profile"; then
         sudo -u $currentUser bash -c "echo -e '\n#set GOPATH and GO_BIN\nif [ -d \"\$HOME/go\" ] ; then\n  export GO_PATH=\"\$HOME/go\"\n   # set PATH so it includes user'\''s go bin if it exists\n  if [ -d \"\$GO_PATH/bin\" ] ; then\n     PATH=\"\$GO_PATH/bin:$PATH\"\n   fi\nfi' >> $currentHomeDir/.profile"
     fi
@@ -371,16 +557,13 @@ function install_golang() {
 }
 
 function install_vscode() {
-    #see native instalation some resources not working zsh ??
     #zenity --question --width=600 --height=400 --text "Instalar Visual Studio Code?" || return 0
     #vscode
     sudo snap install --classic code
     sudo bash -c "echo "\nfs.inotify.max_user_watches=524288" >> /etc/sysctl.conf" # configuração para repositórios grandes do vscode
-    #https://marketplace.visualstudio.com/items?itemName=humao.rest-client # todo backup etensions from old
 }
 
 function install_flameshotscreenshot() {
-    #zenity --question --width=600 --height=400 --text "Instalar Flameshot Screen Shot?" || return 0
     sudo apt install -y flameshot \
     && sudo -u $currentUser bash -c "echo -e '[Desktop Entry]\nVersion=1.1\nType=Application\nName=Flameshot Screenshot\nComment=Screenshot.\nIcon=flameshot\nExec=flameshot gui\nActions=\nCategories=Graphics;' | tee '$currentHomeDir/.local/share/applications/flameshot-screenshot.desktop'" \
     && sudo -u $currentUser chmod +x "$currentHomeDir/.local/share/applications/flameshot-screenshot.desktop"
@@ -444,139 +627,177 @@ function restore_from_old_install() {
     #zenity --file-selection --title="Select a Old Home Folder" --directory
     #oldRoot="$(sudo -u $currentUser bash -c 'cd ~ && zenity --file-selection --title="Select a Old Root Directory" --directory')"
     #sudo -u $currentUser rsync -az "$oldRoot/data" "/data"
-    oldHome="$(cd "$currentHomeDir" && zenity --file-selection --title="Select a Old Root Directory" --directory)"
-
-    #echo "----->Bash config"
-    #sudo -u $currentUser rsync -az "$oldHome/.bashrc" "$homeDir/"
+    oldHome="$(cd "$currentHomeDir" && zenity --file-selection --title="Select a Old Home Directory" --directory)"
     
-    #echo "----->Profile config"
-    #sudo -u $currentUser rsync -az "$oldHome/.profile" "$homeDir/"
+    
 
-    echo "----->Git config"
-    sudo -u $currentUser rsync -az "$oldHome/.gitconfig" "$homeDir/"
+	#TODO:
+    ##flat packages
+    #echo "----->All Flat Packages with configs"
+    #sudo -u $currentUser rsync -az "$oldHome/.var" "$homeDir/"
+    ##snap packages
+    #echo "----->All Snap Packages configs"
+    #sudo -u $currentUser rsync -az "$oldHome/snap" "$homeDir/"
 
-    echo "----->ZSH config"
-    sudo -u $currentUser rsync -az "$oldHome/.zshrc" "$homeDir/"
-    echo "----->Powerline 10K"
-    sudo -u $currentUser rsync -az "$oldHome/.p10k.zsh" "$homeDir/"
+   options_id=(\
+		"sudo -u $currentUser rsync -az '$oldHome/.bashrc' '$homeDir/'" \
+		"sudo -u $currentUser rsync -az '$oldHome/.profile' '$homeDir/'" \
+		"sudo -u $currentUser rsync -az '$oldHome/.zshrc' '$homeDir/'" \
+		"sudo -u $currentUser rsync -az '$oldHome/.p10k.zsh' '$homeDir/'" \
+		"sudo -u $currentUser rsync -az '$oldHome/.ssh' '$homeDir/'" \
+		"sudo -u $currentUser rsync -az '$oldHome/.gitconfig' '$homeDir/'" \
+		"sudo -u $currentUser rsync -az '$oldHome/.gnupg' '$homeDir/'" \
+		"sudo -u $currentUser mv '$homeDir/.local/share/keyrings' '$homeDir/.local/share/keyrings.old' && sudo -u $currentUser mkdir -p '$homeDir/.local/share/keyrings' && sudo -u $currentUser cp -r '$oldHome/.local/share/keyrings/'{login.keyring,user.keystore} '$homeDir/.local/share/keyrings'" \
+		"sudo -u $currentUser rsync -az '$oldHome/.mackup.cfg' '$homeDir/'" \
+		"sudo -u $currentUser rsync -az '$oldHome/.thunderbird' '$homeDir/'" \
+		"sudo -u $currentUser rsync -az '$oldHome/.config/SiriKali' '$homeDir/.config/'; sudo -u $currentUser bash -c  'rsync -vazhP "'"'"$oldHome/.SiriKali/"'"'" "'"'"$homeDir/.SiriKali/"'"'" --exclude "'"'"*/*"'"'" --include "'"'"*"'"'"'" \
+		"sudo -u $currentUser rsync -az '$oldHome/.wine' '$homeDir/'" \
+		"sudo -u $currentUser rsync -az '$oldHome/Nextcloud'* '$homeDir/'" \
+		"sudo -u $currentUser rsync -az '$oldHome/.config/Nextcloud' '$homeDir/.config/'" \
+		"sudo -u $currentUser mv '$homeDir/snap/netbeans' '$homeDir/snap/netbeans.old'; sudo -u $currentUser rsync -az '$oldHome/snap/netbeans' '$homeDir/snap/'" \
+		"sudo -u $currentUser rsync -az '$oldHome/.mysql'* '$homeDir/'" \
+		"sudo -u $currentUser rsync -az '$oldHome/.config/filezilla' '$homeDir/.config/'" \
+		"sudo -u $currentUser mkdir -p '$homeDir/.local/share/gnome-shell/'; sudo -u $currentUser rsync -az '$oldHome/.local/share/gnome-shell/extensions' '$homeDir/.local/share/gnome-shell/'" \
+		"sudo -u $currentUser rsync -az '$oldHome/.config/google-chrome' '$homeDir/.config/'" \
+		"sudo -u $currentUser rsync -az '$oldHome/.mozilla' '$homeDir/'" \
+		"sudo -u $currentUser rsync -az '$oldHome/.config/transmission' '$homeDir/.config/'" \
+		"sudo -u $currentUser rsync -az '$oldHome/.config/teamviewer' '$homeDir/.config/'" \
+		"sudo -u $currentUser rsync -az '$oldHome/.config/libreoffice' '$homeDir/.config/'" \
+		"sudo -u $currentUser rsync -az '$oldHome/.psensor' '$homeDir/'" \
+		"sudo -u $currentUser rsync -az '$oldHome/.fonts' '$homeDir/'"\
+	)
 
-    echo "----->Mackup"
-    sudo -u $currentUser rsync -az "$oldHome/.mackup.cfg" "$homeDir/"
+    
+    options_title=(\
+			"Bash config"\
+			"Profile Config"\
+			"Zsh Config"\
+			"Power Level 10K Zsh Config"\
+			"Ssh Config"\
+			"Git Config"\
+			"GnuPG"\
+			"Gnome Keyrings"\
+			"Mackup Config"\
+			"Thunderbird Config e E-mails"\
+			"SiriKali Config e Diretórios"\
+			"Wine"\
+			"Nextcloud Repositórios"\
+			"Nextcloud Config"\
+			"Netbeans Snap Config"\
+			"MySQL Client Config"\
+			"Filezzila Config"\
+			"Gnome Shell Extensions e Configs"\
+			"Google Chrome Dados e Config"\
+			"Mozilla Firefox Dados e Config"\
+			"Transmission config"\
+			"Team Viewer config"\
+			"Libre Office config"\
+			"PSensor config"\
+			"Fonts (User)"\
+	)
 
-    echo "----->SSH config"
-    sudo -u $currentUser rsync -az "$oldHome/.ssh" "$homeDir/"
-    echo "----->GNU PG"
-    sudo -u $currentUser rsync -az "$oldHome/.gnupg" "$homeDir/"
-    echo "----->Thunderbir config"
-    sudo -u $currentUser rsync -az "$oldHome/.thunderbird" "$homeDir/"
-    echo "----->Gnome Keyrings"
-    sudo -u $currentUser mv "$homeDir/.local/share/keyrings" "$homeDir/.local/share/keyrings.old"
-    sudo -u $currentUser mkdir -p "$homeDir/.local/share/keyrings"
-    sudo -u $currentUser cp -r "$oldHome/.local/share/keyrings/"{login.keyring,user.keystore} "$homeDir/.local/share/keyrings"
-    echo "----->SiriKali config and Repo structure"
-    sudo -u $currentUser rsync -az "$oldHome/.config/SiriKali" "$homeDir/.config/"
-    sudo -u $currentUser bash -c  'rsync -vazhP "'$oldHome'/.SiriKali/" "'$homeDir'/.SiriKali/" --exclude "*/*" --include "*"'
-
-    echo "----->Wine"
-    sudo -u $currentUser rsync -az "$oldHome/.wine" "$homeDir/"
-
-    if zenity --question --width=600 --height=400 --text "Recuperar Repositório NextCloud (caso recuse ele será sincronizado com o servidor, o processo será mais lento mas será feito)?"
-    then
-        echo "----->NextCloud Repositories"
-        sudo -u $currentUser rsync -az "$oldHome/Nextcloud"* "$homeDir/"
-    fi
-
-    echo "----->NextCloud config"
-    sudo -u $currentUser rsync -az "$oldHome/.config/Nextcloud" "$homeDir/.config/"
-
-    echo "----->Netbeans Snap config"
-    sudo -u $currentUser mv "$homeDir/snap/netbeans" "$homeDir/snap/netbeans.old"
-    sudo -u $currentUser rsync -az "$oldHome/snap/netbeans" "$homeDir/snap/"
-
-    echo "----->MySQL Client config"
-    sudo -u $currentUser rsync -az "$oldHome/.mysql"* "$homeDir/"
-    echo "----->Filezzila config"
-    sudo -u $currentUser rsync -az "$oldHome/.config/filezilla" "$homeDir/.config/"
-
-    #restore gnome shel extensions with configs
-    echo "----->Gnome Shell Extensions"
-    sudo -u $currentUser mkdir -p "$homeDir/.local/share/gnome-shell/"
-    sudo -u $currentUser rsync -az "$oldHome/.local/share/gnome-shell/extensions" "$homeDir/.local/share/gnome-shell/"
-
-    #backup chrome
-    echo "----->Google Chrome config"
-    sudo -u $currentUser rsync -az "$oldHome/.config/google-chrome" "$homeDir/.config/"
-    #backup chromium
-    #backup firfox
-    echo "----->Mozilla Firefox config"
-    sudo -u $currentUser rsync -az "$oldHome/.mozilla" "$homeDir/"
-
-    echo "----->Transmission config"
-    sudo -u $currentUser rsync -az "$oldHome/.config/transmission" "$homeDir/.config/"
-    echo "----->Team Viewer config"
-    sudo -u $currentUser rsync -az "$oldHome/.config/teamviewer" "$homeDir/.config/"
-
-    #sudo -u $currentUser rsync -az "$oldHome/.config/slimbookbattery" "$homeDir/.config/"
-    echo "----->Libre Office config"
-    sudo -u $currentUser rsync -az "$oldHome/.config/libreoffice" "$homeDir/.config/"
-
-    #sudo -u $currentUser rsync -az "$oldHome/.config/autostart" "$homeDir/.config/"
-
-    echo "----->PSensor config"
-    sudo -u $currentUser rsync -az "$oldHome/.psensor" "$homeDir/"
+    options_selected=(\
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+        TRUE \
+    )
 
 
-    echo "----->Fonts (User)"
-    sudo -u $currentUser rsync -az "$oldHome/.fonts" "$homeDir/"
+    optionsLength=${#options_id[@]}
+    optionsToShow=();
+    for (( i=0; i<${optionsLength}; i++ ));
+    do
+        optionsToShow+=(${options_selected[$i]} "${options_title[$i]}")
+    done
+    appsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione Configs/Dados para Recuperar" \
+        --checklist \
+        --column "Marcar" \
+        --column "App" \
+        "${optionsToShow[@]}")
 
-    #flat packages
-    echo "----->All Flat Packages with configs"
-    sudo -u $currentUser rsync -az "$oldHome/.var" "$homeDir/"
-    #snap packages
-    echo "----->All Snap Packages configs"
-    sudo -u $currentUser rsync -az "$oldHome/snap" "$homeDir/"
+    callAppsFunctions "$appsSelected"
 
-    if zenity --question --width=600 --height=400 --text "Recuperar Arquivos da Home Antiga?"
-    then
-        oldDirectoyPathVars="$(cat "$oldHome/.config/user-dirs.dirs")"
-        currentDirectoyPathVars="$(cat "$homeDir/.config/user-dirs.dirs")"
+
+
+    #if zenity --question --width=600 --height=400 --text "Recuperar Arquivos da Home Antiga?"
+    #then
+    
+		optionsHomeToShow=();
+		optionsHomeTitles=();
+		optionsHomeId=();
+		
+        oldDirectoyPathVars=$(sed -r "s/(#.*)//" "$oldHome/.config/user-dirs.dirs" | sed '/^[[:space:]]*$/d')
+        currentDirectoyPathVars=$(sed -r "s/(#.*)//" "$homeDir/.config/user-dirs.dirs" | sed '/^[[:space:]]*$/d')
+		SAVEIFS=$IFS   # Save current IFS
+		IFS=$'\n'      # Change IFS to new line
+		#oldDirectoyPathVars=($oldDirectoyPathVars) # split to array $names
+		#currentDirectoyPathVars=($currentDirectoyPathVars) # split to array $names
+		currentDirectoyPathVarsArray=($currentDirectoyPathVars) # split to array $names
+		IFS=$SAVEIFS   # Restore IFS
         # get length of an array
-        currentDirectoyPathVarsLength=${#currentDirectoyPathVars[@]}
+        currentDirectoyPathVarsLength=${#currentDirectoyPathVarsArray[@]}
         # use for loop to read all values and indexes
         for (( i=0; i<${currentDirectoyPathVarsLength}; i++ ));
         do
-            oldDirectoyPathVar=$(echo "$oldDirectoyPathVars" | grep "${oldDirectoyPathVars[$i]}")
-            currentDirectoyPathVar=$(echo "$currentDirectoyPathVars" | grep "${currentDirectoyPathVars[$i]}")
-            oldDirectoyPath=$(echo ${oldDirectoyPathVar/${oldDirectoyPathVars[$i]}=/""} | tr -d '"')
+			currentVar="$(echo "${currentDirectoyPathVarsArray[$i]}" | sed -r "s/^([^\=]*)(.*)/\1/")"
+			
+			currentDirectoryPath="$(echo "${currentDirectoyPathVarsArray[$i]}" | sed -r 's/^([^\=]*)(\=)(")([^"]*)(")/\4/')"
+			currentDirectoryPath="$(echo "${currentDirectoryPath/\$HOME/$homeDir}")"
+			
+            oldDirectoyPath="$(echo "$oldDirectoyPathVars" | grep -E "^"$currentVar"\=" | sed -r 's/^([^\=]*)(\=)(")([^"]*)(")/\4/')"
             oldDirectoyPath="$(echo "${oldDirectoyPath/\$HOME/$oldHome}")"
-            currentDirectoyPath=$(echo ${currentDirectoyPathVar/${currentDirectoyPathVars[$i]}=/""} | tr -d '"')
-            currentDirectoyPath="$(echo "${currentDirectoyPath/\$HOME/$homeDir}")"
-
-            if zenity --question --width=600 --height=400 --text "Copiar dados da Pasta \"$oldDirectoyPath\" (Home Antiga) para a pasta \"$currentDirectoyPath\" (Home Atual)?"
-            then
-                echo "----->Copying of \"$oldDirectoyPath\" to  \"$currentDirectoyPath\"."
-                sudo -u $currentUser rsync -az "$oldDirectoyPath/"* "$currentDirectoyPath/"
-            fi
+        
+			title="Copiar $oldDirectoyPath => $currentDirectoryPath"
+			optionsHomeTitles+=("$title")
+			optionsHomeToShow+=(TRUE "$title")
+			optionsHomeCommand+=("sudo -u $currentUser rsync -az '$oldDirectoyPath/'* '$currentDirectoryPath/'")
         done
-    fi
+		optionsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione Pastas da Home Antiga para Recuperar" \
+			--checklist \
+			--column "Marcar" \
+			--column "App" \
+			"${optionsHomeToShow[@]}")
+		optionsHomeLength=${#optionsHomeTitles[@]}
+		local IFS="|"
+		for commandId in $optionsSelected;
+		do
+			for (( i=0; i<${optionsHomeLength}; i++ ));
+			do
+				[[ "${optionsHomeTitles[$i]}" == "$commandId" ]] && eval "${optionsHomeCommand[$i]}"
+			done
+		done
+    #fi
 }
 
 function createTemplates() {
     if zenity --question --width=600 --height=400 --text "Criar Templates?"
     then
-        currentDirectoyPathVars="$(cat "$homeDir/.config/user-dirs.dirs")"
-        currentDirectoyPathVarsLength=${#currentDirectoyPathVars[@]}
-        
-        # use for loop to read all values and indexes
-        for (( i=0; i<${currentDirectoyPathVarsLength}; i++ ));
-        do
-            currentDirectoyPathVar=$(echo "$currentDirectoyPathVars" | grep "${currentDirectoyPathVars[$i]}")
-            if [ "$currentDirectoyPathVar" == "XDG_TEMPLATES_DIR" ]; then
-                currentDirectoyPath=$(echo ${currentDirectoyPathVar/${currentDirectoyPathVars[$i]}=/""} | tr -d '"')
-                currentDirectoyPath="$(echo "${currentDirectoyPath/\$HOME/$homeDir}")"
-                touch "$currentDirectoyPath/novo.txt"
-            fi
-        done
+        currentDirectoyPathVars="$(sed -r "s/(#.*)//" "$currentHomeDir/.config/user-dirs.dirs" | sed '/^[[:space:]]*$/d')"
+        currentDirectoryPath="$(echo "$currentDirectoyPathVars" | grep -E "^XDG_TEMPLATES_DIR\=" | sed -r 's/^([^\=]*)(\=)(")([^"]*)(")/\4/')"
+        currentDirectoryPath="$(echo "${currentDirectoryPath/\$HOME/$currentHomeDir}")"
+        sudo -u $currentUser touch "$currentDirectoryPath/Novo.txt"
     fi
 }    
 
