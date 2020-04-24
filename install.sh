@@ -639,91 +639,169 @@ function restore_from_old_install() {
     #echo "----->All Snap Packages configs"
     #sudo -u $currentUser rsync -az "$oldHome/snap" "$homeDir/"
 
-   options_id=(\
-		"sudo -u $currentUser rsync -az '$oldHome/.bashrc' '$homeDir/'" \
-		"sudo -u $currentUser rsync -az '$oldHome/.profile' '$homeDir/'" \
-		"sudo -u $currentUser rsync -az '$oldHome/.zshrc' '$homeDir/'" \
-		"sudo -u $currentUser rsync -az '$oldHome/.p10k.zsh' '$homeDir/'" \
-		"sudo -u $currentUser rsync -az '$oldHome/.ssh' '$homeDir/'" \
-		"sudo -u $currentUser rsync -az '$oldHome/.gitconfig' '$homeDir/'" \
-		"sudo -u $currentUser rsync -az '$oldHome/.gnupg' '$homeDir/'" \
-		"sudo -u $currentUser mv '$homeDir/.local/share/keyrings' '$homeDir/.local/share/keyrings.old' && sudo -u $currentUser mkdir -p '$homeDir/.local/share/keyrings' && sudo -u $currentUser cp -r '$oldHome/.local/share/keyrings/'{login.keyring,user.keystore} '$homeDir/.local/share/keyrings'" \
-		"sudo -u $currentUser rsync -az '$oldHome/.mackup.cfg' '$homeDir/'" \
-		"sudo -u $currentUser rsync -az '$oldHome/.thunderbird' '$homeDir/'" \
-		"sudo -u $currentUser rsync -az '$oldHome/.config/SiriKali' '$homeDir/.config/'; sudo -u $currentUser bash -c  'rsync -vazhP "'"'"$oldHome/.SiriKali/"'"'" "'"'"$homeDir/.SiriKali/"'"'" --exclude "'"'"*/*"'"'" --include "'"'"*"'"'"'" \
-		"sudo -u $currentUser rsync -az '$oldHome/.wine' '$homeDir/'" \
-		"sudo -u $currentUser rsync -az '$oldHome/Nextcloud'* '$homeDir/'" \
-		"sudo -u $currentUser rsync -az '$oldHome/.config/Nextcloud' '$homeDir/.config/'" \
-		"sudo -u $currentUser mv '$homeDir/snap/netbeans' '$homeDir/snap/netbeans.old'; sudo -u $currentUser rsync -az '$oldHome/snap/netbeans' '$homeDir/snap/'" \
-		"sudo -u $currentUser rsync -az '$oldHome/.mysql'* '$homeDir/'" \
-		"sudo -u $currentUser rsync -az '$oldHome/.config/filezilla' '$homeDir/.config/'" \
-		"sudo -u $currentUser mkdir -p '$homeDir/.local/share/gnome-shell/'; sudo -u $currentUser rsync -az '$oldHome/.local/share/gnome-shell/extensions' '$homeDir/.local/share/gnome-shell/'" \
-		"sudo -u $currentUser rsync -az '$oldHome/.config/google-chrome' '$homeDir/.config/'" \
-		"sudo -u $currentUser rsync -az '$oldHome/.mozilla' '$homeDir/'" \
-		"sudo -u $currentUser rsync -az '$oldHome/.config/transmission' '$homeDir/.config/'" \
-		"sudo -u $currentUser rsync -az '$oldHome/.config/teamviewer' '$homeDir/.config/'" \
-		"sudo -u $currentUser rsync -az '$oldHome/.config/libreoffice' '$homeDir/.config/'" \
-		"sudo -u $currentUser rsync -az '$oldHome/.psensor' '$homeDir/'" \
-		"sudo -u $currentUser rsync -az '$oldHome/.fonts' '$homeDir/'"\
-	)
+   rsyncCommand="rsync -aHAXPxh --numeric-ids"
+   #se for remoto
+   #rsync_command="sudo rsync -aHAXPxhz --numeric-ids"
 
+    options_title=();
+    options_id=();
+    options_selected=();
+
+    if [[ -e  "$oldHome/.bashrc" ]]; then
+        options_title+=("Bash config")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.bashrc' '$homeDir/'")
+    fi
+
+    if [[ -e  "$oldHome/.profile" ]]; then
+        options_title+=("Profile Config")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.profile' '$homeDir/'")
+    fi
+
+    if [[ -e  "$oldHome/.zshrc" ]]; then
+        options_title+=("Zsh Config")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.zshrc' '$homeDir/'")
+    fi
+
+    if [[ -e  "$oldHome/.p10k.zsh" ]]; then
+        options_title+=("Power Level 10K Zsh Config")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.p10k.zsh' '$homeDir/'")
+    fi
+
+    if [[ -e  "$oldHome/.ssh" ]]; then
+        options_title+=("Ssh Config")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.ssh' '$homeDir/'")
+    fi
+
+    if [[ -e  "$oldHome/.gitconfig" ]]; then
+        options_title+=("Git Config")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.gitconfig' '$homeDir/'")
+    fi
+
+    if [[ -e  "$oldHome/.gnupg" ]]; then
+        options_title+=("GnuPG")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.gnupg' '$homeDir/'")
+    fi
+
+    if [[ -e  "$oldHome/.local/share/keyrings" ]]; then
+        options_title+=("Gnome Keyrings")
+        options_selected+=(TRUE)
+        options_id+=("sudo -u $currentUser mv '$homeDir/.local/share/keyrings' '$homeDir/.local/share/keyrings.old' && sudo -u $currentUser mkdir -p '$homeDir/.local/share/keyrings' && sudo -u $currentUser cp -r '$oldHome/.local/share/keyrings/'{login.keyring,user.keystore} '$homeDir/.local/share/keyrings'")
+    fi
     
-    options_title=(\
-			"Bash config"\
-			"Profile Config"\
-			"Zsh Config"\
-			"Power Level 10K Zsh Config"\
-			"Ssh Config"\
-			"Git Config"\
-			"GnuPG"\
-			"Gnome Keyrings"\
-			"Mackup Config"\
-			"Thunderbird Config e E-mails"\
-			"SiriKali Config e Diretórios"\
-			"Wine"\
-			"Nextcloud Repositórios"\
-			"Nextcloud Config"\
-			"Netbeans Snap Config"\
-			"MySQL Client Config"\
-			"Filezzila Config"\
-			"Gnome Shell Extensions e Configs"\
-			"Google Chrome Dados e Config"\
-			"Mozilla Firefox Dados e Config"\
-			"Transmission config"\
-			"Team Viewer config"\
-			"Libre Office config"\
-			"PSensor config"\
-			"Fonts (User)"\
-	)
+    if [[ -e  "$oldHome/.mackup.cfg" ]]; then
+        options_title+=("Mackup Config")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.mackup.cfg' '$homeDir/'")
+    fi
 
-    options_selected=(\
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-    )
+    if [[ -e  "$oldHome/.thunderbird" ]]; then
+        options_title+=("Thunderbird Config e E-mails")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.thunderbird' '$homeDir/'")
+    fi
 
+    if [[ -e  "$oldHome/.config/SiriKali" ]]; then
+        options_title+=("SiriKali Config")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.config/SiriKali' '$homeDir/.config/';")
+    fi
+
+    if [[ -e  "$oldHome/.SiriKali" ]]; then
+        options_title+=("SiriKali Diretórios")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.SiriKali/' '$homeDir/.SiriKali/' --exclude '*/*' --include '*'")
+    fi
+
+    if [[ -e  "$oldHome/.wine" ]]; then
+        options_title+=("Wine")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.wine' '$homeDir/'")
+    fi
+
+    if [[ -e  "$oldHome/Nextcloud" ]]; then
+        options_title+=("Nextcloud Repositórios")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/Nextcloud'* '$homeDir/'")
+    fi
+
+    if [[ -e  "$oldHome/.config/Nextcloud" ]]; then
+        options_title+=("Nextcloud Config")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.config/Nextcloud' '$homeDir/.config/'")
+    fi
+
+    if [[ -e  "$oldHome/.snap/netbeans" ]]; then
+        options_title+=("Netbeans Snap Config")
+        options_selected+=(TRUE)
+        options_id+=("sudo -u $currentUser mv '$homeDir/snap/netbeans' '$homeDir/snap/netbeans.old'; sudo $rsyncCommand '$oldHome/snap/netbeans' '$homeDir/snap/'")
+    fi
+
+    if [[ -e  "$oldHome/.mysql" ]]; then
+        options_title+=("MySQL Client Config")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.mysql'* '$homeDir/'")
+    fi
+
+    if [[ -e  "$oldHome/.config/filezilla" ]]; then
+        options_title+=("Filezzila Config")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.config/filezilla' '$homeDir/.config/'")
+    fi
+
+    if [[ -e  "$oldHome/.local/share/gnome-shell" ]]; then
+        options_title+=("Gnome Shell Extensions e Configs")
+        options_selected+=(TRUE)
+        options_id+=("sudo -u $currentUser mkdir -p '$homeDir/.local/share/gnome-shell/'; sudo $rsyncCommand '$oldHome/.local/share/gnome-shell/extensions' '$homeDir/.local/share/gnome-shell/'")
+    fi
+
+    if [[ -e  "$oldHome/.config/google-chrome" ]]; then
+        options_title+=("Google Chrome Dados e Config")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.config/google-chrome' '$homeDir/.config/'")
+    fi
+
+    if [[ -e  "$oldHome/.mozilla" ]]; then
+        options_title+=("Mozilla Firefox Dados e Config")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.mozilla' '$homeDir/'")
+    fi
+
+    if [[ -e  "$oldHome/.config/transmission" ]]; then
+        options_title+=("Transmission config")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.config/transmission' '$homeDir/.config/'")
+    fi
+
+    if [[ -e  "$oldHome/.config/teamviewer" ]]; then
+        options_title+=("Team Viewer config")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.config/teamviewer' '$homeDir/.config/'")
+    fi
+
+    if [[ -e  "$oldHome/.config/libreoffice" ]]; then
+        options_title+=("Libre Office config")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.config/libreoffice' '$homeDir/.config/'")
+    fi
+
+    if [[ -e  "$oldHome/.psensor" ]]; then
+        options_title+=("PSensor config")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.psensor' '$homeDir/'")
+    fi
+
+    if [[ -e  "$oldHome/.fonts" ]]; then
+        options_title+=("Fonts (User)")    
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.fonts' '$homeDir/'")
+    fi
 
     optionsLength=${#options_id[@]}
     optionsToShow=();
@@ -738,8 +816,6 @@ function restore_from_old_install() {
         "${optionsToShow[@]}")
 
     callAppsFunctions "$appsSelected"
-
-
 
     #if zenity --question --width=600 --height=400 --text "Recuperar Arquivos da Home Antiga?"
     #then
