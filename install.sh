@@ -551,11 +551,11 @@ function install_develtools() {
 }
 
 function install_golang() {
-	sudo snap install --classic go
+    sudo snap install --classic go
     if ! sudo -u $currentUser bash -c "grep -q \"\$HOME/go\" $currentHomeDir/.profile"; then
         sudo -u $currentUser bash -c "echo -e '\n#set GOPATH and GO_BIN\nif [ -d \"\$HOME/go\" ] ; then\n  export GO_PATH=\"\$HOME/go\"\n   # set PATH so it includes user'\''s go bin if it exists\n  if [ -d \"\$GO_PATH/bin\" ] ; then\n     PATH=\"\$GO_PATH/bin:$PATH\"\n   fi\nfi' >> $currentHomeDir/.profile"
     fi
-    go get -u github.com/containous/yaegi/cmd/yaegi
+    #go get -u github.com/containous/yaegi/cmd/yaegi
 }
 
 function install_vscode() {
