@@ -257,23 +257,25 @@ function install_ohmyzsh() {
     #zenity --question --width=600 --height=400 --text "Instalar ZSH e OhMyZSH?" || return 0
     #&& sudo chsh -s /bin/zsh root \
     sudo apt install zsh fonts-powerline -y \
-        && sudo -u $currentUser sh -c "RUNZSH='no' $(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)" \
+    	&& sudo -u $currentUser mkdir -p "$currentHomeDir/tmp/zsh" \
+	&& cd "$currentHomeDir/tmp/zsh" \
+        && sudo -u $currentUser wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O "$currentHomeDir/tmp/zsh/install.sh" \
+	&& sudo -u $currentUser sh -c "RUNZSH='no'; sh '$currentHomeDir/tmp/zsh/install.sh' --unattended" \
         && sudo -u $currentUser rm -rf "$currentHomeDir/.zshrc" \
         && sudo -u $currentUser cp "$currentHomeDir/.oh-my-zsh/templates/zshrc.zsh-template" "$currentHomeDir/.zshrc" \
         && sudo -u $currentUser sed -ri 's/(ZSH_THEME=")([^"]*)(")/\1agnoster\3/g' "$currentHomeDir/.zshrc" \
         && sudo -u $currentUser sed -ri 's/(plugins=\()([^\)]*)(\))/\1git git-extras git-flow gitignore ubuntu cp extract sudo systemd last-working-dir docker docker-compose web-search vscode laravel laravel5 npm yarn\3/g' "$currentHomeDir/.zshrc" \
-        && mkdir -p "$currentHomeDir/tmp" \
-        && cd "$currentHomeDir/tmp" \
         && git clone https://github.com/abertsch/Menlo-for-Powerline.git \
         && sudo mv Menlo-for-Powerline/*.ttf /usr/share/fonts/.  \
         && rm -rf Menlo-for-Powerline \
+	&& sudo rm -rf "$currentHomeDir/tmp"
         && sudo fc-cache -vf /usr/share/fonts
         ##sudo -u $currentUser chsh -s /bin/zsh root \
         
         #https://github.com/romkatv/powerlevel10k
         sudo -u $currentUser git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k \
-        && sudo -u $currentUser sed -ri 's/(ZSH_THEME=")([^"]*)(")/\1powerlevel10k\/powerlevel10k\3/g' "$currentHomeDir/.zshrc"
-        sudo wget wget -P /usr/share/fonts/. \
+        	&& sudo -u $currentUser sed -ri 's/(ZSH_THEME=")([^"]*)(")/\1powerlevel10k\/powerlevel10k\3/g' "$currentHomeDir/.zshrc"
+        sudo wget -P /usr/share/fonts/. \
             https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts/MesloLGS%20NF%20Regular.ttf \
             https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts/MesloLGS%20NF%20Bold.ttf \
             https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts/MesloLGS%20NF%20Italic.ttf \
