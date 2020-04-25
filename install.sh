@@ -192,10 +192,14 @@ function callAppsFunctions() {
 
 function install_base() {
     sudo apt update
+    
 
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
     sudo apt install -y ubuntu-restricted-extras
 
+    sudo apt purge -y snap
+    sudo apt install -y snap
+    sudo apt install -y lvm2
     sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
     sudo apt install -y aptitude synaptic gnome-software gnome-software-plugin-snap
     sudo apt install -y flatpak gnome-software-plugin-flatpak \
@@ -459,7 +463,7 @@ function install_chats_teams() {
     mkdir -p /tmp/teamsmicrosoftinstall \
         && wget -O /tmp/teamsmicrosoftinstall/teams.deb "$teamsDebBaseURL$teamsLastURL" \
         && sudo dpkg -i /tmp/teamsmicrosoftinstall/teams.deb
-    sudo apt install -f
+    sudo apt install -f -y
     rm -rf /tmp/teamsmicrosoftinstall
 }
 
@@ -576,7 +580,7 @@ function install_teamviewer() {
     mkdir -p /tmp/teamviewerdwl \
         && wget -O /tmp/teamviewerdwl/teamviwer.deb $teamViewerDownloadLastUrl \
         && sudo dpkg -i /tmp/teamviewerdwl/teamviwer.deb
-        sudo apt install -f
+        sudo apt -y -f install
         rm -rf /tmp/teamviewerdwl
 }
 
