@@ -272,7 +272,8 @@ function install_ohmyzsh() {
         && git clone https://github.com/abertsch/Menlo-for-Powerline.git \
         && sudo mv Menlo-for-Powerline/*.ttf /usr/share/fonts/.  \
         && rm -rf Menlo-for-Powerline \
-	&& sudo rm -rf "$currentHomeDir/tmp"
+	&& cd "$currentHomeDir" \
+	&& sudo rm -rf "$currentHomeDir/tmp" \
         && sudo fc-cache -vf /usr/share/fonts
         ##sudo -u $currentUser chsh -s /bin/zsh root \
         
