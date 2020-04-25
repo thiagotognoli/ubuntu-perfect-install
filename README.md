@@ -5,7 +5,7 @@ TO-DO: viertual box and skype, replace snap with flat option
 
 ## Automatic Script
 ```bash
-bash -c "$(wget https://github.com/thiagotognoli/ubuntu-perfect-install/blob/master/run-remote.sh)"
+bash -c "$(wget https://github.com/thiagotognoli/ubuntu-perfect-install/blob/master/run-remote.sh -O -)"
 ```
 
 ## BTRFS
