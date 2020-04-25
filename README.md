@@ -1,12 +1,14 @@
 # Ubuntu Perfect Install
 Ubuntu After installation
 
-TO-DO: viertual box and skype, replace snap with flat option
+
 
 ## Automatic Script
 ```bash
-bash -c "$(wget https://github.com/thiagotognoli/ubuntu-perfect-install/blob/master/run-remote.sh -O -)"
+bash -c "$(wget https://raw.githubusercontent.com/thiagotognoli/ubuntu-perfect-install/master/run-remote.sh -O -)"
 ```
+
+TO-DO: viertual box
 
 ## BTRFS
 
