@@ -192,14 +192,18 @@ function callAppsFunctions() {
 
 function install_base() {
     sudo apt update
+    sudo apt -y upgrade
     
 
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
     sudo apt install -y ubuntu-restricted-extras
-
-    sudo apt purge -y snap
-    sudo apt install -y snap
+    
+    sudo service snapd stop
+    sudo apt purge -y snap snapd
+    sudo apt install -y snapd snap
+    
     sudo apt install -y lvm2
+    
     sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
     sudo apt install -y aptitude synaptic gnome-software gnome-software-plugin-snap
     sudo apt install -y flatpak gnome-software-plugin-flatpak \
@@ -330,10 +334,10 @@ function install_gnomeshellextensions() {
     zenity --question --width=600 --height=400 --text "Instalar Gnome Shell Extensions - PSensor ?" && sudo apt install psensor -y
 
     sudo apt install wget bash curl dbus perl git less -y \
-    && sudo -u $currentUser mkdir -p $binDir \
-    && sudo -u $currentUser rm -rf $binDir/gnome-shell-extension-installer \
-    && sudo -u $currentUser wget https://raw.githubusercontent.com/brunelli/gnome-shell-extension-installer/master/gnome-shell-extension-installer -O $binDir/gnome-shell-extension-installer \
-    && sudo -u $currentUser chmod +x $binDir/gnome-shell-extension-installer
+    && sudo mkdir -p $binDir \
+    && sudo rm -rf $binDir/gnome-shell-extension-installer \
+    && sudo wget https://raw.githubusercontent.com/brunelli/gnome-shell-extension-installer/master/gnome-shell-extension-installer -O $binDir/gnome-shell-extension-installer \
+    && sudo chmod a+x $binDir/gnome-shell-extension-installer
 
     if [ $? -eq 0 ]; then
         echo "Installing Extensions"
@@ -560,7 +564,7 @@ function install_golang() {
     if ! sudo -u $currentUser bash -c "grep -q \"\$HOME/go\" $currentHomeDir/.profile"; then
         sudo -u $currentUser bash -c "echo -e '\n#set GOPATH and GO_BIN\nif [ -d \"\$HOME/go\" ] ; then\n  export GO_PATH=\"\$HOME/go\"\n   # set PATH so it includes user'\''s go bin if it exists\n  if [ -d \"\$GO_PATH/bin\" ] ; then\n     PATH=\"\$GO_PATH/bin:$PATH\"\n   fi\nfi' >> $currentHomeDir/.profile"
     fi
-    #go get -u github.com/containous/yaegi/cmd/yaegi
+    go get -u github.com/containous/yaegi/cmd/yaegi
 }
 
 function install_vscode() {
