@@ -82,98 +82,120 @@ basePath=${argScript%/*}
 
 binDir="${basePath}/bin"
 
+apt=()
+snap=()
+snapClassic=()
+snapEdgeClassic=()
+gnomeShellExtension=()
+
+preCommand=()
+posAptCommand=()
+posCommand=()
+
+
+
+function installAllAfterSelections() {
+    installPreCommands
+    installApt
+    installPosAptCommands
+    intstallSnap
+    installFlatpak
+    installPosCommands
+}
+
+
+function addApt() {
+    apt+=("$1")
+}
+
+function addSnap() {
+    snap+=("$1")
+}
+
+function addSnapClassic() {
+    snapClassic+=("$1")
+}
+
+function addSnapEdgeClassic() {
+    snapEdgeClassic+=("$1")
+}
+
+
+function addPreCommand() {
+    preCommand+=("$1")
+}
+
+function addPosAptCommand() {
+    posAptCommand+=("$1")
+}
+
+function addPosCommand() {
+    posCommand+=("$1")
+}
+
+function addGnomeShellExtension() {
+    gnomeShellExtension+=("$1")
+}
+
+function addFlatpak() {
+    flatpak+=("$1")
+}
+
+
+function installPreCommands() {
+    for i in "${preCommand[@]}"
+    do
+        eval "$i"
+    done    
+}
+
+function installApt() {
+    printf -v aptPackages '%s ' "${apt[@]}"
+    sudo apt install -y $aptPackages
+}
+
+function intstallSnap() {
+    for i in "${snap[@]}"
+    do
+        sudo snap install "$i"
+    done
+    for i in "${snapClassic[@]}"
+    do
+        sudo snap install --classic "$i"
+    done
+    for i in "${snapEdgeClassic[@]}"
+    do
+        sudo snap install --edge --classic "$i"
+    done
+}
+
+function installFlatpak() {
+    #executar apos o pos, ou add o repo before this after apt
+    for i in "${flatpak[@]}"
+    do
+        sudo -u $currentUser flatpak install -y "$i"
+    done    
+}
+
+function installPosAptCommands() {
+    for i in "${posAptCommand[@]}"
+    do
+        eval "$i"
+    done    
+}
+
+function installPosCommands() {
+    for i in "${posCommand[@]}"
+    do
+        eval "$i"
+    done    
+}
+
 
 set -a # export all variables created next
 source $basePath/conf.conf
 set +a # stop exporting
 
-
-function installApps() {
-
-
-    options_id=(\
-        install_alternative_terminals \
-        install_monitor_tools \
-        install_ohmyzsh \
-        install_lsd \
-        install_mackup \
-        config_gnomeshell \
-        install_gnomeshellextensions \
-        install_googlechrome \
-        install_chromiumbrowser \
-        install_flameshotscreenshot \
-        install_cryptofolders_gocryptfs \
-        install_keppasxc \
-        install_authenticator \
-        install_designtools \
-        install_photographytools \
-        install_vlcvideoplayer \
-        install_chats \
-        install_develtools \
-        install_docker \
-        install_teamviewer \
-    )
-
-    options_title=(\
-        "Alternative Terminals (terminator, terminology, cool-retro-term)"\
-        "Monitor Tools (htop, iotop)"\
-        "ZSH & Oh My ZSH"\
-        "LSD"\
-        "Mackup"\
-        "Config Gnome Shell"\
-        "Gnome Shell Extensions"\
-        "Google Chrome"\
-        "Chromium Browser"\
-        "Flameshot Screen Shot"\
-        "Crypto Folders (gocryptfs, SiriKali)"\
-        "KeePassXC"\
-        "Authenticator (2FA)"\
-        "Design Tools (Inkscape, GIMP)"\
-        "Photography Tools (DarkTable)"\
-        "VLC Video Player"\
-        "Chats (Skype, Teams, WhatsDesk, Telegram Desktop, Slack, Whatsapp Electron, Discord)"\
-        "Devel Tools"\
-        "Docker"\
-        "Team Viewer")
-
-    options_selected=(\
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE)
-
-
-    optionsLength=${#options_id[@]}
-    optionsToShow=();
-    for (( i=0; i<${optionsLength}; i++ ));
-    do
-        optionsToShow+=(${options_selected[$i]} "${options_title[$i]}")
-    done
-
-    appsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione os APPs para instalar" \
-        --checklist \
-        --column "Marcar" \
-        --column "App" \
-        "${optionsToShow[@]}")
-
-    callAppsFunctions "$appsSelected"
-}
 
 function callAppsFunctions() {
 	local _optionsTitles=("${options_title[@]}")
@@ -190,56 +212,103 @@ function callAppsFunctions() {
     done
 }
 
-function install_base() {
-    sudo apt update
-    sudo apt -y upgrade
-    
+function installApps() {
 
-    echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
-    sudo apt install -y ubuntu-restricted-extras
-    
-    sudo service snapd stop
-    sudo apt purge -y snap snapd
-    sudo apt install -y snapd snap
-    
-    sudo apt install -y lvm2
-    
-    sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
-    sudo apt install -y aptitude synaptic gnome-software gnome-software-plugin-snap
-    sudo apt install -y flatpak gnome-software-plugin-flatpak \
-        && flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-    sudo apt install -y wget curl rsync git bash dbus perl less mawk sed
-    sudo apt install -y nfs-common
-}
+    options_title=();
+    options_id=();
+    options_selected=();
 
-function install_alternative_terminals_terminator() {
-	sudo apt install terminator -y
-}
-function install_alternative_terminals_terminology() {
-	sudo snap install --edge --classic terminology
-}
-function install_alternative_terminals_coolretroterm() {
-	sudo snap install --classic cool-retro-term
-}
+    options_title+=("Alternative Terminals [seleção]")
+    options_selected+=(TRUE)
+    options_id+=("menu_alternative_terminals")
 
-function install_alternative_terminals() {
-    	
-   options_id=(\
-        install_alternative_terminals_terminator \
-        install_alternative_terminals_terminology \
-        install_alternative_terminals_coolretroterm \
-    )
+    options_title+=("Monitoramento - htop [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"htop\"")
 
-    options_title=(\
-        "Terminator"\
-        "Terminology"\
-        "Cool Retro Term")
+    options_title+=("Monitoramento - iotop [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"iotop\"")
 
-    options_selected=(\
-        TRUE \
-        TRUE \
-        TRUE)
+    options_title+=("ZSH & Oh My ZSH [apt & git]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"zsh fonts-powerline\" && addPosCommand \"pos_install_ohmyzsh\"")
 
+    options_title+=("Mackup [snap]")
+    options_selected+=(TRUE)
+    options_id+=("addSnapClassic \"mackup\"")
+
+    options_title+=("LSD (ls deluxe) [web deb]")
+    options_selected+=(TRUE)
+    options_id+=("addPosCommand \"pos_install_lsd\"")
+
+    options_title+=("Config Gnome Shell [apt & bash]")
+    options_selected+=(TRUE)
+    options_id+=("config_gnomeshell")
+
+    options_title+=("Gnome Shell Extensions [seleção]")
+    options_selected+=(TRUE)
+    options_id+=("menu_gnomeshellextensions")
+
+    options_title+=("Google Chrome [web deb & apt repo]")
+    options_selected+=(TRUE)
+    options_id+=("addPosCommand \"install_googlechrome\"")
+
+    options_title+=("Chromium Browser [snap]")
+    options_selected+=(TRUE)
+    options_id+=("addSnap \"chromium\"")
+
+    options_title+=("Flameshot Screen Shot [apt & app icon]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"flameshot\" && addPosCommand \"pos_install_flameshotscreenshot\"")
+
+    options_title+=("Gocryptfs [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"gocryptfs\"")
+
+    options_title+=("Sirikali [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"sirikali\"")
+
+    options_title+=("KeepasXC [flat]")
+    options_selected+=(TRUE)
+    options_id+=("addFlatpak \"flathub org.keepassxc.KeePassXC\"")
+
+    options_title+=("Authenticator (2FA) [flat]")
+    options_selected+=(TRUE)
+    options_id+=("addFlatpak \"flathub com.github.bilelmoussaoui.Authenticator\"")
+
+    options_title+=("Inkscape (Editor de Desenhos Vetorial) [snap]")
+    options_selected+=(TRUE)
+    options_id+=("addSnap \"inkscape\"")
+
+    options_title+=("GIMP (Editor de Imagens) [snap]")
+    options_selected+=(TRUE)
+    options_id+=("addSnap \"gimp\"")
+
+    options_title+=("DarkTable (Visualizador de Fotos/Imagens) [snap]")
+    options_selected+=(TRUE)
+    options_id+=("addSnap \"darktable\"")
+
+    options_title+=("VLC Video Player [snap]")
+    options_selected+=(TRUE)
+    options_id+=("addSnap \"vlc\"")
+
+    options_title+=("Chats [seleção]")
+    options_selected+=(TRUE)
+    options_id+=("menu_chats")
+
+    options_title+=("Devel Tools [seleção]")
+    options_selected+=(TRUE)
+    options_id+=("menu_develtools")
+
+    options_title+=("Docker e Docker Compose [apt repo]")
+    options_selected+=(TRUE)
+    options_id+=("install_dockerinstall_docker")
+
+    options_title+=("Team Viewer [web deb & apt repo]")
+    options_selected+=(TRUE)
+    options_id+=("install_teamviewer")
 
     optionsLength=${#options_id[@]}
     optionsToShow=();
@@ -257,18 +326,97 @@ function install_alternative_terminals() {
     callAppsFunctions "$appsSelected"
 }
 
-function install_monitor_tools() {
-    sudo apt install htop iotop -y
+
+function install_base() {
+
+    addPreCommand "pre_install_base"
+
+    addApt "ubuntu-restricted-extras"
+    #sudo apt install -y ubuntu-restricted-extras
+
+    addPreCommand "pre_install_base_hotfixSnap"
+    #sudo apt install -y snapd snap
+    
+    addApt "lvm2"
+    #sudo apt install -y lvm2
+    
+    addApt "apt-transport-https ca-certificates curl gnupg-agent software-properties-common"
+    #sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+
+    addApt "aptitude synaptic gnome-software gnome-software-plugin-snap"
+    #sudo apt install -y aptitude synaptic gnome-software gnome-software-plugin-snap
+
+    addApt "flatpak gnome-software-plugin-flatpak"
+    addPosAptCommand "flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"
+    #sudo apt install -y flatpak gnome-software-plugin-flatpak \
+    #    && flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+    addApt "wget curl rsync git bash dbus perl less mawk sed"
+    #sudo apt install -y wget curl rsync git bash dbus perl less mawk sed
+
+    addApt "nfs-common"
+    #sudo apt install -y nfs-common
 }
 
-function install_ohmyzsh() {
-    #zenity --question --width=600 --height=400 --text "Instalar ZSH e OhMyZSH?" || return 0
-    #&& sudo chsh -s /bin/zsh root \
-    sudo apt install zsh fonts-powerline -y \
-    	&& sudo -u $currentUser mkdir -p "$currentHomeDir/tmp/zsh" \
-	&& cd "$currentHomeDir/tmp/zsh" \
+function pre_install_base() {
+    sudo apt update
+    sudo apt -y upgrade
+
+    echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+}
+
+function pre_install_base_hotfixSnap() {
+    #bug ubuntu zfs
+    sudo service snapd stop
+    sudo apt purge -y snap snapd
+    addApt "snapd snap"
+}
+
+function menu_alternative_terminals() {
+
+    options_title=();
+    options_id=();
+    options_selected=();
+
+    options_title+=("Terminator [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"terminator\"")
+
+    options_title+=("Terminology [snap edge classic]")
+    options_selected+=(FALSE)
+    options_id+=("addSnapEdgeClassic \"terminology\"")
+
+    options_title+=("Cool Retro Term [snap classic]")
+    options_selected+=(TRUE)
+    options_id+=("addSnapClassic \"cool-retro-term\"")
+
+    optionsLength=${#options_id[@]}
+    optionsToShow=();
+    for (( i=0; i<${optionsLength}; i++ ));
+    do
+        optionsToShow+=(${options_selected[$i]} "${options_title[$i]}")
+    done
+
+    appsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione os APPs para instalar" \
+        --checklist \
+        --column "Marcar" \
+        --column "App" \
+        "${optionsToShow[@]}")
+
+    callAppsFunctions "$appsSelected"
+}
+
+
+function pos_install_flameshotscreenshot() {
+    sudo -u $currentUser bash -c "echo -e '[Desktop Entry]\nVersion=1.1\nType=Application\nName=Flameshot Screenshot\nComment=Screenshot.\nIcon=flameshot\nExec=flameshot gui\nActions=\nCategories=Graphics;' | tee '$currentHomeDir/.local/share/applications/flameshot-screenshot.desktop'" \
+        && sudo -u $currentUser chmod +x "$currentHomeDir/.local/share/applications/flameshot-screenshot.desktop"
+}
+
+function pos_install_ohmyzsh() {
+    sudo -u $currentUser mkdir -p "$currentHomeDir/tmp/zsh" \
+	    && cd "$currentHomeDir/tmp/zsh" \
         && sudo -u $currentUser wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O "$currentHomeDir/tmp/zsh/install.sh" \
-	&& sudo -u $currentUser sh -c "RUNZSH='no'; sh '$currentHomeDir/tmp/zsh/install.sh' --unattended" \
+	    && sudo -u $currentUser sh -c "RUNZSH='no'; sh '$currentHomeDir/tmp/zsh/install.sh' --unattended" \
         && sudo -u $currentUser rm -rf "$currentHomeDir/.zshrc" \
         && sudo -u $currentUser cp "$currentHomeDir/.oh-my-zsh/templates/zshrc.zsh-template" "$currentHomeDir/.zshrc" \
         && sudo -u $currentUser sed -ri 's/(ZSH_THEME=")([^"]*)(")/\1agnoster\3/g' "$currentHomeDir/.zshrc" \
@@ -276,150 +424,159 @@ function install_ohmyzsh() {
         && git clone https://github.com/abertsch/Menlo-for-Powerline.git \
         && sudo mv Menlo-for-Powerline/*.ttf /usr/share/fonts/.  \
         && rm -rf Menlo-for-Powerline \
-	&& cd "$currentHomeDir" \
-	&& sudo rm -rf "$currentHomeDir/tmp" \
+	    && cd "$currentHomeDir" \
         && sudo fc-cache -vf /usr/share/fonts
         ##sudo -u $currentUser chsh -s /bin/zsh root \
+
+    sudo rm -rf "$currentHomeDir/tmp"
+
+    #https://github.com/romkatv/powerlevel10k
+    sudo -u $currentUser git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k \
+        && sudo -u $currentUser sed -ri 's/(ZSH_THEME=")([^"]*)(")/\1powerlevel10k\/powerlevel10k\3/g' "$currentHomeDir/.zshrc"
         
-        #https://github.com/romkatv/powerlevel10k
-        sudo -u $currentUser git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k \
-        	&& sudo -u $currentUser sed -ri 's/(ZSH_THEME=")([^"]*)(")/\1powerlevel10k\/powerlevel10k\3/g' "$currentHomeDir/.zshrc"
-        sudo wget -P /usr/share/fonts/. \
-            https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts/MesloLGS%20NF%20Regular.ttf \
-            https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts/MesloLGS%20NF%20Bold.ttf \
-            https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts/MesloLGS%20NF%20Italic.ttf \
-            https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts/MesloLGS%20NF%20Bold%20Italic.ttf
-        sudo fc-cache -vf /usr/share/fonts
+    sudo wget -P /usr/share/fonts/. \
+        https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts/MesloLGS%20NF%20Regular.ttf \
+        https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts/MesloLGS%20NF%20Bold.ttf \
+        https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts/MesloLGS%20NF%20Italic.ttf \
+        https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts/MesloLGS%20NF%20Bold%20Italic.ttf
+
+    sudo fc-cache -vf /usr/share/fonts
+
 }
 
-function install_mackup() {
-    sudo snap install mackup --classic
-}
-
-
-function install_lsd() {
+function pos_install_lsd() {
     sudo -u $currentUser mkdir -p "$currentHomeDir/tmp" \
-    && sudo -u $currentUser wget https://github.com/Peltoche/lsd/releases/download/0.16.0/lsd_0.16.0_amd64.deb -O "$currentHomeDir/tmp/lsd.deb" \
-    && sudo dpkg -i "$currentHomeDir/tmp/lsd.deb" \
-    && sudo -u $currentUser rm -rf "$currentHomeDir/tmp"
-    #sudo snap install lsd
+        && sudo -u $currentUser wget https://github.com/Peltoche/lsd/releases/download/0.16.0/lsd_0.16.0_amd64.deb -O "$currentHomeDir/tmp/lsd.deb" \
+        && sudo dpkg -i "$currentHomeDir/tmp/lsd.deb" \
+        && sudo -u $currentUser rm -rf "$currentHomeDir/tmp"
+        #sudo snap install lsd
 }
 
 function config_gnomeshell() {
-    #zenity --question --width=600 --height=400 --text "Configurar Gnome Shell?" || return 0
 
-    # Install Gnome Tweaks e Chrome Gnome Shell
-    sudo apt install gnome-tweaks chrome-gnome-shell -y
-    #sudo apt install gnome-shell-extensions
-    sudo apt install font-manager -y
+    addApt "gnome-tweaks chrome-gnome-shell"
+    addApt "font-manager"
+    addApt "xdotool"
+    addPosCommand "pos_config_gnomeshell"
 
-    # Create Show Desktop Button
-    sudo apt install xdotool -y \
-    && sudo -u $currentUser bash -c "echo -e '[Desktop Entry]\nVersion=1.0\nName=Show Desktop\nExec=xdotool key --clearmodifiers Ctrl+Super+d\nIcon=desktop\nType=Application\nCategories=Application' | tee '$currentHomeDir/.local/share/applications/show-desktop.desktop'" \
-    && sudo -u $currentUser chmod +x "$currentHomeDir/.local/share/applications/show-desktop.desktop"
+}
+
+function pos_config_gnomeshell() {
+
+    sudo -u $currentUser bash -c "echo -e '[Desktop Entry]\nVersion=1.0\nName=Show Desktop\nExec=xdotool key --clearmodifiers Ctrl+Super+d\nIcon=desktop\nType=Application\nCategories=Application' | tee '$currentHomeDir/.local/share/applications/show-desktop.desktop'" \
+        && sudo -u $currentUser chmod +x "$currentHomeDir/.local/share/applications/show-desktop.desktop"
 
     # Config Click App Icon to Minimize
     sudo -u $currentUser gsettings set org.gnome.shell.extensions.dash-to-dock click-action minimize
+
     ## Restore to default action
     #sudo -u $currentUser gsettings reset org.gnome.shell.extensions.dash-to-dock click-action
 }
 
-function install_gnomeshellextensions() {
-    #zenity --question --width=600 --height=400 --text "Instalar Gnome Shell Extensions?" || return 0
 
-    # Install Desktop Folder https://github.com/spheras/desktopfolder
-    zenity --question --width=600 --height=400 --text "Instalar Gnome Shell Extensions - Desktop Folder ?" && sudo apt install desktopfolder -y
 
-    # Install psensor https://wpitchoune.net/psensor/
-    zenity --question --width=600 --height=400 --text "Instalar Gnome Shell Extensions - PSensor ?" && sudo apt install psensor -y
+function menu_gnomeshellextensions() {
+    options_title=();
+    options_id=();
+    options_selected=();
 
-    sudo apt install wget bash curl dbus perl git less -y \
-    && sudo mkdir -p $binDir \
-    && sudo rm -rf $binDir/gnome-shell-extension-installer \
-    && sudo wget https://raw.githubusercontent.com/brunelli/gnome-shell-extension-installer/master/gnome-shell-extension-installer -O $binDir/gnome-shell-extension-installer \
-    && sudo chmod a+x $binDir/gnome-shell-extension-installer
+    options_title+=("Desktop Folder")
+    options_selected+=(FALSE)
+    options_id+=("addApt \"desktopfolder\"")
+
+    options_title+=("PSensor")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"psensor\"")
+
+
+    addApt "wget bash curl dbus perl git less"
+
+    # get length of an array
+    gnomeExtensionslength=${#gnomeExtensions_Id[@]}
+    # use for loop to read all values and indexes
+    for (( i=0; i<${gnomeExtensionslength}; i++ ));
+    do
+        options_title+=("${gnomeExtensions_Name[$i]}")
+        options_selected+=(TRUE)
+        options_id+=("addGnomeShellExtension \"$i\"")
+    done
+
+
+    optionsLength=${#options_id[@]}
+    optionsToShow=();
+    for (( i=0; i<${optionsLength}; i++ ));
+    do
+        optionsToShow+=(${options_selected[$i]} "${options_title[$i]}")
+    done
+
+    appsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione Extensões do Gnome Shell para Isntalar" \
+        --checklist \
+        --column "Marcar" \
+        --column "Extensão Gnome Shell" \
+        "${optionsToShow[@]}")
+
+    callAppsFunctions "$appsSelected"
+
+    addPosCommand "pos_install_gnomeshellextensions"
+}
+
+function pos_install_gnomeshellextensions() {
+    sudo mkdir -p $binDir \
+        && sudo rm -rf $binDir/gnome-shell-extension-installer \
+        && sudo wget https://raw.githubusercontent.com/brunelli/gnome-shell-extension-installer/master/gnome-shell-extension-installer -O $binDir/gnome-shell-extension-installer \
+        && sudo chmod a+x $binDir/gnome-shell-extension-installer
 
     if [ $? -eq 0 ]; then
         echo "Installing Extensions"
 
         # get length of an array
-        gnomeExtensionslength=${#gnomeExtensions_Id[@]}
+        gnomeShellExtensionsIdlength=${#gnomeShellExtension[@]}
         # use for loop to read all values and indexes
-        for (( i=0; i<${gnomeExtensionslength}; i++ ));
+        for (( i=0; i<${gnomeShellExtensionsIdlength}; i++ ));
         do
-            echo "Installing ${gnomeExtensions_Name[$i]} Gnome Shell Extension"
-            zenity --question --width=600 --height=400 --text "Instalar Gnome Shell Extensions - ${gnomeExtensions_Name[$i]} ?" && sudo -u $currentUser $binDir/gnome-shell-extension-installer ${gnomeExtensions_Id[$i]}
+            gnomeShellExtensionIndex="${gnomeShellExtension[$i]}"
+            echo "Installing ${gnomeExtensions_Name[$gnomeShellExtensionIndex]} Gnome Shell Extension"
+            sudo -u $currentUser $binDir/gnome-shell-extension-installer ${gnomeExtensions_Id[$gnomeShellExtensionIndex]}
         done
     else
         echo "Fail to install pre-requisites to Gnome Extensions"
     fi
 }
 
-function install_cryptofolders_gocryptfs() {
-    #zenity --question --width=600 --height=400 --text "Instalar Crypto Folders (gocryptfs, SiriKali)?" || return 0
-    sudo apt install gocryptfs sirikali -y
-}
 
-function install_keppasxc() {
-    #zenity --question --width=600 --height=400 --text "Instalar KeepasXC?" || return 0
-    #sudo snap install keepassxc
-    sudo -u $currentUser flatpak install -y flathub org.keepassxc.KeePassXC
-}
+function menu_chats() {
 
-function install_authenticator() {
-    #zenity --question --width=600 --height=400 --text "Instalar App Authenticator (2FA)?" || return 0
-    sudo -u $currentUser flatpak install -y flathub com.github.bilelmoussaoui.Authenticator
-}
+    options_title=();
+    options_id=();
+    options_selected=();
 
-function install_designtools() {
-    #zenity --question --width=600 --height=400 --text "Instalar Design Tools (Inkscape, GIMP)?" || return 0
-    sudo snap install gimp inkscape
-}
+    options_title+=("Telegram Desktop [snap]")
+    options_selected+=(TRUE)
+    options_id+=("addSnap \"telegram-desktop\"")
 
-function install_photographytools() {
-    #zenity --question --width=600 --height=400 --text "Instalar Photograpy Tools (DarkTable)?" || return 0
-    sudo snap install darktable
-}
+    options_title+=("Skype [snap classic]")
+    options_selected+=(TRUE)
+    options_id+=("addSnapClassic \"skype\"")
 
-function install_chromiumbrowser() {
-    #zenity --question --width=600 --height=400 --text "Instalar Chromium (Browser)?" || return 0
-    sudo snap install chromium
-}
+    options_title+=("Slack [snap classic]")
+    options_selected+=(TRUE)
+    options_id+=("addSnapClassic \"slack\"")
 
-function install_vlcvideoplayer() {
-    #zenity --question --width=600 --height=400 --text "Instalar VLC (Video Player)?" || return 0
-    sudo snap install vlc
-}
+    options_title+=("Microsoft Teams [web deb]")
+    options_selected+=(TRUE)
+    options_id+=("addPosCommand \"pos_install_chats_teams\"")
 
-function install_chats() {
-   options_id=(\
-        install_chats_whatsdesk \
-        install_chats_telegramdesktop \
-        install_chats_skype \
-        install_chats_slack \
-        install_chats_teams \
-        install_chats_whatsappelectron \
-        "sudo -u $currentUser flatpak install -y flathub com.discordapp.Discord"\
-    )
+    options_title+=("Discord [flatpak]")
+    options_selected+=(TRUE)
+    options_id+=("addFlatpak \"flathub com.discordapp.Discord\"")
 
-    options_title=(\
-        "WhatsDesk"\
-        "Telegram desktop"\
-        "Skype"\
-        "Slack"\
-        "Teams Microsoft"\
-        "WhatsApp Electrom"\
-        "Discord")
+    options_title+=("WhatsApp Electrom [git]")
+    options_selected+=(FALSE)
+    options_id+=("addPosCommand \"pos_install_chats_whatsappelectron\"")
 
-    options_selected=(\
-        FALSE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        FALSE \
-        FALSE)
-
+    options_title+=("WhatsDesk [snap]")
+    options_selected+=(FALSE)
+    options_id+=("addSnap \"whatsdesk\"")
 
     optionsLength=${#options_id[@]}
     optionsToShow=();
@@ -438,23 +595,7 @@ function install_chats() {
     
 }
 
-function install_chats_whatsdesk() {
-    sudo snap install whatsdesk
-}
-
-function install_chats_telegramdesktop() {
-    sudo snap install telegram-desktop
-}
-
-function install_chats_skype() {
-    sudo snap install --classic skype
-}
-
-function install_chats_slack() {
-    sudo snap install --classic slack
-}
-
-function install_chats_teams() {
+function pos_install_chats_teams() {
     teamsDebBaseURL="https://packages.microsoft.com/repos/ms-teams/pool/main/t/teams/";
     teamsLastData=0;
     teamsLastURL="";
@@ -472,8 +613,7 @@ function install_chats_teams() {
     rm -rf /tmp/teamsmicrosoftinstall
 }
 
-
-function install_chats_whatsappelectron() {
+function pos_install_chats_whatsappelectron() {
     #zenity --question --width=600 --height=400 --text "Instalar WhatsApp Electron?" || return 0
     sudo apt install git -y \
     && sudo snap install --edge node --classic \
@@ -500,47 +640,59 @@ function install_chats_whatsappelectron() {
 
 }
 
-function install_develtools() {
-   options_id=(\
-		"install_vscode" \
-        "sudo apt install -y mysql-workbench" \
-        "sudo apt install -y filezilla" \
-        "sudo snap install --classic netbeans" \
-        "sudo snap install --edge node --classic" \
-        "install_golang" \
-        "sudo snap install robo3t-snap" \
-        "sudo snap install gitkraken" \
-        "sudo snap install insomnia"\
-        "sudo -u $currentUser flatpak install -y flathub io.github.wereturtle.ghostwriter"\
-    )
-
+function menu_develtools() {
     
-    options_title=(\
-		"Visual Studio Code [snap]"\
-        "MySQL Workbench (Mysql GUI Client) [apt]"\
-        "Filezilla (FTP GUI Client) [apt]"\
-        "Netbeans [snap]"\
-        "NodeJS [snap]"\
-        "Go Lang [snap]"\
-        "Robot3t (MongoDB Gui Client) [snap]"\
-        "Git Kraken (Git Gui Client) [snap]"\
-        "Insomnia (HTTP Rest Client) [snap]"\
-        "GhostWriter (MKD Editor) [flat]"\
-    )
+    options_title=();
+    options_id=();
+    options_selected=();
 
-    options_selected=(\
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-        TRUE \
-    )
+    options_title+=("Java JRE (Open JRE) [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"default-jre\"")
 
+    options_title+=("Java JDK (Open JDK) [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"default-jdk\"")
+
+    options_title+=("Go Lang & Yaegi [snap classic & go]")
+    options_selected+=(TRUE)
+    options_id+=("addSnapClassic \"go\" && addPosCommand \"pos_install_golang\"")
+    
+    options_title+=("NodeJS [snap edge classic]")
+    options_selected+=(TRUE)
+    options_id+=("addSnapEdgeClassic \"node\"")
+
+    options_title+=("Visual Studio Code [snap classic]")
+    options_selected+=(TRUE)
+    options_id+=("addSnapClassic \"code\" && addPosCommand \"pos_install_vscode\"")
+
+    options_title+=("Netbeans [snap classic]")
+    options_selected+=(TRUE)
+    options_id+=("addSnapClassic \"netbeans\"")
+
+    options_title+=("Filezilla (FTP GUI Client) [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"filezilla\"")
+
+    options_title+=("MySQL Workbench (Mysql GUI Client) [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"mysql-workbench\"")
+
+    options_title+=("Robot3t (MongoDB Gui Client) [snap]")
+    options_selected+=(TRUE)
+    options_id+=("addSnap \"robo3t-snap\"")
+
+    options_title+=("Git Kraken (Git Gui Client) [snap]")
+    options_selected+=(TRUE)
+    options_id+=("addSnap \"gitkraken\"")
+
+    options_title+=("Insomnia (HTTP Rest Client) [snap]")
+    options_selected+=(TRUE)
+    options_id+=("addSnap \"insomnia\"")
+
+    options_title+=("GhostWriter (MKD Editor) [flat]")
+    options_selected+=(TRUE)
+    options_id+=("addFlatpak \"io.github.wereturtle.ghostwriter\"")
 
     optionsLength=${#options_id[@]}
     optionsToShow=();
@@ -559,25 +711,15 @@ function install_develtools() {
 
 }
 
-function install_golang() {
-    sudo snap install --classic go
+function pos_install_golang() {
     if ! sudo -u $currentUser bash -c "grep -q \"\$HOME/go\" $currentHomeDir/.profile"; then
         sudo -u $currentUser bash -c "echo -e '\n#set GOPATH and GO_BIN\nif [ -d \"\$HOME/go\" ] ; then\n  export GO_PATH=\"\$HOME/go\"\n   # set PATH so it includes user'\''s go bin if it exists\n  if [ -d \"\$GO_PATH/bin\" ] ; then\n     PATH=\"\$GO_PATH/bin:$PATH\"\n   fi\nfi' >> $currentHomeDir/.profile"
     fi
     go get -u github.com/containous/yaegi/cmd/yaegi
 }
 
-function install_vscode() {
-    #zenity --question --width=600 --height=400 --text "Instalar Visual Studio Code?" || return 0
-    #vscode
-    sudo snap install --classic code
-    sudo bash -c "echo "\nfs.inotify.max_user_watches=524288" >> /etc/sysctl.conf" # configuração para repositórios grandes do vscode
-}
-
-function install_flameshotscreenshot() {
-    sudo apt install -y flameshot \
-    && sudo -u $currentUser bash -c "echo -e '[Desktop Entry]\nVersion=1.1\nType=Application\nName=Flameshot Screenshot\nComment=Screenshot.\nIcon=flameshot\nExec=flameshot gui\nActions=\nCategories=Graphics;' | tee '$currentHomeDir/.local/share/applications/flameshot-screenshot.desktop'" \
-    && sudo -u $currentUser chmod +x "$currentHomeDir/.local/share/applications/flameshot-screenshot.desktop"
+function pos_install_vscode() {
+    sudo bash -c "echo >> /etc/sysctl.conf echo \"fs.inotify.max_user_watches=524288\" >> /etc/sysctl.conf" # configuração para repositórios grandes do vscode
 }
 
 function install_teamviewer() {
@@ -585,8 +727,8 @@ function install_teamviewer() {
     mkdir -p /tmp/teamviewerdwl \
         && wget -O /tmp/teamviewerdwl/teamviwer.deb $teamViewerDownloadLastUrl \
         && sudo dpkg -i /tmp/teamviewerdwl/teamviwer.deb
-        sudo apt -y -f install
-        rm -rf /tmp/teamviewerdwl
+    sudo apt -y -f install
+    rm -rf /tmp/teamviewerdwl
 }
 
 
@@ -942,6 +1084,9 @@ function restoreSnaps() {
 install_base
 
 installApps
+
+installAllAfterSelections
+
 
 createTemplates
 
