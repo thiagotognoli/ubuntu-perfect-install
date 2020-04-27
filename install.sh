@@ -280,6 +280,15 @@ function installApps() {
     options_id=();
     options_selected=();
 
+
+    options_title+=("Hotfix Snap (Ubuntu+ZFS bug) [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addPreCommand \"pre_install_base_hotfixSnap\"")
+
+    options_title+=("Ubuntu Restricted Extras [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addPreCommand \"install_ubuntu_restricted_extras\"")
+
     options_title+=("Alternative Terminals [seleção]")
     options_selected+=(TRUE)
     options_id+=("menu_alternative_terminals")
@@ -413,11 +422,11 @@ function install_base() {
 
     addPreCommand "pre_install_base"
 
-    addApt "ubuntu-restricted-extras"
+    #addApt "ubuntu-restricted-extras"
 
     addPreCommand "pre_install_zfs_snapshot"
 
-    addPreCommand "pre_install_base_hotfixSnap"
+    #addPreCommand "pre_install_base_hotfixSnap"
     
     addApt "apt-transport-https ca-certificates curl gnupg-agent software-properties-common"
 
@@ -428,10 +437,15 @@ function install_base() {
 
 }
 
+function install_ubuntu_restricted_extras() {
+    echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+    addApt "ubuntu-restricted-extras"
+}
+
 function pre_install_base() {
     sudo apt update
 
-    echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+    
 
     addPreFinishCommand "sudo apt -y -f install"
     addPreFinishCommand "sudo apt -y upgrade"
@@ -849,34 +863,24 @@ function install_googlechrome() {
     rm -rf /tmp/googlechrome
 }
 
-function restore_from_old_install() {
-    zenity --question --width=600 --height=400 --text "Restaurar de uma instalação antiga?" || return 0
-    #sudo apt install -y yad
+function restore_home_old() {
+    zenity --question --width=600 --height=400 --text "Restaurar Home de uma instalação antiga?" || return 0
 
     homeDir="$currentHomeDir"
-    #sudo -u $currentUser mkdir -p "$homeDir"
+    oldHome="$(cd "$currentHomeDir" && zenity --file-selection --title="Selecionar diretório Home antigo" --directory)"
+
+    rsyncCommand="rsync -aHAXxh --devices --specials --numeric-ids"
+    #rsyncCommand="rsync -aHAXPxh --numeric-ids"
+    #se for remoto
+    #rsync_command="sudo rsync -aHAXPxhz --numeric-ids"
+
+    restore_home_configs
+    restore_home_data
+}
 
 
-    #zenity --file-selection --title="Select a Old Home Folder" --directory
-    #oldRoot="$(sudo -u $currentUser bash -c 'cd ~ && zenity --file-selection --title="Select a Old Root Directory" --directory')"
-    #sudo -u $currentUser rsync -az "$oldRoot/data" "/data"
-    oldHome="$(cd "$currentHomeDir" && zenity --file-selection --title="Select a Old Home Directory" --directory)"
-    
-
-	#TODO:
-    ##flat packages
-    #echo "----->All Flat Packages with configs"
-    #sudo -u $currentUser rsync -az "$oldHome/.var" "$homeDir/"
-    ##snap packages
-    #echo "----->All Snap Packages configs"
-    #sudo -u $currentUser rsync -az "$oldHome/snap" "$homeDir/"
-
-   #rsyncCommand="rsync -aHAXPxh --numeric-ids"
-   rsyncCommand="rsync -aHAXxh --devices --specials --numeric-ids"
-
-     
-   #se for remoto
-   #rsync_command="sudo rsync -aHAXPxhz --numeric-ids"
+function restore_home_configs() {
+    #sudo apt install -y yad
 
     options_title=();
     options_id=();
@@ -1069,62 +1073,114 @@ function restore_from_old_install() {
     do
         optionsToShow+=(${options_selected[$i]} "${options_title[$i]}")
     done
-    appsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione Configs/Dados para Recuperar" \
+    optionsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione Configs/Dados para Recuperar" \
         --checklist \
         --column "Marcar" \
         --column "App" \
         "${optionsToShow[@]}")
 
-    callAppsFunctions "$appsSelected"
+    callAppsFunctions "$optionsSelected"
 
-    #if zenity --question --width=600 --height=400 --text "Recuperar Arquivos da Home Antiga?"
-    #then
-    
-		optionsHomeToShow=();
-		optionsHomeTitles=();
-		optionsHomeId=();
+
+}
+
+function restore_home_data() {
+
+	optionsHomeToShow=();
+	optionsHomeTitles=();
+	optionsHomeId=();
 		
-        oldDirectoyPathVars=$(sed -r "s/(#.*)//" "$oldHome/.config/user-dirs.dirs" | sed '/^[[:space:]]*$/d')
-        currentDirectoyPathVars=$(sed -r "s/(#.*)//" "$homeDir/.config/user-dirs.dirs" | sed '/^[[:space:]]*$/d')
-		SAVEIFS=$IFS   # Save current IFS
-		IFS=$'\n'      # Change IFS to new line
-		#oldDirectoyPathVars=($oldDirectoyPathVars) # split to array $names
-		#currentDirectoyPathVars=($currentDirectoyPathVars) # split to array $names
-		currentDirectoyPathVarsArray=($currentDirectoyPathVars) # split to array $names
-		IFS=$SAVEIFS   # Restore IFS
-        # get length of an array
-        currentDirectoyPathVarsLength=${#currentDirectoyPathVarsArray[@]}
-        # use for loop to read all values and indexes
-        for (( i=0; i<${currentDirectoyPathVarsLength}; i++ ));
-        do
-			currentVar="$(echo "${currentDirectoyPathVarsArray[$i]}" | sed -r "s/^([^\=]*)(.*)/\1/")"
+    oldDirectoyPathVars=$(sed -r "s/(#.*)//" "$oldHome/.config/user-dirs.dirs" | sed '/^[[:space:]]*$/d')
+    currentDirectoyPathVars=$(sed -r "s/(#.*)//" "$homeDir/.config/user-dirs.dirs" | sed '/^[[:space:]]*$/d')
+    local SAVEIFS=$IFS
+	local IFS=$'\n'
+	currentDirectoyPathVarsArray=($currentDirectoyPathVars)
+	local IFS=$SAVEIFS
+
+    currentDirectoyPathVarsLength=${#currentDirectoyPathVarsArray[@]}
+    for (( i=0; i<${currentDirectoyPathVarsLength}; i++ ));
+    do
+        currentVar="$(echo "${currentDirectoyPathVarsArray[$i]}" | sed -r "s/^([^\=]*)(.*)/\1/")"
 			
-			currentDirectoryPath="$(echo "${currentDirectoyPathVarsArray[$i]}" | sed -r 's/^([^\=]*)(\=)(")([^"]*)(")/\4/')"
-			currentDirectoryPath="$(echo "${currentDirectoryPath/\$HOME/$homeDir}")"
+		currentDirectoryPath="$(echo "${currentDirectoyPathVarsArray[$i]}" | sed -r 's/^([^\=]*)(\=)(")([^"]*)(")/\4/')"
+		currentDirectoryPath="$(echo "${currentDirectoryPath/\$HOME/$homeDir}")"
 			
-            oldDirectoyPath="$(echo "$oldDirectoyPathVars" | grep -E "^"$currentVar"\=" | sed -r 's/^([^\=]*)(\=)(")([^"]*)(")/\4/')"
-            oldDirectoyPath="$(echo "${oldDirectoyPath/\$HOME/$oldHome}")"
+        oldDirectoyPath="$(echo "$oldDirectoyPathVars" | grep -E "^"$currentVar"\=" | sed -r 's/^([^\=]*)(\=)(")([^"]*)(")/\4/')"
+        oldDirectoyPath="$(echo "${oldDirectoyPath/\$HOME/$oldHome}")"
         
-			title="Copiar $oldDirectoyPath => $currentDirectoryPath"
-			optionsHomeTitles+=("$title")
-			optionsHomeToShow+=(TRUE "$title")
-			optionsHomeCommand+=("[ -e '$oldDirectoyPath/'* ] sudo $rsyncCommand '$oldDirectoyPath/'* '$currentDirectoryPath/'")
-        done
-		optionsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione Pastas da Home Antiga para Recuperar" \
-			--checklist \
-			--column "Marcar" \
-			--column "App" \
-			"${optionsHomeToShow[@]}")
-		optionsHomeLength=${#optionsHomeTitles[@]}
-		local IFS="|"
-		for commandId in $optionsSelected;
+		title="Copiar $oldDirectoyPath => $currentDirectoryPath"
+		optionsHomeTitles+=("$title")
+		optionsHomeToShow+=(TRUE "$title")
+		optionsHomeCommand+=("[ -e '$oldDirectoyPath/'* ] && sudo $rsyncCommand '$oldDirectoyPath/'* '$currentDirectoryPath/'")
+    done
+
+	optionsSelected=$(zenity --list --width=800 --height=640 --text "Selecione Pastas da Home Antiga para Recuperar" \
+		--checklist \
+		--column "Marcar" \
+		--column "App" \
+		"${optionsHomeToShow[@]}")
+	optionsHomeLength=${#optionsHomeTitles[@]}
+
+	local IFS="|"
+	for commandId in $optionsSelected;
+	do
+		for (( i=0; i<${optionsHomeLength}; i++ ));
 		do
-			for (( i=0; i<${optionsHomeLength}; i++ ));
-			do
-				[[ "${optionsHomeTitles[$i]}" == "$commandId" ]] && eval "${optionsHomeCommand[$i]}"
-			done
+			[[ "${optionsHomeTitles[$i]}" == "$commandId" ]] && eval "${optionsHomeCommand[$i]}"
 		done
-    #fi
+	done
+}
+
+function restore_system_old() {
+
+
+    ## Stop Network Manager
+    #sudo /etc/init.d/network-manager stop
+    ## copy the files from your old system (adapt as needed)
+    #sudo rsync -va -c /media/$YOUR_OLD_SYSTEM/etc/NetworkManager/system-connections/ /etc/NetworkManager/system-connections/
+    ## Get your new MAC address, and verify it is right.
+    ## For example, this should work if you have only one wireless interface
+    #export MAC=$(iw dev | grep addr | awk '{print $2}')
+    #echo $MAC
+    ## Replace the MAC address in all the system-connections files
+    #sudo perl -i.bak -pe 's/^(mac-address=)(.*)/$1$ENV{MAC}/' /etc/NetworkManager/system-connections/*
+    ## Restart NetworkManager, and wait for nm-applet to also start and connect    
+    #sudo /etc/init.d/network-manager start
+    ## Delete the backup files with the old MAC addresses
+    #sudo rm /etc/NetworkManager/system-connections/*.bak
+
+    zenity --question --width=600 --height=400 --text "Restaurar Sistema de uma instalação antiga?" || return 0
+
+    currentRoot="/"
+    oldRoot"$(cd "/" && zenity --file-selection --title="Selecionar diretório / (Raíz) antigo" --directory)"
+
+    rsyncCommand="rsync -aHAXxh --devices --specials --numeric-ids"
+
+    options_title=();
+    options_id=();
+    options_selected=();
+
+
+    if [[ -e  "$oldRoot/etc/NetworkManager/system-connections" ]]; then
+        options_title+=("Conexões Network Manager")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldRoot/etc/NetworkManager/system-connections' '$currentRoot/etc/NetworkManager/system-connections/'")
+    fi
+
+    optionsLength=${#options_id[@]}
+    optionsToShow=();
+    for (( i=0; i<${optionsLength}; i++ ));
+    do
+        optionsToShow+=(${options_selected[$i]} "${options_title[$i]}")
+    done
+    optionsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione Configs/Dados para Recuperar" \
+        --checklist \
+        --column "Marcar" \
+        --column "App" \
+        "${optionsToShow[@]}")
+
+    callAppsFunctions "$optionsSelected"
+
 }
 
 function createTemplates() {
@@ -1133,7 +1189,8 @@ function createTemplates() {
         currentDirectoyPathVars="$(sed -r "s/(#.*)//" "$currentHomeDir/.config/user-dirs.dirs" | sed '/^[[:space:]]*$/d')"
         currentDirectoryPath="$(echo "$currentDirectoyPathVars" | grep -E "^XDG_TEMPLATES_DIR\=" | sed -r 's/^([^\=]*)(\=)(")([^"]*)(")/\4/')"
         currentDirectoryPath="$(echo "${currentDirectoryPath/\$HOME/$currentHomeDir}")"
-        sudo -u $currentUser touch "$currentDirectoryPath/Novo.txt"
+        sudo -u $currentUser touch "$currentDirectoryPath/novo.txt"
+        sudo -u $currentUser cp -R "$basePath/home/templates"/* "$currentDirectoryPath/."
     fi
 }    
 
@@ -1197,7 +1254,8 @@ installAllAfterSelections
 
 createTemplates
 
-restore_from_old_install
+restore_home_old
+restore_system_old
 
 ##restoreSnaps
 
