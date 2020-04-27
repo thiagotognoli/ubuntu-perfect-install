@@ -1186,8 +1186,8 @@ function restore_system_old() {
 
     zenity --question --width=600 --height=400 --text "Restaurar Sistema de uma instalação antiga?" || return 0
 
-    currentRoot="/"
-    oldRoot"$(cd "/" && zenity --file-selection --title="Selecionar diretório / (Raíz) antigo" --directory)"
+    currentRoot=""
+    oldRoot="$(cd "/" && zenity --file-selection --title="Selecionar diretório / (Raíz) antigo" --directory)"
 
     rsyncCommand="rsync -aHAXxh --devices --specials --numeric-ids"
 
