@@ -7,3 +7,4 @@ pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash -c "\
   && sudo bash /tmp/ubuntu-perfect-install/run.sh;
   sudo rm -rf /tmp/ubuntu-perfect-install
 "
+#wget https://github.com/thiagotognoli/ubuntu-perfect-install/archive/master.zip

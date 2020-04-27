@@ -91,6 +91,7 @@ gnomeShellExtension=()
 preCommand=()
 posAptCommand=()
 posCommand=()
+preFinishCommand=()
 
 
 
@@ -101,6 +102,7 @@ function installAllAfterSelections() {
     intstallSnap
     installFlatpak
     installPosCommands
+    installPreFinishCommand
 }
 
 
@@ -133,6 +135,10 @@ function addPosCommand() {
     posCommand+=("$1")
 }
 
+function addPreFinishCommand() {
+    preFinishCommand+=("$1")
+}
+
 function addGnomeShellExtension() {
     gnomeShellExtension+=("$1")
 }
@@ -143,53 +149,109 @@ function addFlatpak() {
 
 
 function installPreCommands() {
+    echo "============================="
+    echo " Pré Instalação"
+    echo "============================="
+
     for i in "${preCommand[@]}"
     do
+        echo "Executando> eval \"$i\""
         eval "$i"
     done    
 }
 
 function installApt() {
-    printf -v aptPackages '%s ' "${apt[@]}"
-    sudo apt install -y $aptPackages
+    echo "============================="
+    echo " Instalando APT"
+    echo "============================="
+
+    aptToInstall=()
+
+    for line in "${apt[@]}"
+    do
+        local IF="\ "
+        for i in $line # note that $var must NOT be quoted here!
+        do
+            if [[ $(sudo apt-cache search "^$i$") ]]; then
+                aptToInstall+=("$i")
+            fi
+        done
+    done
+
+    echo "Executando> sudo apt install -y -f \"${aptToInstall[@]}\""
+    sudo apt install -y -f "${aptToInstall[@]}"
 }
 
 function intstallSnap() {
+    echo "============================="
+    echo " Instalando Snaps"
+    echo "============================="
+
     for i in "${snap[@]}"
     do
+        echo "Executando> sudo snap install \"$i\""
         sudo snap install "$i"
     done
     for i in "${snapClassic[@]}"
     do
+        echo "Executando> sudo snap install --classic \"$i\""
         sudo snap install --classic "$i"
     done
     for i in "${snapEdgeClassic[@]}"
     do
+        echo "Executando> sudo snap install --edge --classic \"$i\""
         sudo snap install --edge --classic "$i"
     done
 }
 
 function installFlatpak() {
+    echo "============================="
+    echo " Instalando Flatpaks"
+    echo "============================="
+
     #executar apos o pos, ou add o repo before this after apt
     for i in "${flatpak[@]}"
     do
+        echo "Executando> sudo -u $currentUser flatpak install -y \"$i\""
         sudo -u $currentUser flatpak install -y "$i"
     done    
 }
 
 function installPosAptCommands() {
+    echo "============================="
+    echo " Pós APT Instalação"
+    echo "============================="
+
     for i in "${posAptCommand[@]}"
     do
+        echo "Executando> eval \"$i\""
         eval "$i"
     done    
 }
 
 function installPosCommands() {
+    echo "============================="
+    echo " Pós Instalação"
+    echo "============================="
     for i in "${posCommand[@]}"
     do
+        echo "Executando> eval \"$i\""
         eval "$i"
     done    
 }
+
+function installPreFinishCommand() {
+    echo "============================="
+    echo " Pré Finish Instalação"
+    echo "============================="
+    for i in "${preFinishCommand[@]}"
+    do
+        echo "Executando> eval \"$i\""
+        eval "$i"
+    done    
+}
+
+
 
 
 set -a # export all variables created next
@@ -304,11 +366,11 @@ function installApps() {
 
     options_title+=("Docker e Docker Compose [apt repo]")
     options_selected+=(TRUE)
-    options_id+=("install_dockerinstall_docker")
+    options_id+=("install_docker")
 
     options_title+=("Team Viewer [web deb & apt repo]")
     options_selected+=(TRUE)
-    options_id+=("install_teamviewer")
+    options_id+=("addPosCommand \"install_teamviewer\"")
 
     optionsLength=${#options_id[@]}
     optionsToShow=();
@@ -360,9 +422,12 @@ function install_base() {
 
 function pre_install_base() {
     sudo apt update
-    sudo apt -y upgrade
+    
 
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+
+    addPreFinishCommand "sudo apt -y -f install"
+    addPreFinishCommand "sudo apt -y upgrade"
 }
 
 function pre_install_base_hotfixSnap() {
@@ -414,21 +479,19 @@ function pos_install_flameshotscreenshot() {
 
 function pos_install_ohmyzsh() {
     sudo -u $currentUser mkdir -p "$currentHomeDir/tmp/zsh" \
-	    && cd "$currentHomeDir/tmp/zsh" \
         && sudo -u $currentUser wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O "$currentHomeDir/tmp/zsh/install.sh" \
 	    && sudo -u $currentUser sh -c "RUNZSH='no'; sh '$currentHomeDir/tmp/zsh/install.sh' --unattended" \
         && sudo -u $currentUser rm -rf "$currentHomeDir/.zshrc" \
         && sudo -u $currentUser cp "$currentHomeDir/.oh-my-zsh/templates/zshrc.zsh-template" "$currentHomeDir/.zshrc" \
         && sudo -u $currentUser sed -ri 's/(ZSH_THEME=")([^"]*)(")/\1agnoster\3/g' "$currentHomeDir/.zshrc" \
         && sudo -u $currentUser sed -ri 's/(plugins=\()([^\)]*)(\))/\1git git-extras git-flow gitignore ubuntu cp extract sudo systemd last-working-dir docker docker-compose web-search vscode laravel laravel5 npm yarn\3/g' "$currentHomeDir/.zshrc" \
-        && git clone https://github.com/abertsch/Menlo-for-Powerline.git \
-        && sudo mv Menlo-for-Powerline/*.ttf /usr/share/fonts/.  \
-        && rm -rf Menlo-for-Powerline \
-	    && cd "$currentHomeDir" \
+        && git clone https://github.com/abertsch/Menlo-for-Powerline.git "$currentHomeDir/tmp/zsh/Menlo-for-Powerline" \
+        && sudo mv "$currentHomeDir/tmp/zsh/Menlo-for-Powerline/"*.ttf /usr/share/fonts/.  \
+        && cd /tmp \
         && sudo fc-cache -vf /usr/share/fonts
         ##sudo -u $currentUser chsh -s /bin/zsh root \
 
-    sudo rm -rf "$currentHomeDir/tmp"
+    addPreFinishCommand "sudo -u $currentUser rm -rf \"$currentHomeDir/tmp\""
 
     #https://github.com/romkatv/powerlevel10k
     sudo -u $currentUser git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k \
@@ -441,15 +504,13 @@ function pos_install_ohmyzsh() {
         https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts/MesloLGS%20NF%20Bold%20Italic.ttf
 
     sudo fc-cache -vf /usr/share/fonts
-
 }
 
 function pos_install_lsd() {
-    sudo -u $currentUser mkdir -p "$currentHomeDir/tmp" \
-        && sudo -u $currentUser wget https://github.com/Peltoche/lsd/releases/download/0.16.0/lsd_0.16.0_amd64.deb -O "$currentHomeDir/tmp/lsd.deb" \
-        && sudo dpkg -i "$currentHomeDir/tmp/lsd.deb" \
-        && sudo -u $currentUser rm -rf "$currentHomeDir/tmp"
-        #sudo snap install lsd
+    sudo -u $currentUser mkdir -p "$currentHomeDir/tmp/lsd" \
+        && sudo -u $currentUser wget https://github.com/Peltoche/lsd/releases/download/0.16.0/lsd_0.16.0_amd64.deb -O "$currentHomeDir/tmp/lsd/lsd.deb" \
+        && sudo dpkg -i "$currentHomeDir/tmp/lsd/lsd.deb"
+    addPreFinishCommand "sudo -u $currentUser rm -rf \"$currentHomeDir/tmp\""
 }
 
 function config_gnomeshell() {
@@ -521,10 +582,11 @@ function menu_gnomeshellextensions() {
 }
 
 function pos_install_gnomeshellextensions() {
-    sudo mkdir -p $binDir \
-        && sudo rm -rf $binDir/gnome-shell-extension-installer \
-        && sudo wget https://raw.githubusercontent.com/brunelli/gnome-shell-extension-installer/master/gnome-shell-extension-installer -O $binDir/gnome-shell-extension-installer \
-        && sudo chmod a+x $binDir/gnome-shell-extension-installer
+    cd /tmp
+    sudo mkdir -p "$binDir" \
+        && sudo rm -rf "$binDir/gnome-shell-extension-installer" \
+        && sudo wget https://raw.githubusercontent.com/brunelli/gnome-shell-extension-installer/master/gnome-shell-extension-installer -O "$binDir/gnome-shell-extension-installer" \
+        && sudo chmod a+x "$binDir/gnome-shell-extension-installer"
 
     if [ $? -eq 0 ]; then
         echo "Installing Extensions"
@@ -536,7 +598,7 @@ function pos_install_gnomeshellextensions() {
         do
             gnomeShellExtensionIndex="${gnomeShellExtension[$i]}"
             echo "Installing ${gnomeExtensions_Name[$gnomeShellExtensionIndex]} Gnome Shell Extension"
-            sudo -u $currentUser $binDir/gnome-shell-extension-installer ${gnomeExtensions_Id[$gnomeShellExtensionIndex]}
+            sudo -u $currentUser "$binDir/gnome-shell-extension-installer" "${gnomeExtensions_Id[$gnomeShellExtensionIndex]}"
         done
     else
         echo "Fail to install pre-requisites to Gnome Extensions"
@@ -609,7 +671,7 @@ function pos_install_chats_teams() {
     mkdir -p /tmp/teamsmicrosoftinstall \
         && wget -O /tmp/teamsmicrosoftinstall/teams.deb "$teamsDebBaseURL$teamsLastURL" \
         && sudo dpkg -i /tmp/teamsmicrosoftinstall/teams.deb
-    sudo apt install -f -y
+    
     rm -rf /tmp/teamsmicrosoftinstall
 }
 
@@ -627,7 +689,7 @@ function pos_install_chats_whatsappelectron() {
     && sudo mkdir -p "/opt/AppImage" \
     && sudo mv dist/whatsapp-electron-*.AppImage "/opt/AppImage/whatsapp-electron.AppImage" \
     && sudo chmod a+x "/opt/AppImage/whatsapp-electron.AppImage" \
-    && cd .. \
+    && cd /tmp \
     && sudo -u $currentUser rm -rf "$currentHomeDir/tmp/whatsapp-electron" \
     && sudo mkdir -p /opt/AppImage/icons \
     && sudo wget -O "/opt/AppImage/icons/whatsapp.svg" https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg \
@@ -731,15 +793,19 @@ function install_teamviewer() {
     rm -rf /tmp/teamviewerdwl
 }
 
-
 function install_docker() {
+    addApt "apt-transport-https ca-certificates curl gnupg-agent software-properties-common"
+    addPosCommand "pos_install_docker"
+}
+
+
+function pos_install_docker() {
     #zenity --question --width=600 --height=400 --text "Instalar Docker?" || return 0
     localUbuntuRelease="$ubuntuRelease"
     if [ "$localUbuntuRelease" = "eoan" ]; then
         localUbuntuRelease="disco"
     fi
     sudo apt remove -y docker docker-engine docker.io containerd runc
-    sudo apt update && sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common \
     && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - \
     && sudo bash -c "echo -e 'deb [arch=amd64] https://download.docker.com/linux/ubuntu $localUbuntuRelease stable\n# deb-src [arch=amd64] https://download.docker.com/linux/ubuntu $localUbuntuRelease stable' >> /etc/apt/sources.list.d/docker.list" \
     && sudo apt update && sudo apt install -y docker-ce docker-ce-cli containerd.io \
@@ -764,9 +830,7 @@ function install_googlechrome() {
     mkdir -p /tmp/googlechrome \
         && wget -O /tmp/googlechrome/googlechrome.deb $googleChromeDownloadLastUrl \
         && sudo dpkg -i /tmp/googlechrome/googlechrome.deb
-        sudo apt install -f
-        rm -rf /tmp/googlechrome
-
+    rm -rf /tmp/googlechrome
 }
 
 function restore_from_old_install() {
