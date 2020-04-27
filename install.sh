@@ -284,6 +284,26 @@ function installApps() {
     options_selected+=(TRUE)
     options_id+=("menu_alternative_terminals")
 
+    options_title+=("LVM 2 [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"lvm2\"")
+
+    options_title+=("Aptitude [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"aptitude\"")
+
+    options_title+=("Synaptic [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"synaptic\"")
+
+    options_title+=("Gnome Software [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"gnome-software gnome-software-plugin-snap gnome-software-plugin-flatpak\"")
+
+    options_title+=("NFS Client [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"nfs-common\"")
+
     options_title+=("Monitoramento - htop [apt]")
     options_selected+=(TRUE)
     options_id+=("addApt \"htop\"")
@@ -334,11 +354,11 @@ function installApps() {
 
     options_title+=("KeepasXC [flat]")
     options_selected+=(TRUE)
-    options_id+=("addFlatpak \"flathub org.keepassxc.KeePassXC\"")
+    options_id+=("addFlatpak \"org.keepassxc.KeePassXC\"")
 
     options_title+=("Authenticator (2FA) [flat]")
     options_selected+=(TRUE)
-    options_id+=("addFlatpak \"flathub com.github.bilelmoussaoui.Authenticator\"")
+    options_id+=("addFlatpak \"com.github.bilelmoussaoui.Authenticator\"")
 
     options_title+=("Inkscape (Editor de Desenhos Vetorial) [snap]")
     options_selected+=(TRUE)
@@ -394,35 +414,22 @@ function install_base() {
     addPreCommand "pre_install_base"
 
     addApt "ubuntu-restricted-extras"
-    #sudo apt install -y ubuntu-restricted-extras
+
+    addPreCommand "pre_install_zfs_snapshot"
 
     addPreCommand "pre_install_base_hotfixSnap"
-    #sudo apt install -y snapd snap
-    
-    addApt "lvm2"
-    #sudo apt install -y lvm2
     
     addApt "apt-transport-https ca-certificates curl gnupg-agent software-properties-common"
-    #sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
 
-    addApt "aptitude synaptic gnome-software gnome-software-plugin-snap"
-    #sudo apt install -y aptitude synaptic gnome-software gnome-software-plugin-snap
-
-    addApt "flatpak gnome-software-plugin-flatpak"
+    addApt "flatpak "
     addPosAptCommand "flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"
-    #sudo apt install -y flatpak gnome-software-plugin-flatpak \
-    #    && flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
     addApt "wget curl rsync git bash dbus perl less mawk sed"
-    #sudo apt install -y wget curl rsync git bash dbus perl less mawk sed
 
-    addApt "nfs-common"
-    #sudo apt install -y nfs-common
 }
 
 function pre_install_base() {
     sudo apt update
-    
 
     echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
 
@@ -430,7 +437,17 @@ function pre_install_base() {
     addPreFinishCommand "sudo apt -y upgrade"
 }
 
+function pre_install_zfs_snapshot() {
+    #cria zfs zsys snapshot
+    [ -e /usr/libexec/zsys-system-autosnapshot ] && sudo /usr/libexec/zsys-system-autosnapshot snapshot && sudo /usr/libexec/zsys-system-autosnapshot update-menu
+    #desabilita apt-zfs-snapshot
+    [ -e /etc/apt/apt.conf.d/90_zsys_system_autosnapshot ] && sudo rsync --remove-source-files -aHAXxh --devices --specials --numeric-ids /etc/apt/apt.conf.d/90_zsys_system_autosnapshot /etc/apt/90_zsys_system_autosnapshot
+
+    addPreFinishCommand "[ -e /etc/apt/90_zsys_system_autosnapshot ] && sudo rsync --remove-source-files -aHAXxh --devices --specials --numeric-ids /etc/apt/90_zsys_system_autosnapshot /etc/apt/apt.conf.d/90_zsys_system_autosnapshot"
+}
+
 function pre_install_base_hotfixSnap() {
+    
     #bug ubuntu zfs
     sudo service snapd stop
     sudo apt purge -y snap snapd
@@ -485,13 +502,13 @@ function pos_install_ohmyzsh() {
         && sudo -u $currentUser cp "$currentHomeDir/.oh-my-zsh/templates/zshrc.zsh-template" "$currentHomeDir/.zshrc" \
         && sudo -u $currentUser sed -ri 's/(ZSH_THEME=")([^"]*)(")/\1agnoster\3/g' "$currentHomeDir/.zshrc" \
         && sudo -u $currentUser sed -ri 's/(plugins=\()([^\)]*)(\))/\1git git-extras git-flow gitignore ubuntu cp extract sudo systemd last-working-dir docker docker-compose web-search vscode laravel laravel5 npm yarn\3/g' "$currentHomeDir/.zshrc" \
-        && git clone https://github.com/abertsch/Menlo-for-Powerline.git "$currentHomeDir/tmp/zsh/Menlo-for-Powerline" \
+        && sudo -u $currentUser git clone https://github.com/abertsch/Menlo-for-Powerline.git "$currentHomeDir/tmp/zsh/Menlo-for-Powerline" \
         && sudo mv "$currentHomeDir/tmp/zsh/Menlo-for-Powerline/"*.ttf /usr/share/fonts/.  \
         && cd /tmp \
         && sudo fc-cache -vf /usr/share/fonts
         ##sudo -u $currentUser chsh -s /bin/zsh root \
 
-    addPreFinishCommand "sudo -u $currentUser rm -rf \"$currentHomeDir/tmp\""
+    addPreFinishCommand "sudo rm -rf \"$currentHomeDir/tmp\""
 
     #https://github.com/romkatv/powerlevel10k
     sudo -u $currentUser git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k \
@@ -510,7 +527,7 @@ function pos_install_lsd() {
     sudo -u $currentUser mkdir -p "$currentHomeDir/tmp/lsd" \
         && sudo -u $currentUser wget https://github.com/Peltoche/lsd/releases/download/0.16.0/lsd_0.16.0_amd64.deb -O "$currentHomeDir/tmp/lsd/lsd.deb" \
         && sudo dpkg -i "$currentHomeDir/tmp/lsd/lsd.deb"
-    addPreFinishCommand "sudo -u $currentUser rm -rf \"$currentHomeDir/tmp\""
+    addPreFinishCommand "sudo rm -rf \"$currentHomeDir/tmp\""
 }
 
 function config_gnomeshell() {
@@ -630,7 +647,7 @@ function menu_chats() {
 
     options_title+=("Discord [flatpak]")
     options_selected+=(TRUE)
-    options_id+=("addFlatpak \"flathub com.discordapp.Discord\"")
+    options_id+=("addFlatpak \"com.discordapp.Discord\"")
 
     options_title+=("WhatsApp Electrom [git]")
     options_selected+=(FALSE)
@@ -845,7 +862,6 @@ function restore_from_old_install() {
     #sudo -u $currentUser rsync -az "$oldRoot/data" "/data"
     oldHome="$(cd "$currentHomeDir" && zenity --file-selection --title="Select a Old Home Directory" --directory)"
     
-    
 
 	#TODO:
     ##flat packages
@@ -855,13 +871,41 @@ function restore_from_old_install() {
     #echo "----->All Snap Packages configs"
     #sudo -u $currentUser rsync -az "$oldHome/snap" "$homeDir/"
 
-   rsyncCommand="rsync -aHAXPxh --numeric-ids"
+   #rsyncCommand="rsync -aHAXPxh --numeric-ids"
+   rsyncCommand="rsync -aHAXxh --devices --specials --numeric-ids"
+
+     
    #se for remoto
    #rsync_command="sudo rsync -aHAXPxhz --numeric-ids"
 
     options_title=();
     options_id=();
     options_selected=();
+
+
+    if [[ -e  "$oldHome/.var" ]]; then
+        options_title+=("Flatpak's Apps Configs")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.var' '$homeDir/'")
+    fi
+
+    if [[ -e  "$oldHome/snap" ]]; then
+        options_title+=("Snap's Apps Configs")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.var' '$homeDir/'")
+    fi
+
+    if [[ -e  "$oldHome/snap" ]]; then
+        options_title+=("Snap's Apps Configs")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.var' '$homeDir/'")
+    fi
+
+    if [[ -e  "$oldHome/.config/Microsoft" ]]; then
+        options_title+=("Microsoft's Apps Configs (Teams ...)")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.config/Microsoft' '$homeDir/'")
+    fi
 
     if [[ -e  "$oldHome/.bashrc" ]]; then
         options_title+=("Bash config")
@@ -1064,7 +1108,7 @@ function restore_from_old_install() {
 			title="Copiar $oldDirectoyPath => $currentDirectoryPath"
 			optionsHomeTitles+=("$title")
 			optionsHomeToShow+=(TRUE "$title")
-			optionsHomeCommand+=("sudo -u $currentUser rsync -az '$oldDirectoyPath/'* '$currentDirectoryPath/'")
+			optionsHomeCommand+=("[ -e '$oldDirectoyPath/'* ] sudo $rsyncCommand '$oldDirectoyPath/'* '$currentDirectoryPath/'")
         done
 		optionsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione Pastas da Home Antiga para Recuperar" \
 			--checklist \
