@@ -899,12 +899,21 @@ function install_googlechrome() {
 }
 
 function restore_home_old() {
+    rsyncCommand="rsync -aHAXxh --devices --specials --numeric-ids"
+    
     zenity --question --width=600 --height=400 --text "Restaurar Home de uma instalação antiga?" || return 0
 
     homeDir="$currentHomeDir"
     oldHome="$(cd "$currentHomeDir" && zenity --file-selection --title="Selecionar diretório Home antigo" --directory)"
 
-    rsyncCommand="rsync -aHAXxh --devices --specials --numeric-ids"
+    cancelSelection=$?
+    if [[ $cancelSelection = 1 ]] ;
+    then
+	echo "Cancelado!";
+	return 0
+    fi
+	
+    
     #rsyncCommand="rsync -aHAXPxh --numeric-ids"
     #se for remoto
     #rsync_command="sudo rsync -aHAXPxhz --numeric-ids"
@@ -931,13 +940,7 @@ function restore_home_configs() {
     if [[ -e  "$oldHome/snap" ]]; then
         options_title+=("Snap's Apps Configs")
         options_selected+=(TRUE)
-        options_id+=("sudo $rsyncCommand '$oldHome/.var' '$homeDir/'")
-    fi
-
-    if [[ -e  "$oldHome/snap" ]]; then
-        options_title+=("Snap's Apps Configs")
-        options_selected+=(TRUE)
-        options_id+=("sudo $rsyncCommand '$oldHome/.var' '$homeDir/'")
+        options_id+=("sudo $rsyncCommand '$oldHome/snap' '$homeDir/'")
     fi
 
     if [[ -e  "$oldHome/.config/Microsoft" ]]; then
@@ -1199,7 +1202,7 @@ function restore_system_old() {
     if [[ -e  "$oldRoot/etc/NetworkManager/system-connections" ]]; then
         options_title+=("Conexões Network Manager")
         options_selected+=(TRUE)
-        options_id+=("sudo $rsyncCommand '$oldRoot/etc/NetworkManager/system-connections' '$currentRoot/etc/NetworkManager/system-connections/'")
+        options_id+=("sudo $rsyncCommand '$oldRoot/etc/NetworkManager/system-connections' '$currentRoot/etc/NetworkManager/'")
     fi
 
     optionsLength=${#options_id[@]}
