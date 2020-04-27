@@ -274,7 +274,7 @@ function callAppsFunctions() {
     done
 }
 
-function installApps() {
+function menuApps() {
 
     options_title=();
     options_id=();
@@ -414,6 +414,13 @@ function installApps() {
         --column "App" \
         "${optionsToShow[@]}")
 
+	cancelSelection=$?
+    if [[ $cancelSelection = 1 ]] ;
+	then
+		echo "Cancelado!";
+		return 0
+	fi
+
     callAppsFunctions "$appsSelected"
 }
 
@@ -444,8 +451,6 @@ function install_ubuntu_restricted_extras() {
 
 function pre_install_base() {
     sudo apt update
-
-    
 
     addPreFinishCommand "sudo apt -y -f install"
     addPreFinishCommand "sudo apt -y upgrade"
@@ -498,6 +503,13 @@ function menu_alternative_terminals() {
         --column "Marcar" \
         --column "App" \
         "${optionsToShow[@]}")
+
+	cancelSelection=$?
+    if [[ $cancelSelection = 1 ]] ;
+	then
+		echo "Cancelado!";
+		return 0
+	fi
 
     callAppsFunctions "$appsSelected"
 }
@@ -581,7 +593,7 @@ function menu_gnomeshellextensions() {
     options_id+=("addApt \"psensor\"")
 
 
-    addApt "wget bash curl dbus perl git less"
+    
 
     # get length of an array
     gnomeExtensionslength=${#gnomeExtensions_Id[@]}
@@ -606,6 +618,15 @@ function menu_gnomeshellextensions() {
         --column "Marcar" \
         --column "Extensão Gnome Shell" \
         "${optionsToShow[@]}")
+
+	cancelSelection=$?
+    if [[ $cancelSelection = 1 ]] ;
+	then
+		echo "Cancelado!";
+		return 0
+	fi
+
+    addApt "wget bash curl dbus perl git less"
 
     callAppsFunctions "$appsSelected"
 
@@ -683,6 +704,13 @@ function menu_chats() {
         --column "Marcar" \
         --column "App" \
         "${optionsToShow[@]}")
+
+	cancelSelection=$?
+    if [[ $cancelSelection = 1 ]] ;
+	then
+		echo "Cancelado!";
+		return 0
+	fi
 
     callAppsFunctions "$appsSelected"
     
@@ -800,6 +828,13 @@ function menu_develtools() {
         --column "App" \
         "${optionsToShow[@]}")
 
+	cancelSelection=$?
+    if [[ $cancelSelection = 1 ]] ;
+	then
+		echo "Cancelado!";
+		return 0
+	fi
+    
     callAppsFunctions "$appsSelected"
 
 }
@@ -1245,12 +1280,10 @@ function restoreSnaps() {
 
 #install_whatsappelectron
 
-install_base
+addPreCommand "install_base"
 
-installApps
-
+menuApps
 installAllAfterSelections
-
 
 createTemplates
 
