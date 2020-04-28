@@ -1,27 +1,6 @@
 #!/bin/bash
 
-#https://askubuntu.com/questions/16225/how-can-i-accept-the-microsoft-eula-agreement-for-ttf-mscorefonts-installer
-#sending incremental file list
-#created directory /home/thiago/.SiriKali
-#./
-#kpc/
-#
-#sent 92 bytes  received 68 bytes  320.00 bytes/sec
-#total size is 0  speedup is 0.00
-#mv: não foi possível obter estado de '/home/thiago/snap/netbeans': Arquivo ou diretório inexistente
-#rsync: link_stat "/media/thiago/c339c156-38f0-4710-83b6-f02e83243f69/home/thiago/.config/filezilla" failed: No such file or directory (2)
-#rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1207) [sender=3.1.3]
-#rsync: link_stat "/media/thiago/c339c156-38f0-4710-83b6-f02e83243f69/home/thiago/Público/*" failed: No such file or directory (2)
-#rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1207) [sender=3.1.3]
-#rsync: opendir "/media/thiago/c339c156-38f0-4710-83b6-f02e83243f69/home/thiago/Documentos/antigo/.aptitude" failed: Permission denied (13)
-#rsync: opendir "/media/thiago/c339c156-38f0-4710-83b6-f02e83243f69/home/thiago/Documentos/antigo/.cache/dconf" failed: Permission denied (13)
-#rsync: opendir "/media/thiago/c339c156-38f0-4710-83b6-f02e83243f69/home/thiago/Documentos/antigo/.cache/doc" failed: Permission denied (13)
-#rsync: opendir "/media/thiago/c339c156-38f0-4710-83b6-f02e83243f69/home/thiago/Documentos/antigo/.dbus" failed: Permission denied (13)
-#rsync: opendir "/media/thiago/c339c156-38f0-4710-83b6-f02e83243f69/home/thiago/Documentos/antigo/.gvfs" failed: Permission denied (13)
-#rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1207) [sender=3.1.3]
-#rsync: link_stat "/media/thiago/c339c156-38f0-4710-83b6-f02e83243f69/home/thiago/Música/*" failed: No such file or directory (2)
-#rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1207) [sender=3.1.3]
-
+#TODO: rodar mackup
 #TODO: fontes hackeadas corretamente
 #TODO: automatizar tt mscorefonts
 #TODO: extensoes shell perguntar de uma vez somente e add as novas indicadas aqui
@@ -43,6 +22,7 @@
 #backup e restore e com hd antigo, backup home toda ?, criptografar ? comprimir ?
 #perguntar o que restaurar , e do home tbm
 #grive, sshuttle and sshoot(snap), notepad++ (snap), geany, slimbookbattery, nextcloud, mackup , anbox, gitahead
+#apt-btrfs, snapd
 #? tmux, fetch bash 
 # https://github.com/ohmybash/oh-my-bash
 # https://github.com/powerline/powerline
@@ -50,9 +30,6 @@
 #todo clip grab
 #https://clipgrab.org/
 #apt install ffmpeg
-##Installing Unite Gnome Shell Extension
-##[1287] Obtaining extension info
-##ERROR: Use your package manager to update this extension
 # snap install sqlitebrowser-casept
 
 
@@ -79,8 +56,12 @@ argScript=$(readlink -f "$0")
 # Absolute path this script project working is in, thus /home/user
 #basePath=$(sed -e "s/\/[^\/]*$//" <<< ${argScript%/*})
 basePath=${argScript%/*}
-
 binDir="${basePath}/bin"
+
+set -a # export all variables created next
+source $basePath/conf.conf
+set +a # stop exporting
+
 
 apt=()
 snap=()
@@ -251,12 +232,6 @@ function installPreFinishCommand() {
     done    
 }
 
-
-
-
-set -a # export all variables created next
-source $basePath/conf.conf
-set +a # stop exporting
 
 
 function callAppsFunctions() {
@@ -1202,7 +1177,7 @@ function restore_system_old() {
     if [[ -e  "$oldRoot/etc/NetworkManager/system-connections" ]]; then
         options_title+=("Conexões Network Manager")
         options_selected+=(TRUE)
-        options_id+=("sudo $rsyncCommand '$oldRoot/etc/NetworkManager/system-connections' '$currentRoot/etc/NetworkManager/'")
+        options_id+=("sudo $rsyncCommand '$oldRoot/etc/NetworkManager/system-connections' '$currentRoot/etc/NetworkManager/' && sudo service network-manager reload")
     fi
 
     optionsLength=${#options_id[@]}
