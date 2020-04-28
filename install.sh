@@ -620,6 +620,13 @@ function pos_install_gnomeshellextensions() {
         && sudo wget https://raw.githubusercontent.com/brunelli/gnome-shell-extension-installer/master/gnome-shell-extension-installer -O "$binDir/gnome-shell-extension-installer" \
         && sudo chmod a+x "$binDir/gnome-shell-extension-installer"
 
+	
+    echo "Atualizando Extensions"
+    sudo -u $currentUser "$binDir/gnome-shell-extension-installer --update"
+    
+     sudo wget https://raw.githubusercontent.com/brunelli/gnome-shell-extension-installer/master/gnome-shell-extension-installer -O "/usr/bin gnome-shell-extension-installer" \    
+     	&& sudo chmod a+x "/usr/bin/gnome-shell-extension-installer"
+    
     if [ $? -eq 0 ]; then
         echo "Installing Extensions"
 
