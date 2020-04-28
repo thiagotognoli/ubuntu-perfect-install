@@ -367,7 +367,7 @@ function menuApps() {
     options_id+=("addPosCommand \"install_teamviewer\"")
 
     options_title+=("Hotfix Snap (Ubuntu+ZFS bug) [apt]")
-    options_selected+=(FALSE)
+    options_selected+=(TRUE)
     options_id+=("addPreCommand \"pre_install_base_hotfixSnap\"")
     
     optionsLength=${#options_id[@]}
@@ -445,9 +445,8 @@ function pre_install_zfs_snapshot() {
 function pre_install_base_hotfixSnap() {
     
     #bug ubuntu zfs
-    sudo service snapd stop
-    sudo apt purge -y snap snapd
-    addApt "snapd snap"
+    sudo apt purge -y snapd
+    addApt "snapd"
 }
 
 function menu_alternative_terminals() {
