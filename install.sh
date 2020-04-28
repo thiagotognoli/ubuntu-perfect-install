@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#TODO:  gsettings get org.gnome.desktop.session idle-delay => uint32 300
+#	gsettings set org.gnome.desktop.session idle-delay 0 # to disable
+
 #TODO: listar home configs de flatpak e snap e deixar escolher qual importar (home/user/.var e home/user/snap)
 #TODO: listar home configs  (home/user/.config)
 #TODO: listar todas pasta raíz da home, exceto as defaults e já nomeadas e perguntar se deseja importar
