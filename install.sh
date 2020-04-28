@@ -1,20 +1,16 @@
 #!/bin/bash
 
+#TODO: apt-btrfs, snapd
 #TODO: rodar mackup
 #TODO: fontes hackeadas corretamente
 #TODO: automatizar tt mscorefonts
 #TODO: extensoes shell perguntar de uma vez somente e add as novas indicadas aqui
 #TODO: erros de nao existe, do rsync, ver se diretorio origem esta va\io, se tiver nao fazer
-#TODO: java - jre - jdk
 #TODO: https://github.com/tliron/em-dash e dash to dock
-#TODO: adicionar parametros no rsync, igual do script btrfs, ver o user do rsync, esta dando erro em alguns arquivos
-#TODO: quebrando instalação de programas, provavelmente pelo fato das novas subjanelas usarem as mesmas variaveis
-#TODO: dashtodocker gnomeshellextension
 #TODO: snap, com e sem maquina antiga
 #TODO: virtualbox
 #TODO: criar snapshot zfs, opcional
-#TODO: separa aplgumas aplicações, com outra tela perguntando, por exemplo gráfico perguntar gimp e inkscape
-#TODO: melhorar e colocar whatsapp
+#TODO: whatsapp electgron ou o outro repo
 #TODO: fazer app de backup
 #TODO: fazer seleção de base o q instar, loja loja com snap loja com flatpack por exemplo
 #TODO: validar se home antiga realmente eh home, validar se home antiga tem o arquivo pra restaurar, por exemplo se nao tiver team viewer nao mostrar opcao
@@ -22,7 +18,7 @@
 #backup e restore e com hd antigo, backup home toda ?, criptografar ? comprimir ?
 #perguntar o que restaurar , e do home tbm
 #grive, sshuttle and sshoot(snap), notepad++ (snap), geany, slimbookbattery, nextcloud, mackup , anbox, gitahead
-#apt-btrfs, snapd
+
 #? tmux, fetch bash 
 # https://github.com/ohmybash/oh-my-bash
 # https://github.com/powerline/powerline
@@ -232,8 +228,6 @@ function installPreFinishCommand() {
     done    
 }
 
-
-
 function callAppsFunctions() {
 	local _optionsTitles=("${options_title[@]}")
 	local _optionsCommands=("${options_id[@]}")
@@ -254,7 +248,6 @@ function menuApps() {
     options_title=();
     options_id=();
     options_selected=();
-
 
     options_title+=("Hotfix Snap (Ubuntu+ZFS bug) [apt]")
     options_selected+=(TRUE)
@@ -368,10 +361,6 @@ function menuApps() {
     options_selected+=(TRUE)
     options_id+=("menu_develtools")
 
-    options_title+=("Docker e Docker Compose [apt repo]")
-    options_selected+=(TRUE)
-    options_id+=("install_docker")
-
     options_title+=("Team Viewer [web deb & apt repo]")
     options_selected+=(TRUE)
     options_id+=("addPosCommand \"install_teamviewer\"")
@@ -434,10 +423,13 @@ function pre_install_base() {
 function pre_install_zfs_snapshot() {
     #cria zfs zsys snapshot
     [ -e /usr/libexec/zsys-system-autosnapshot ] && sudo /usr/libexec/zsys-system-autosnapshot snapshot && sudo /usr/libexec/zsys-system-autosnapshot update-menu
+    #zfsSnapshotName="upi_pre"
+    #[ -e /usr/libexec/zsys-system-autosnapshot ] && sudo zsysctl state save "$zfsSnapshotName" --system --no-update-bootmenu --auto && sudo /usr/libexec/zsys-system-autosnapshot update-menu
+    
     #desabilita apt-zfs-snapshot
-    [ -e /etc/apt/apt.conf.d/90_zsys_system_autosnapshot ] && sudo rsync --remove-source-files -aHAXxh --devices --specials --numeric-ids /etc/apt/apt.conf.d/90_zsys_system_autosnapshot /etc/apt/90_zsys_system_autosnapshot
+    [ -e /etc/apt/apt.conf.d/90_zsys_system_autosnapshot ] && sudo mkdir -p /etc/apt/apt.conf.d.upi_tmp/ && sudo rsync --remove-source-files -aHAXxh --devices --specials --numeric-ids /etc/apt/apt.conf.d/90_zsys_system_autosnapshot /etc/apt/apt.conf.d.upi_tmp/90_zsys_system_autosnapshot
 
-    addPreFinishCommand "[ -e /etc/apt/90_zsys_system_autosnapshot ] && sudo rsync --remove-source-files -aHAXxh --devices --specials --numeric-ids /etc/apt/90_zsys_system_autosnapshot /etc/apt/apt.conf.d/90_zsys_system_autosnapshot"
+    addPreFinishCommand "[ ! -e /etc/apt/apt.conf.d/90_zsys_system_autosnapshot ] && [ -e /etc/apt/apt.conf.d.upi_tmp/90_zsys_system_autosnapshot ] && sudo rsync -aHAXxh --devices --specials --numeric-ids /etc/apt/apt.conf.d.upi_tmp/90_zsys_system_autosnapshot /etc/apt/apt.conf.d/90_zsys_system_autosnapshot; rm -rf /etc/apt/apt.conf.d.upi_tmp"
 }
 
 function pre_install_base_hotfixSnap() {
@@ -741,6 +733,10 @@ function menu_develtools() {
     options_title=();
     options_id=();
     options_selected=();
+
+    options_title+=("Docker e Docker Compose [apt repo]")
+    options_selected+=(TRUE)
+    options_id+=("install_docker")
 
     options_title+=("Java JRE (Open JRE) [apt]")
     options_selected+=(TRUE)
