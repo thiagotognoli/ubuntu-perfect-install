@@ -1194,8 +1194,8 @@ function restore_home_data() {
 		title="Copiar $oldDirectoyPath => $currentDirectoryPath"
 		optionsHomeTitles+=("$title")
 		optionsHomeToShow+=(TRUE "$title")
-		optionsHomeCommand+=("[[ -d '$oldDirectoyPath' && -n \"$(ls -A '$oldDirectoyPath')\" ]] && sudo $rsyncCommand '$oldDirectoyPath/'* '$currentDirectoryPath/'")
-		echo "[[ -d '$oldDirectoyPath' && -n \"$(ls -A '$oldDirectoyPath')\" ]] && sudo $rsyncCommand '$oldDirectoyPath/'* '$currentDirectoryPath/'"
+		optionsHomeCommand+=("[[ -d '$oldDirectoyPath' && -n \"\$(ls -A '$oldDirectoyPath')\" ]] && sudo $rsyncCommand '$oldDirectoyPath/'* '$currentDirectoryPath/'")
+		echo "[[ -d '$oldDirectoyPath' && -n \"\$(ls -A '$oldDirectoyPath')\" ]] && sudo $rsyncCommand '$oldDirectoyPath/'* '$currentDirectoryPath/'"
     done
 
 	optionsSelected=$(zenity --list --width=800 --height=640 --text "Selecione Pastas da Home Antiga para Recuperar" \
