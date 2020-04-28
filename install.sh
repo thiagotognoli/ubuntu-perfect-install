@@ -1294,6 +1294,17 @@ function restore_system_old() {
         --column "Marcar" \
         --column "App" \
         "${optionsToShow[@]}")
+	
+	cancelSelection=$?
+    	if [[ $cancelSelection = 1 ]] ;
+	then
+		echo "Cancelado!";
+		return 0
+	fi
+	
+    echo "============================="
+    echo " Restaurando Dados Sistema"
+    echo "============================="
 
     callAppsFunctions "$optionsSelected"
 
