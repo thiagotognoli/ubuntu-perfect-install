@@ -628,7 +628,7 @@ function pos_install_gnomeshellextensions() {
     
     if [ $? -eq 0 ]; then
     	echo "Atualizando Extensions"
-    	sudo -u $currentUser "/usr/bin/gnome-shell-extension-installer --update"    
+    	sudo -u $currentUser "/usr/bin/gnome-shell-extension-installer --update --yes"    
 	
 	
         echo "Installing Extensions"
@@ -640,7 +640,7 @@ function pos_install_gnomeshellextensions() {
         do
             gnomeShellExtensionIndex="${gnomeShellExtension[$i]}"
             echo "Installing ${gnomeExtensions_Name[$gnomeShellExtensionIndex]} Gnome Shell Extension"
-            sudo -u $currentUser "/usr/bin/gnome-shell-extension-installer" "${gnomeExtensions_Id[$gnomeShellExtensionIndex]}"
+            sudo -u $currentUser "/usr/bin/gnome-shell-extension-installer" --yes "${gnomeExtensions_Id[$gnomeShellExtensionIndex]}"
         done
     else
         echo "Fail to install pre-requisites to Gnome Extensions"
