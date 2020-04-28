@@ -1155,6 +1155,13 @@ function restore_home_configs() {
         --column "App" \
         "${optionsToShow[@]}")
 
+	cancelSelection=$?
+    	if [[ $cancelSelection = 1 ]] ;
+	then
+		echo "Cancelado!";
+		return 0
+	fi
+	
     callAppsFunctions "$optionsSelected"
 
 
@@ -1188,6 +1195,7 @@ function restore_home_data() {
 		optionsHomeTitles+=("$title")
 		optionsHomeToShow+=(TRUE "$title")
 		optionsHomeCommand+=("[[ -d '$oldDirectoyPath' && -n \"$(ls -A '$oldDirectoyPath')\" ]] && sudo $rsyncCommand '$oldDirectoyPath/'* '$currentDirectoryPath/'")
+		echo "[[ -d '$oldDirectoyPath' && -n \"$(ls -A '$oldDirectoyPath')\" ]] && sudo $rsyncCommand '$oldDirectoyPath/'* '$currentDirectoryPath/'"
     done
 
 	optionsSelected=$(zenity --list --width=800 --height=640 --text "Selecione Pastas da Home Antiga para Recuperar" \
@@ -1195,14 +1203,31 @@ function restore_home_data() {
 		--column "Marcar" \
 		--column "App" \
 		"${optionsHomeToShow[@]}")
-	optionsHomeLength=${#optionsHomeTitles[@]}
+	
+	
+	cancelSelection=$?
+    	if [[ $cancelSelection = 1 ]] ;
+	then
+		echo "Cancelado!";
+		return 0
+	fi
 
+	echo "============================="
+ 	echo " Restaurando Dados Home"
+	echo "============================="
+
+	optionsHomeLength=${#optionsHomeTitles[@]}
+	
 	local IFS="|"
 	for commandId in $optionsSelected;
 	do
 		for (( i=0; i<${optionsHomeLength}; i++ ));
 		do
-			[[ "${optionsHomeTitles[$i]}" == "$commandId" ]] && eval "${optionsHomeCommand[$i]}"
+			if [[ "${optionsHomeTitles[$i]}" == "$commandId" ]]
+			then
+				echo "Executando> ${optionsHomeCommand[$i]}"
+				eval "${optionsHomeCommand[$i]}"
+			fi
 		done
 	done
 }
