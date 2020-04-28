@@ -1187,7 +1187,7 @@ function restore_home_data() {
 		title="Copiar $oldDirectoyPath => $currentDirectoryPath"
 		optionsHomeTitles+=("$title")
 		optionsHomeToShow+=(TRUE "$title")
-		optionsHomeCommand+=("[ -e '$oldDirectoyPath/'* ] && sudo $rsyncCommand '$oldDirectoyPath/'* '$currentDirectoryPath/'")
+		optionsHomeCommand+=("[[ -d '$oldDirectoyPath' && -n \"$(ls -A '$oldDirectoyPath')\" ]] && sudo $rsyncCommand '$oldDirectoyPath/'* '$currentDirectoryPath/'")
     done
 
 	optionsSelected=$(zenity --list --width=800 --height=640 --text "Selecione Pastas da Home Antiga para Recuperar" \
@@ -1241,6 +1241,12 @@ function restore_system_old() {
         options_title+=("Conexões Network Manager")
         options_selected+=(TRUE)
         options_id+=("sudo $rsyncCommand '$oldRoot/etc/NetworkManager/system-connections' '$currentRoot/etc/NetworkManager/' && sudo service network-manager reload")
+    fi
+
+    if [[ -e  "$oldRoot/data" ]]; then
+        options_title+=("/data")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldRoot/data' '$currentRoot/'")
     fi
 
     optionsLength=${#options_id[@]}
