@@ -254,10 +254,6 @@ function menuApps() {
     options_id=();
     options_selected=();
 
-    options_title+=("Hotfix Snap (Ubuntu+ZFS bug) [apt]")
-    options_selected+=(TRUE)
-    options_id+=("addPreCommand \"pre_install_base_hotfixSnap\"")
-
     options_title+=("Ubuntu Restricted Extras [apt]")
     options_selected+=(TRUE)
     options_id+=("addPreCommand \"install_ubuntu_restricted_extras\"")
@@ -370,6 +366,10 @@ function menuApps() {
     options_selected+=(TRUE)
     options_id+=("addPosCommand \"install_teamviewer\"")
 
+    options_title+=("Hotfix Snap (Ubuntu+ZFS bug) [apt]")
+    options_selected+=(FALSE)
+    options_id+=("addPreCommand \"pre_install_base_hotfixSnap\"")
+    
     optionsLength=${#options_id[@]}
     optionsToShow=();
     for (( i=0; i<${optionsLength}; i++ ));
