@@ -1,8 +1,5 @@
 #!/bin/bash
 
-#TODO:  gsettings get org.gnome.desktop.session idle-delay => uint32 300
-#	gsettings set org.gnome.desktop.session idle-delay 0 # to disable
-
 #TODO: listar home configs de flatpak e snap e deixar escolher qual importar (home/user/.var e home/user/snap)
 #TODO: listar home configs  (home/user/.config)
 #TODO: listar todas pasta raíz da home, exceto as defaults e já nomeadas e perguntar se deseja importar
@@ -423,9 +420,14 @@ function install_ubuntu_restricted_extras() {
 
 function pre_install_base() {
     sudo apt update
+    #disable gnome lock # buck freezy computer
+    gnomeSessionIdleDelay=$(gsettings get org.gnome.desktop.session idle-delay | cut -d " " -f 2)
+    gsettings set org.gnome.desktop.session idle-delay 0
 
     addPreFinishCommand "sudo apt -y -f install"
     addPreFinishCommand "sudo apt -y upgrade"
+    
+    addPreFinishCommand "gsettings set org.gnome.desktop.session idle-delay $gnomeSessionIdleDelay"
 }
 
 function pre_install_zfs_snapshot() {
