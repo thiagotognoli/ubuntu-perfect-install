@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#TODO: apt-btrfs, snapd
+#TODO: apt-btrfs instalar lib python, snapd
 #TODO: rodar mackup
 #TODO: fontes hackeadas corretamente
 #TODO: automatizar tt mscorefonts
