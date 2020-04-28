@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#TODO: listar home configs de flatpak e snap e deixar escolher qual importar (home/user/.var e home/user/snap)
+#TODO: listar home configs  (home/user/.config)
+#TODO: listar todas pasta raíz da home, exceto as defaults e já nomeadas e perguntar se deseja importar
+
 #TODO: apt-btrfs instalar lib python, https://github.com/jf647/btrfs-snap , grub-btrfs-snapshot
 #	http://snapper.io/, http://snapper.io/faq.html, https://wiki.archlinux.org/index.php/Snapper, https://github.com/Antynea/grub-btrfs
 #TODO: rodar mackup
@@ -903,6 +907,7 @@ function restore_home_configs() {
     options_selected=();
 
 
+
     if [[ -e  "$oldHome/.var" ]]; then
         options_title+=("Flatpak's Apps Configs")
         options_selected+=(TRUE)
@@ -915,8 +920,69 @@ function restore_home_configs() {
         options_id+=("sudo $rsyncCommand '$oldHome/snap' '$homeDir/'")
     fi
 
+    if [[ -e  "$oldHome/basex" ]]; then
+        options_title+=("BaseX Db's")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/basex' '$homeDir/'")
+    fi
+
+    if [[ -e  "$oldHome/Applications" ]]; then
+        options_title+=("Applications")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/Applications' '$homeDir/'")
+    fi
+
+    if [[ -e  "$oldHome/applications" ]]; then
+        options_title+=("applications")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/applications' '$homeDir/'")
+    fi
+    
+    if [[ -e  "$oldHome/Apps" ]]; then
+        options_title+=("Apps")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/Apps' '$homeDir/'")
+    fi
+    
+    if [[ -e  "$oldHome/apps" ]]; then
+        options_title+=("apps")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/apps' '$homeDir/'")
+    fi
+    
+    if [[ -e  "$oldHome/bin" ]]; then
+        options_title+=("bin")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/bin' '$homeDir/'")
+    fi
+
+    if [[ -e  "$oldHome/appimage" ]]; then
+        options_title+=("appimage")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/appimage' '$homeDir/'")
+    fi
+    
+    if [[ -e  "$oldHome/AppImage" ]]; then
+        options_title+=("AppImage")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/AppImage' '$homeDir/'")
+    fi
+    
+
+    if [[ -e  "$oldHome/VirtualBox VMs" ]]; then
+        options_title+=("VirtualBox VM's")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/VirtualBox VMs' '$homeDir/'")
+    fi
+
+    if [[ -e  "$oldHome/go" ]]; then
+        options_title+=("Go")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/go' '$homeDir/'")
+    fi
+
     if [[ -e  "$oldHome/.config/Microsoft" ]]; then
-        options_title+=("Microsoft's Apps Configs (Teams ...)")
+        options_title+=("Microsoft's Apps Configs (Teams, ...)")
         options_selected+=(TRUE)
         options_id+=("sudo $rsyncCommand '$oldHome/.config/Microsoft' '$homeDir/'")
     fi
