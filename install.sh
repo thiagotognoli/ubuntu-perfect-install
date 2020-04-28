@@ -614,20 +614,23 @@ function menu_gnomeshellextensions() {
 }
 
 function pos_install_gnomeshellextensions() {
-    cd /tmp
-    sudo mkdir -p "$binDir" \
-        && sudo rm -rf "$binDir/gnome-shell-extension-installer" \
-        && sudo wget https://raw.githubusercontent.com/brunelli/gnome-shell-extension-installer/master/gnome-shell-extension-installer -O "$binDir/gnome-shell-extension-installer" \
-        && sudo chmod a+x "$binDir/gnome-shell-extension-installer"
-
-	
-    echo "Atualizando Extensions"
-    sudo -u $currentUser "$binDir/gnome-shell-extension-installer --update"
+    cd /
     
      sudo wget https://raw.githubusercontent.com/brunelli/gnome-shell-extension-installer/master/gnome-shell-extension-installer -O "/usr/bin gnome-shell-extension-installer" \    
      	&& sudo chmod a+x "/usr/bin/gnome-shell-extension-installer"
     
+    #sudo mkdir -p "$binDir" \
+    #    && sudo rm -rf "$binDir/gnome-shell-extension-installer" \
+    #    && sudo wget https://raw.githubusercontent.com/brunelli/gnome-shell-extension-installer/master/gnome-shell-extension-installer -O "$binDir/gnome-shell-extension-installer" \
+    #    && sudo chmod a+x "$binDir/gnome-shell-extension-installer"
+
+    
+    
     if [ $? -eq 0 ]; then
+    	echo "Atualizando Extensions"
+    	sudo -u $currentUser "/usr/bin/gnome-shell-extension-installer --update"    
+	
+	
         echo "Installing Extensions"
 
         # get length of an array
@@ -637,7 +640,7 @@ function pos_install_gnomeshellextensions() {
         do
             gnomeShellExtensionIndex="${gnomeShellExtension[$i]}"
             echo "Installing ${gnomeExtensions_Name[$gnomeShellExtensionIndex]} Gnome Shell Extension"
-            sudo -u $currentUser "$binDir/gnome-shell-extension-installer" "${gnomeExtensions_Id[$gnomeShellExtensionIndex]}"
+            sudo -u $currentUser "/usr/bin/gnome-shell-extension-installer" "${gnomeExtensions_Id[$gnomeShellExtensionIndex]}"
         done
     else
         echo "Fail to install pre-requisites to Gnome Extensions"
