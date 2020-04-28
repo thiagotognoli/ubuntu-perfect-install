@@ -1,6 +1,7 @@
 #!/bin/bash
 
-#TODO: apt-btrfs instalar lib python, snapd, https://github.com/jf647/btrfs-snap , grub-btrfs-snapshot
+#TODO: apt-btrfs instalar lib python, https://github.com/jf647/btrfs-snap , grub-btrfs-snapshot
+#	http://snapper.io/, http://snapper.io/faq.html, https://wiki.archlinux.org/index.php/Snapper, https://github.com/Antynea/grub-btrfs
 #TODO: rodar mackup
 #TODO: fontes hackeadas corretamente
 #TODO: automatizar tt mscorefonts
