@@ -986,10 +986,10 @@ function restore_home_configs() {
         options_id+=("sudo $rsyncCommand '$oldHome/go' '$homeDir/'")
     fi
 
-    if [[ -e  "$oldHome/.config/Microsoft" ]]; then
+    if [[ -e  "$oldHome/.config/Microsoft" || -e  "$oldHome/.config/teams" ]]; then
         options_title+=("Microsoft's Apps Configs (Teams, ...)")
         options_selected+=(TRUE)
-        options_id+=("sudo $rsyncCommand '$oldHome/.config/Microsoft' '$homeDir/'")
+        options_id+=("sudo $rsyncCommand '$oldHome/.config/Microsoft' '$homeDir/.config/'; sudo $rsyncCommand '$oldHome/.config/teams' '$homeDir/.config/'")
     fi
 
     if [[ -e  "$oldHome/.bashrc" ]]; then
