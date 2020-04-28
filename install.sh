@@ -326,6 +326,10 @@ function menuApps() {
     options_selected+=(TRUE)
     options_id+=("addApt \"gocryptfs\"")
 
+    options_title+=("Nextcloud Client [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"nextcloud-desktop\"")
+
     options_title+=("Sirikali [apt]")
     options_selected+=(TRUE)
     options_id+=("addApt \"sirikali\"")
@@ -774,6 +778,11 @@ function menu_develtools() {
     options_title+=("Filezilla (FTP GUI Client) [apt]")
     options_selected+=(TRUE)
     options_id+=("addApt \"filezilla\"")
+    
+    options_title+=("BaseX [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"basex\"")
+    
 
     options_title+=("MySQL Workbench (Mysql GUI Client) [apt]")
     options_selected+=(TRUE)
@@ -1101,7 +1110,7 @@ function restore_home_configs() {
 
     if [[ -e  "$oldHome/.local/share/gnome-shell" ]]; then
         options_title+=("Gnome Shell Extensions e Configs")
-        options_selected+=(TRUE)
+        options_selected+=(FALSE)
         options_id+=("sudo -u $currentUser mkdir -p '$homeDir/.local/share/gnome-shell/'; sudo $rsyncCommand '$oldHome/.local/share/gnome-shell/extensions' '$homeDir/.local/share/gnome-shell/'")
     fi
 
