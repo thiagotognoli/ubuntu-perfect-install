@@ -616,7 +616,7 @@ function menu_gnomeshellextensions() {
 function pos_install_gnomeshellextensions() {
     cd /
     
-     sudo wget https://raw.githubusercontent.com/brunelli/gnome-shell-extension-installer/master/gnome-shell-extension-installer -O "/usr/bin gnome-shell-extension-installer" \    
+     sudo wget https://raw.githubusercontent.com/brunelli/gnome-shell-extension-installer/master/gnome-shell-extension-installer -O "/usr/bin/gnome-shell-extension-installer" \
      	&& sudo chmod a+x "/usr/bin/gnome-shell-extension-installer"
     
     #sudo mkdir -p "$binDir" \
