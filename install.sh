@@ -1162,6 +1162,11 @@ function restore_home_configs() {
 		return 0
 	fi
 	
+
+	echo "============================="
+ 	echo " Restaurando Configs da Home"
+	echo "============================="	
+	
     callAppsFunctions "$optionsSelected"
 
 
@@ -1195,7 +1200,6 @@ function restore_home_data() {
 		optionsHomeTitles+=("$title")
 		optionsHomeToShow+=(TRUE "$title")
 		optionsHomeCommand+=("[[ -d '$oldDirectoyPath' && -n \"\$(ls -A '$oldDirectoyPath')\" ]] && sudo $rsyncCommand '$oldDirectoyPath/'* '$currentDirectoryPath/'")
-		echo "[[ -d '$oldDirectoyPath' && -n \"\$(ls -A '$oldDirectoyPath')\" ]] && sudo $rsyncCommand '$oldDirectoyPath/'* '$currentDirectoryPath/'"
     done
 
 	optionsSelected=$(zenity --list --width=800 --height=640 --text "Selecione Pastas da Home Antiga para Recuperar" \
