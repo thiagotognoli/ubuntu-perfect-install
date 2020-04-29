@@ -66,6 +66,7 @@ set +a # stop exporting
 
 
 apt=()
+apt_second=()
 snap=()
 snapClassic=()
 snapEdgeClassic=()
@@ -82,6 +83,7 @@ function installAllAfterSelections() {
     installPreCommands
     installApt
     installPosAptCommands
+    installAptSecond
     intstallSnap
     installFlatpak
     installPosCommands
@@ -91,6 +93,10 @@ function installAllAfterSelections() {
 
 function addApt() {
     apt+=("$1")
+}
+
+function addAptSecond() {
+    apt_second+=("$1")
 }
 
 function addSnap() {
@@ -151,6 +157,28 @@ function installApt() {
     aptToInstall=()
 
     for line in "${apt[@]}"
+    do
+        local IF="\ "
+        for i in $line # note that $var must NOT be quoted here!
+        do
+            if [[ $(sudo apt-cache search "^$i$") ]]; then
+                aptToInstall+=("$i")
+            fi
+        done
+    done
+
+    echo "Executando> sudo apt install -y -f \"${aptToInstall[@]}\""
+    sudo apt install -y -f "${aptToInstall[@]}"
+}
+
+function installAptSecond() {
+    echo "============================="
+    echo " Instalando Segundo Passo APT"
+    echo "============================="
+
+    aptToInstall=()
+
+    for line in "${apt_second[@]}"
     do
         local IF="\ "
         for i in $line # note that $var must NOT be quoted here!
@@ -778,9 +806,13 @@ function menu_develtools() {
     options_selected+=(TRUE)
     options_id+=("addSnapEdgeClassic \"node\"")
 
-    options_title+=("Visual Studio Code [snap classic]")
+    options_title+=("Visual Studio Code [apt repo]")
     options_selected+=(TRUE)
-    options_id+=("addSnapClassic \"code\" && addPosCommand \"pos_install_vscode\"")
+    options_id+=("install_vscode_apt")
+
+    options_title+=("Visual Studio Code [snap classic]")
+    options_selected+=(FALSE)
+    options_id+=("addSnapClassic \"code\" && addPosCommand \"pos_install_vscode_snap\"")
 
     options_title+=("Netbeans [snap classic]")
     options_selected+=(TRUE)
@@ -838,6 +870,25 @@ function menu_develtools() {
 
 }
 
+function install_vscode_apt() {
+    addApt "curl apt-transport-https"
+    addPosAptCommand "pre_install_vscode_apt"
+    addAptSecond "code"
+}
+
+function pre_install_vscode_apt() {
+    cd /tmp
+    sudo bash -c "echo >> /etc/sysctl.conf echo \"fs.inotify.max_user_watches=524288\" >> /etc/sysctl.conf" # configuração para repositórios grandes do vscode
+    curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+    sudo install -o root -g root -m 644 packages.microsoft.gpg /usr/share/keyrings/
+    sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
+    sudo apt update
+}
+
+function pos_install_vscode_snap() {
+    sudo bash -c "echo >> /etc/sysctl.conf echo \"fs.inotify.max_user_watches=524288\" >> /etc/sysctl.conf" # configuração para repositórios grandes do vscode
+}
+
 function pos_install_golang() {
     if ! sudo -u $currentUser bash -c "grep -q \"\$HOME/go\" $currentHomeDir/.profile"; then
         sudo -u $currentUser bash -c "echo -e '\n#set GOPATH and GO_BIN\nif [ -d \"\$HOME/go\" ] ; then\n  export GO_PATH=\"\$HOME/go\"\n   # set PATH so it includes user'\''s go bin if it exists\n  if [ -d \"\$GO_PATH/bin\" ] ; then\n     PATH=\"\$GO_PATH/bin:$PATH\"\n   fi\nfi' >> $currentHomeDir/.profile"
@@ -845,9 +896,6 @@ function pos_install_golang() {
     go get -u github.com/containous/yaegi/cmd/yaegi
 }
 
-function pos_install_vscode() {
-    sudo bash -c "echo >> /etc/sysctl.conf echo \"fs.inotify.max_user_watches=524288\" >> /etc/sysctl.conf" # configuração para repositórios grandes do vscode
-}
 
 function install_teamviewer() {
     #zenity --question --width=600 --height=400 --text "Instalar TeamViewer?" || return 0
