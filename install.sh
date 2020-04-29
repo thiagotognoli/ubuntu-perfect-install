@@ -873,12 +873,13 @@ function menu_develtools() {
 function install_vscode_apt() {
     addApt "curl apt-transport-https"
     addPosAptCommand "pre_install_vscode_apt"
-    addAptSecond "code"
+    addAptSecond "code gvfs-bin "
 }
 
 function pre_install_vscode_apt() {
     cd /tmp
-    sudo bash -c "echo >> /etc/sysctl.conf echo \"fs.inotify.max_user_watches=524288\" >> /etc/sysctl.conf" # configuração para repositórios grandes do vscode
+    # configuração para repositórios grandes do vscode
+    sudo bash -c "sed -i -r '/^fs.inotify.max_user_watches\=/d' /etc/sysctl.conf && echo \"fs.inotify.max_user_watches=524288\" >> /etc/sysctl.conf"
     curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
     sudo install -o root -g root -m 644 packages.microsoft.gpg /usr/share/keyrings/
     sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
