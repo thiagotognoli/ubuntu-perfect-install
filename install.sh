@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#TODO: quando for linik na home, sem o destino, criar link mesmo inválido trocando a base da url
 #TODO: listar home configs de flatpak e snap e deixar escolher qual importar (home/user/.var e home/user/snap)
 #TODO: listar home configs  (home/user/.config)
 #TODO: listar todas pasta raíz da home, exceto as defaults e já nomeadas e perguntar se deseja importar
