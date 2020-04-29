@@ -1135,6 +1135,12 @@ function restore_home_configs() {
         options_id+=("sudo $rsyncCommand '$oldHome/.wine' '$homeDir/'")
     fi
 
+    if [[ -e "$oldHome/.vscode" || -L "$oldHome/.vscode" ]]; then
+        options_title+=("Visual Studio Code Modules [apt]")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.vscode' '$homeDir/'")
+    fi
+
     if [[ -e "$oldHome/Nextcloud" || -L "$oldHome/Nextcloud" ]]; then
         options_title+=("Nextcloud Repositórios")
         options_selected+=(TRUE)
