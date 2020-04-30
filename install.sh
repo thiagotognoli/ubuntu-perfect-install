@@ -532,7 +532,7 @@ function pos_install_flameshotscreenshot() {
 function pos_install_ohmyzsh() {
 
     sudo chsh -s $(which zsh) $currentUser
-    
+
     sudo -u $currentUser mkdir -p "$currentHomeDir/tmp/zsh" \
         && sudo -u $currentUser wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O "$currentHomeDir/tmp/zsh/install.sh" \
 	    && sudo -u $currentUser sh -c "RUNZSH='no'; sh '$currentHomeDir/tmp/zsh/install.sh' --unattended" \
@@ -592,6 +592,15 @@ function pos_install_ohmyzsh() {
         https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts/MesloLGS%20NF%20Bold.ttf \
         https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts/MesloLGS%20NF%20Italic.ttf \
         https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts/MesloLGS%20NF%20Bold%20Italic.ttf
+
+
+    sudo wget -P /usr/share/fonts/. \
+        https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraCode/Regular/complete/Fura%20Code%20Regular%20Nerd%20Font%20Complete%20Mono.ttf \
+        https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraCode/Bold/complete/Fura%20Code%20Bold%20Nerd%20Font%20Complete%20Mono.ttf \
+        https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraCode/Light/complete/Fura%20Code%20Light%20Nerd%20Font%20Complete%20Mono.ttf \
+        https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraCode/Medium/complete/Fura%20Code%20Medium%20Nerd%20Font%20Complete%20Mono.ttf
+
+
 
     sudo fc-cache -vf /usr/share/fonts
 }
