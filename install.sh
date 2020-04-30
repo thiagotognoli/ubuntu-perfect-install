@@ -530,25 +530,61 @@ function pos_install_flameshotscreenshot() {
 }
 
 function pos_install_ohmyzsh() {
+
     sudo -u $currentUser mkdir -p "$currentHomeDir/tmp/zsh" \
         && sudo -u $currentUser wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O "$currentHomeDir/tmp/zsh/install.sh" \
 	    && sudo -u $currentUser sh -c "RUNZSH='no'; sh '$currentHomeDir/tmp/zsh/install.sh' --unattended" \
         && sudo -u $currentUser rm -rf "$currentHomeDir/.zshrc" \
         && sudo -u $currentUser cp "$currentHomeDir/.oh-my-zsh/templates/zshrc.zsh-template" "$currentHomeDir/.zshrc" \
         && sudo -u $currentUser sed -ri 's/(ZSH_THEME=")([^"]*)(")/\1agnoster\3/g' "$currentHomeDir/.zshrc" \
-        && sudo -u $currentUser sed -ri 's/(plugins=\()([^\)]*)(\))/\1git git-extras git-flow gitignore ubuntu cp extract sudo systemd last-working-dir docker docker-compose web-search vscode laravel laravel5 npm yarn\3/g' "$currentHomeDir/.zshrc" \
         && sudo -u $currentUser git clone https://github.com/abertsch/Menlo-for-Powerline.git "$currentHomeDir/tmp/zsh/Menlo-for-Powerline" \
         && sudo mv "$currentHomeDir/tmp/zsh/Menlo-for-Powerline/"*.ttf /usr/share/fonts/.  \
         && cd /tmp \
         && sudo fc-cache -vf /usr/share/fonts
         ##sudo -u $currentUser chsh -s /bin/zsh root \
 
+        #&& sudo -u $currentUser sed -ri 's/(plugins=\()([^\)]*)(\))/\1git git-extras git-flow gitignore ubuntu cp extract sudo systemd last-working-dir docker docker-compose web-search vscode laravel laravel5 npm yarn zsh-syntax-highlighting\3/g' "$currentHomeDir/.zshrc" \
+
+    declare -A plugins;
+    local IFS=" "; 
+    
+    currentPlugins="$(sudo -u $currentUser grep -E "^plugins=(.*)" "$currentHomeDir/.zshrc" | sed -r "s/^(plugins\=\()([^\)]*)(\))/\2/")"
+    for plugin in $currentPlugins; do
+        plugins["$plugin"]="$plugin";
+    done
+
+    plugins["git"]="git"
+    plugins["git-extras"]="git-extras"
+    plugins["git-flow"]="git-flow"
+    plugins["gitignore"]="gitignore"
+    plugins["ubuntu"]="ubuntu"
+    plugins["cp"]="cp"
+    plugins["extract"]="extract"
+    plugins["sudo"]="sudo"
+    plugins["systemd"]="systemd"
+    plugins["last-working-dir"]="last-working-dir"
+    plugins["docker"]="docker"
+    plugins["docker-compose"]="docker-compose"
+    plugins["web-search"]="web-search"
+    plugins["vscode"]="vscode"
+    plugins["laravel"]="laravel"
+    plugins["laravel5"]="laravel5"
+    plugins["npm"]="npm"
+    plugins["yarn"]="yarn"
+
+
     addPreFinishCommand "sudo rm -rf \"$currentHomeDir/tmp\""
 
-    #https://github.com/romkatv/powerlevel10k
-    sudo -u $currentUser git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k \
+    sudo -u $currentUser git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-"$currentHomeDir/.oh-my-zsh/custom"}/plugins/zsh-syntax-highlighting
+        && plugins["zsh-syntax-highlighting"]="zsh-syntax-highlighting"
+
+    sudo -u $currentUser git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-"$currentHomeDir/.oh-my-zsh/custom"}/themes/powerlevel10k \
         && sudo -u $currentUser sed -ri 's/(ZSH_THEME=")([^"]*)(")/\1powerlevel10k\/powerlevel10k\3/g' "$currentHomeDir/.zshrc"
-        
+
+
+    plugins="${plugins[@]}"
+    sed -ri "s/^(plugins\=\()([^\)]*)(\))/\1$plugins\3/g" "$currentHomeDir/.zshrc"
+
     sudo wget -P /usr/share/fonts/. \
         https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts/MesloLGS%20NF%20Regular.ttf \
         https://github.com/romkatv/dotfiles-public/raw/master/.local/share/fonts/NerdFonts/MesloLGS%20NF%20Bold.ttf \
