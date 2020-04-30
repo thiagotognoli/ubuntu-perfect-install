@@ -323,6 +323,10 @@ function menuApps() {
     options_selected+=(TRUE)
     options_id+=("addApt \"zsh fonts-powerline\" && addPosCommand \"pos_install_ohmyzsh\"")
 
+    options_title+=("sshuttle (ssh VPN) [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"sshuttle\"")
+
     options_title+=("Mackup [snap]")
     options_selected+=(TRUE)
     options_id+=("addSnapClassic \"mackup\"")
