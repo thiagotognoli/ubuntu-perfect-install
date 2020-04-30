@@ -600,7 +600,13 @@ function pos_install_ohmyzsh() {
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraCode/Light/complete/Fura%20Code%20Light%20Nerd%20Font%20Complete%20Mono.ttf \
         https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraCode/Medium/complete/Fura%20Code%20Medium%20Nerd%20Font%20Complete%20Mono.ttf
 
+    while read profile; do
+        if [[ "$profile" != "list" ]]; then
+            dconf write "/org/gnome/terminal/legacy/profiles:/$profile/font" "'FuraCode Nerd Font Mono 12'"
+            dconf write "/org/gnome/terminal/legacy/profiles:/$profile/use-system-font" "false"
 
+        fi;
+    done <<< $(dconf list /org/gnome/terminal/legacy/profiles:/)
 
     sudo fc-cache -vf /usr/share/fonts
 }
@@ -1187,6 +1193,12 @@ function restore_home_configs() {
         options_title+=("Visual Studio Code Modules [apt]")
         options_selected+=(TRUE)
         options_id+=("sudo $rsyncCommand '$oldHome/.vscode' '$homeDir/'")
+    fi
+
+    if [[ -e "$oldHome/.config/Code" || -L "$oldHome/.config/Code" ]]; then
+        options_title+=("Visual Studio Code Configs [apt]")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.config/Code' '$homeDir/'")
     fi
 
     if [[ -e "$oldHome/Nextcloud" || -L "$oldHome/Nextcloud" ]]; then
