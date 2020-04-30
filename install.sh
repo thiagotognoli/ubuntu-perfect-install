@@ -531,6 +531,8 @@ function pos_install_flameshotscreenshot() {
 
 function pos_install_ohmyzsh() {
 
+    sudo chsh -s $(which zsh) $currentUser
+    
     sudo -u $currentUser mkdir -p "$currentHomeDir/tmp/zsh" \
         && sudo -u $currentUser wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O "$currentHomeDir/tmp/zsh/install.sh" \
 	    && sudo -u $currentUser sh -c "RUNZSH='no'; sh '$currentHomeDir/tmp/zsh/install.sh' --unattended" \
