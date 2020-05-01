@@ -4,7 +4,7 @@
 #TODO: listar home configs de flatpak e snap e deixar escolher qual importar (home/user/.var e home/user/snap)
 #TODO: listar home configs  (home/user/.config)
 #TODO: listar todas pasta raíz da home, exceto as defaults e já nomeadas e perguntar se deseja importar
-
+#TODO: https://github.com/jiahaog/nativefier#usage
 #TODO: apt-btrfs instalar lib python, https://github.com/jf647/btrfs-snap , grub-btrfs-snapshot
 #	http://snapper.io/, http://snapper.io/faq.html, https://wiki.archlinux.org/index.php/Snapper, https://github.com/Antynea/grub-btrfs
 #TODO: rodar mackup
@@ -767,6 +767,14 @@ function menu_chats() {
     options_selected+=(TRUE)
     options_id+=("addFlatpak \"com.discordapp.Discord\"")
 
+    options_title+=("LSD (ls deluxe) [web deb]")
+    options_selected+=(TRUE)
+    options_id+=("addPosCommand \"pos_install_lsd\"")
+
+    options_title+=("WhatsDesk Fork [web deb]")
+    options_selected+=(TRUE)
+    options_id+=("addPosAptCommand \"install_whatsdesk_apt\"")
+
     options_title+=("WhatsApp Electrom [git]")
     options_selected+=(FALSE)
     options_id+=("addPosCommand \"pos_install_chats_whatsappelectron\"")
@@ -968,16 +976,25 @@ function pos_install_golang() {
 
 function install_teamviewer() {
     #zenity --question --width=600 --height=400 --text "Instalar TeamViewer?" || return 0
-    mkdir -p /tmp/teamviewerdwl \
-        && wget -O /tmp/teamviewerdwl/teamviwer.deb $teamViewerDownloadLastUrl \
+    sudo mkdir -p /tmp/teamviewerdwl \
+        && sudo wget -O /tmp/teamviewerdwl/teamviwer.deb $teamViewerDownloadLastUrl \
         && sudo dpkg -i /tmp/teamviewerdwl/teamviwer.deb
     sudo apt -y -f install
-    rm -rf /tmp/teamviewerdwl
+    sudo rm -rf /tmp/teamviewerdwl
 }
 
 function install_docker() {
     addApt "apt-transport-https ca-certificates curl gnupg-agent software-properties-common"
     addPosCommand "pos_install_docker"
+}
+
+
+function install_whatsdesk_apt() {
+    sudo mkdir -p /tmp/whatsdesk \
+        && sudo wget -O /tmp/whatsdesk/whatsdesk.deb $whatsdeskDownloadLastUrl \
+        && sudo dpkg -i /tmp/whatsdesk/whatsdesk.deb
+    sudo apt -y -f install
+    sudo rm -rf /tmp/whatsdesk
 }
 
 
