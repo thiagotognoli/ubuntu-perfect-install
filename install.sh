@@ -867,7 +867,7 @@ function menu_develtools() {
     options_id+=("addSnapClassic \"go\" && addPosCommand \"pos_install_golang\"")
     
     options_title+=("NodeJS [apt]")
-    options_selected+=(FALSE)
+    options_selected+=(TRUE)
     options_id+=("addApt \"nodejs npm\"")
 
     options_title+=("NodeJS [snap edge classic]")
