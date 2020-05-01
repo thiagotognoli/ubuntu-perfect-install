@@ -866,8 +866,12 @@ function menu_develtools() {
     options_selected+=(TRUE)
     options_id+=("addSnapClassic \"go\" && addPosCommand \"pos_install_golang\"")
     
+    options_title+=("NodeJS [apt]")
+    options_selected+=(FALSE)
+    options_id+=("addApt \"nodejs npm\"")
+
     options_title+=("NodeJS [snap edge classic]")
-    options_selected+=(TRUE)
+    options_selected+=(FALSE)
     options_id+=("addSnapEdgeClassic \"node\"")
 
     options_title+=("Visual Studio Code [apt repo]")
