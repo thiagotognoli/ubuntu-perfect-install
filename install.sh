@@ -1,10 +1,10 @@
 #!/bin/bash
 
+#TODO: no node colocr o node-typescript
 #TODO: quando for linik na home, sem o destino, criar link mesmo inválido trocando a base da url
 #TODO: listar home configs de flatpak e snap e deixar escolher qual importar (home/user/.var e home/user/snap)
 #TODO: listar home configs  (home/user/.config)
 #TODO: listar todas pasta raíz da home, exceto as defaults e já nomeadas e perguntar se deseja importar
-#TODO: https://github.com/jiahaog/nativefier#usage
 #TODO: apt-btrfs instalar lib python, https://github.com/jf647/btrfs-snap , grub-btrfs-snapshot
 #	http://snapper.io/, http://snapper.io/faq.html, https://wiki.archlinux.org/index.php/Snapper, https://github.com/Antynea/grub-btrfs
 #TODO: rodar mackup
@@ -310,6 +310,10 @@ function menuApps() {
     options_title+=("NFS Client [apt]")
     options_selected+=(TRUE)
     options_id+=("addApt \"nfs-common\"")
+
+    options_title+=("Gmail App [git]")
+    options_selected+=(TRUE)
+    options_id+=("addPosAptCommand \"install_gmail_app\"")
 
     options_title+=("Monitoramento - htop [apt]")
     options_selected+=(TRUE)
@@ -620,6 +624,14 @@ function pos_install_ohmyzsh() {
     done <<< $(dconf list /org/gnome/terminal/legacy/profiles:/)
 
     sudo fc-cache -vf /usr/share/fonts
+}
+
+function install_gmail_app() {
+    sudo -u $currentUser mkdir -p "$currentHomeDir/tmp/gmail-app-linux" \
+        && sudo -u $currentUser git clone https://github.com/thiagotognoli/gmail-app-linux.git "$currentHomeDir/tmp/gmail-app-linux" \
+        && sudo -u $currentUser bash "$currentHomeDir/tmp/gmail-app-linux/install-zip.sh"
+    sudo -u $currentUser rm -rf "$currentHomeDir/tmp/gmail-app-linux"
+    addPreFinishCommand "sudo rm -rf \"$currentHomeDir/tmp\""
 }
 
 function pos_install_lsd() {
