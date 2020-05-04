@@ -933,7 +933,7 @@ function menu_develtools() {
     
     options_title+=("BaseX [apt]")
     options_selected+=(TRUE)
-    options_id+=("addApt \"basex\"")
+    options_id+=("addApt \"basex default-jre libtagsoup-java libjing-java\"")
 
     options_title+=("MySQL Workbench (Mysql GUI Client) [apt]")
     options_selected+=(TRUE)
