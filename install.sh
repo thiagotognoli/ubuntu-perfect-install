@@ -677,7 +677,9 @@ function menu_gnomeshellextensions_group() {
     optionsLength=${#options_id[@]}
     if [ $optionsLength = 1 ]; then
         eval "${options_id[0]}"
-        return;
+        return
+    elif [ $optionsLength = 0 ]; then
+        return
     else
         optionsToShow=();
         for (( i=0; i<${optionsLength}; i++ ));
