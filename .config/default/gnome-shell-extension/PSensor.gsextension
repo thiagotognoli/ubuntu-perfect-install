@@ -1,0 +1,5 @@
+[PSensor]
+id=0
+name=PSensor
+selected=TRUE
+custom_command=addApt 'psensor'

@@ -1,0 +1,5 @@
+[DesktopFolder]
+id=0
+name=Desktop Folder
+selected=FALSE
+custom_command=addApt 'desktopfolder'

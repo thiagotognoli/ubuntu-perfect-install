@@ -4,10 +4,6 @@ configDir=".config"
 
 tmpDir="tmp"
 
-log_file="$tmpDir/log.log"
-
-mkdir -p "$tmpDir"
-
 log() {
     echo "$1"
 }
@@ -28,6 +24,10 @@ parseConfigs() {
 
     local _sortConfigs
     _sortConfigs="${11}"
+
+    local _outputString="${12}"
+
+    local _customFields="${13}"
 
     local configs configsCustom
     configs="$(find $_configDir -name "*.$_fileExtension" -exec bash -c "cat {} && echo" \;)"
@@ -204,20 +204,20 @@ parseConfigs() {
         done < <(printf "%s\0" "${sectionsToOrderKey[@]}" | LC_ALL=C sort -z)
     fi
 
+
     for section in "${sections[@]}";
     do
         for field in "${fields[@]}";
         do
             sectionField="$section,$field"
-            echo "$sectionField: ${fieldsValues["$sectionField"]}"
+            eval "local $field=\"${fieldsValues["$sectionField"]}\""
         done
+        eval "$_customFields"
+        eval "echo -ne \"$_outputString\""
     done
 
-    #caso grupo nao exista crie ?
 }
 
-
-#group name order select disabled -.gsegroup
 
 
 function parseGnomeShellExtensionGroups() {
@@ -232,17 +232,22 @@ function parseGnomeShellExtensionGroups() {
     sectionRegexValue="s/^\[([^\[]*)\]/\1/"
 
     local _fields='"selected" "order" "disabled"'
-    local _fieldsDefaultValue='["selected"]=false ["order"]=99999 ["disabled"]=false'
+    local _fieldsDefaultValue='["selected"]=FALSE ["order"]=99999 ["disabled"]=FALSE'
 
     local _fieldsRequired=''
 
     #local _fieldsFilterValue='["disabled"]=false ["group"]="General"'
-    local _fieldsFilterValue='["disabled"]=false'
+    local _fieldsFilterValue='["disabled"]=FALSE'
     #local _fieldsFilterValue=''
 
         
     local _sortConfigs="order:numeric,10;name:string,250"
     #local _sortConfigs=""
+
+    #local _outputString="$1"
+    local _outputString='options_title+=(\"$name\"); options_selected+=($selected); options_id+=(\""$command\"");\n'
+
+    local _customProcessValue='command="menu_gnomeshellextensions \\\"$name\\\"";'
 
     parseConfigs \
         "$_fileExtension" \
@@ -255,11 +260,14 @@ function parseGnomeShellExtensionGroups() {
         "$_fieldsDefaultValue" \
         "$_fieldsRequired" \
         "$_fieldsFilterValue" \
-        "$_sortConfigs"
+        "$_sortConfigs" \
+        "$_outputString" \
+        "$_customProcessValue"
 }
 
-
 function parseGnomeShellExtensions() {
+    local _filterGroup="$1"
+
     local _fileExtension _configDir _configCustomDir
     _fileExtension="gsextension"
     _configDir="$configDir/default/gnome-shell-extension"
@@ -270,18 +278,23 @@ function parseGnomeShellExtensions() {
     sectionRegex="^\[.*\]"
     sectionRegexValue="s/^\[([^\[]*)\]/\1/"
 
-    local _fields='"id" "name" "description" "url" "group" "selected" "order" "disabled"'
-    local _fieldsDefaultValue='["group"]="General" ["selected"]=false ["order"]=99999 ["disabled"]=false'
+    local _fields='"id" "name" "description" "url" "group" "selected" "custom_command" "order" "disabled"'
+    local _fieldsDefaultValue='["group"]="General" ["selected"]=FALSE ["order"]=99999 ["disabled"]=FALSE'
 
     local _fieldsRequired='"id" "name"'
 
     #local _fieldsFilterValue='["disabled"]=false ["group"]="General"'
-    local _fieldsFilterValue='["disabled"]=false'
+    local _fieldsFilterValue="[\"disabled\"]=FALSE [\"group\"]=\"$_filterGroup\""
     #local _fieldsFilterValue=''
 
         
     local _sortConfigs="order:numeric,10;name:string,250"
     #local _sortConfigs=""
+
+    #local _outputString="Id: \$id\nName: \$name\nSelected: \$selected\n"
+    local _outputString='options_title+=(\"$name\"); options_selected+=($selected); options_id+=(\""$command\"");\n'
+
+    local _customProcessValue='[[ "$custom_command" ]] && command="$custom_command" || command="addGnomeShellExtension \\\"$id\\\"";'
 
     parseConfigs \
         "$_fileExtension" \
@@ -294,16 +307,30 @@ function parseGnomeShellExtensions() {
         "$_fieldsDefaultValue" \
         "$_fieldsRequired" \
         "$_fieldsFilterValue" \
-        "$_sortConfigs"
+        "$_sortConfigs" \
+        "$_outputString" \
+        "$_customProcessValue"
 }
 
-echo "=========================="
-echo "Groups"
-parseGnomeShellExtensionGroups
+while [ "$1" != "" ]; do
+    case $1 in
+        -e | --extensions )     shift
+                                filterGroup="$1"
+                                parseGnomeShellExtensions "$filterGroup"
+                                exit
+                                ;;
+        -g | --groups )         parseGnomeShellExtensionGroups
+                                exit
+                                ;;
+        # -h | --help )           usage
+        #                         exit
+        #                         ;;
+        # * )                     usage
+        #                         exit 1
+    esac
+    shift
+done
 
-echo "=========================="
-echo "Extensions"
-parseGnomeShellExtensions
 
 exit
 

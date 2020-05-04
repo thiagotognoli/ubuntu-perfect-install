@@ -345,7 +345,7 @@ function menuApps() {
 
     options_title+=("Gnome Shell Extensions [seleção]")
     options_selected+=(TRUE)
-    options_id+=("menu_gnomeshellextensions")
+    options_id+=("menu_gnomeshellextensions_group")
 
     options_title+=("Google Chrome [web deb & apt repo]")
     options_selected+=(TRUE)
@@ -585,7 +585,7 @@ function pos_install_ohmyzsh() {
 
     addPreFinishCommand "sudo rm -rf \"$currentHomeDir/tmp\""
 
-    sudo -u $currentUser git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-"$currentHomeDir/.oh-my-zsh/custom"}/plugins/zsh-syntax-highlighting
+    sudo -u $currentUser git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-"$currentHomeDir/.oh-my-zsh/custom"}/plugins/zsh-syntax-highlighting \
         && plugins["zsh-syntax-highlighting"]="zsh-syntax-highlighting"
 
     sudo -u $currentUser git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-"$currentHomeDir/.oh-my-zsh/custom"}/themes/powerlevel10k \
@@ -663,42 +663,65 @@ function pos_config_gnomeshell() {
 }
 
 
+function menu_gnomeshellextensions_group() {
+
+    addApt "wget bash curl dbus perl git less"
+    addPosCommand "pos_install_gnomeshellextensions"
+
+    options_title=();
+    options_id=();
+    options_selected=();
+
+    eval "$(bash "$basePath/read-config.sh" -g)"
+
+    optionsLength=${#options_id[@]}
+    if [ $optionsLength = 1 ]; then
+        eval "${options_id[0]}"
+        return;
+    else
+        optionsToShow=();
+        for (( i=0; i<${optionsLength}; i++ ));
+        do
+            optionsToShow+=(${options_selected[$i]} "${options_title[$i]}")
+        done
+    fi
+
+    appsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione Grupos de Extensões do Gnome Shell para Instalar" \
+        --checklist \
+        --column "Marcar" \
+        --column "Grupo de Extensões Gnome Shell" \
+        "${optionsToShow[@]}")
+
+	cancelSelection=$?
+    if [[ $cancelSelection = 1 ]] ;
+	then
+		echo "Cancelado!";
+		return 0
+	fi
+
+    callAppsFunctions "$appsSelected"
+}
 
 function menu_gnomeshellextensions() {
     options_title=();
     options_id=();
     options_selected=();
 
-    options_title+=("Desktop Folder")
-    options_selected+=(FALSE)
-    options_id+=("addApt \"desktopfolder\"")
-
-    options_title+=("PSensor")
-    options_selected+=(TRUE)
-    options_id+=("addApt \"psensor\"")
-
-
-    
-
-    # get length of an array
-    gnomeExtensionslength=${#gnomeExtensions_Id[@]}
-    # use for loop to read all values and indexes
-    for (( i=0; i<${gnomeExtensionslength}; i++ ));
-    do
-        options_title+=("${gnomeExtensions_Name[$i]}")
-        options_selected+=(TRUE)
-        options_id+=("addGnomeShellExtension \"$i\"")
-    done
-
+    local groupFilter="$1"
+    eval "$(bash "$basePath/read-config.sh" -e "$groupFilter")"
 
     optionsLength=${#options_id[@]}
-    optionsToShow=();
-    for (( i=0; i<${optionsLength}; i++ ));
-    do
-        optionsToShow+=(${options_selected[$i]} "${options_title[$i]}")
-    done
+    if [ $optionsLength = 0 ]; then
+        return;
+    else
+        optionsToShow=();
+        for (( i=0; i<${optionsLength}; i++ ));
+        do
+            optionsToShow+=(${options_selected[$i]} "${options_title[$i]}")
+        done
+    fi
 
-    appsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione Extensões do Gnome Shell para Isntalar" \
+    appsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione Extensões [$groupFilter] do Gnome Shell para Instalar" \
         --checklist \
         --column "Marcar" \
         --column "Extensão Gnome Shell" \
@@ -711,11 +734,7 @@ function menu_gnomeshellextensions() {
 		return 0
 	fi
 
-    addApt "wget bash curl dbus perl git less"
-
     callAppsFunctions "$appsSelected"
-
-    addPosCommand "pos_install_gnomeshellextensions"
 }
 
 function pos_install_gnomeshellextensions() {
@@ -733,7 +752,7 @@ function pos_install_gnomeshellextensions() {
     
     if [ $? -eq 0 ]; then
     	echo "Atualizando Extensions"
-    	sudo -u $currentUser "/usr/bin/gnome-shell-extension-installer --update --yes"    
+    	sudo -u $currentUser "/usr/bin/gnome-shell-extension-installer" --update --yes
 	
 	
         echo "Installing Extensions"

@@ -1,0 +1,143 @@
+[User Themes]
+id=19
+name=User Themes
+group=General
+selected=TRUE
+
+[Unite]
+id=1287
+name=Unite
+group=General
+selected=TRUE
+
+[ShutdownTimer]
+id=792
+name=ShutdownTimer
+group=General
+selected=TRUE
+
+[Lock Keys]
+id=36
+name=Lock Keys
+group=General
+selected=TRUE
+
+[KStatusNotifierItem/AppIndicator Support]
+id=615
+name=KStatusNotifierItem/AppIndicator Support
+group=General
+selected=TRUE
+
+[Force Quit]
+id=770
+name=Force Quit
+group=General
+selected=TRUE
+
+[Sound Input & Output Device Chooser]
+id=906
+name=Sound Input & Output Device Chooser
+group=General
+selected=TRUE
+
+[OpenWeather]
+id=750
+name=OpenWeather
+group=General
+selected=TRUE
+
+[Suspend Button]
+id=826
+name=Suspend Button
+group=General
+selected=TRUE
+
+[Dash to Dock]
+id=307
+name=Dash to Dock
+group=General
+selected=TRUE
+
+[Bring Out Submenu Of Power Off/Logout Button]
+id=2917
+name=Bring Out Submenu Of Power Off/Logout Button
+group=General
+selected=TRUE
+
+[Activities Configurator]
+id=358
+name=Activities Configurator
+group=General
+selected=TRUE
+
+[Caffeine]
+id=517
+name=Caffeine
+group=General
+selected=TRUE
+
+[ShellTile]
+id=657
+name=ShellTile
+group=General
+selected=TRUE
+
+[Transparent OSD]
+id=1073
+name=Transparent OSD
+group=General
+selected=TRUE
+
+[Transparent Top Panel (100%)]
+id=657
+name=Transparent Top Panel (100%)
+group=General
+selected=TRUE
+
+[Transparent Panel(Parcial)]
+id=2660
+name=Transparent Panel(Parcial)
+group=General
+selected=TRUE
+
+[Transparent Window Moving]
+id=1446
+name=Transparent Window Moving
+group=General
+selected=TRUE
+
+[Transparent Top Bar (100% com Sombra)]
+id=1708
+name=Transparent Top Bar (100% com Sombra)
+group=General
+selected=TRUE
+
+[Perfect OSD]
+id=1458
+name=Perfect OSD
+group=General
+selected=TRUE
+
+[Better OSD]
+id=1345
+name=Better OSD
+group=General
+selected=TRUE
+
+[Activities Configurator]
+id=358
+name=Activities Configurator
+group=General
+selected=TRUE
+
+[Transparent Notification]
+id=1080
+name=Transparent Notification
+group=General
+selected=TRUE
+
+[Dash to Panel]
+id=1160
+name=Dash to Panel
+group=General
+selected=TRUE
