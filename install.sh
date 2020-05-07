@@ -1030,6 +1030,15 @@ function install_whatsdesk_apt() {
     sudo rm -rf /tmp/whatsdesk
 }
 
+function getLatestedGitFileLink() {
+    gitUser="$1";
+    gitProject="$2";
+    fileToDownload="$3";
+
+    curl -s -L https://api.github.com/repos/$gitUser/$gitProject/releases/latest \
+    | grep  -E "\"browser_download_url\": \"https://github.com/(.*)/$fileToDownload\"" \
+    | sed -r "s@.*\"browser_download_url\": \"(.*\/$fileToDownload)\"@\1@"
+}
 
 function pos_install_docker() {
     #zenity --question --width=600 --height=400 --text "Instalar Docker?" || return 0
@@ -1037,11 +1046,14 @@ function pos_install_docker() {
 
     sudo apt remove -y docker docker-engine docker.io containerd runc
 
+
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - \
         && sudo bash -c "echo -e 'deb [arch=amd64] https://download.docker.com/linux/ubuntu $localUbuntuRelease stable\n# deb-src [arch=amd64] https://download.docker.com/linux/ubuntu $localUbuntuRelease stable' >> /etc/apt/sources.list.d/docker.list" \
         && sudo apt update && sudo apt install -y docker-ce docker-ce-cli containerd.io \
         && sudo adduser $currentUser docker \
-        && sudo curl -L "https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose 
+        ¨&& fileSoArchiteture="$(uname -s)_$(uname -m)" \
+        && lastDockerComposeLink="$(getLatestedGitFileLink "docker" "compose" "docker-compose-$fileSoArchiteture")" \
+        && sudo curl -L "$lastDockerComposeLink" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
 
 #    && sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $localUbuntuRelease stable" \
 
