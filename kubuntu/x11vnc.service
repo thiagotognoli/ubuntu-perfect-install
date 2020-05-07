@@ -1,0 +1,13 @@
+[Unit]
+Description=x11vnc remote desktop server
+After=multi-user.target
+
+[Service]
+Type=simple
+User=tzord
+ExecStart=/opt/x11vnc.sh
+
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
