@@ -4,7 +4,7 @@ After=multi-user.target
 
 [Service]
 Type=simple
-User=tzord
+#User=root
 ExecStart=/opt/x11vnc.sh
 
 Restart=on-failure
