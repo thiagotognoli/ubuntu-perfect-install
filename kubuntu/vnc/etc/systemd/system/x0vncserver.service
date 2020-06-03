@@ -1,0 +1,13 @@
+[Unit]
+Description=x0vncserver remote desktop server
+After=multi-user.target
+
+[Service]
+Type=simple
+#User=root
+ExecStart=/opt/x0vncserver.sh
+
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
