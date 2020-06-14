@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#TODO: apt libsecret-tools
 #TODO: no node colocr o node-typescript
 #TODO: quando for linik na home, sem o destino, criar link mesmo inválido trocando a base da url
 #TODO: listar home configs de flatpak e snap e deixar escolher qual importar (home/user/.var e home/user/snap)
