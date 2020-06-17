@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#TODO: https://launchpad.net/~dallen.wilson/+archive/ubuntu/ppa?field.series_filter=focal
 #TODO: apt libsecret-tools
 #TODO: no node colocr o node-typescript
 #TODO: quando for linik na home, sem o destino, criar link mesmo inválido trocando a base da url
