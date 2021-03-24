@@ -1,0 +1,39 @@
+#TODO: apt libsecret-tools
+#TODO: no node colocr o node-typescript
+#TODO: quando for linik na home, sem o destino, criar link mesmo inválido trocando a base da url
+#TODO: listar home configs de flatpak e snap e deixar escolher qual importar (home/user/.var e home/user/snap)
+#TODO: listar home configs  (home/user/.config)
+#TODO: listar todas pasta raíz da home, exceto as defaults e já nomeadas e perguntar se deseja importar
+#TODO: apt-btrfs instalar lib python, https://github.com/jf647/btrfs-snap , grub-btrfs-snapshot
+#	http://snapper.io/, http://snapper.io/faq.html, https://wiki.archlinux.org/index.php/Snapper, https://github.com/Antynea/grub-btrfs
+#TODO: rodar mackup
+#TODO: fontes hackeadas corretamente
+#TODO: automatizar tt mscorefonts
+#TODO: extensoes shell perguntar de uma vez somente e add as novas indicadas aqui
+#TODO: erros de nao existe, do rsync, ver se diretorio origem esta va\io, se tiver nao fazer
+#TODO: https://github.com/tliron/em-dash e dash to dock
+#TODO: snap, com e sem maquina antiga
+#TODO: virtualbox
+#TODO: criar snapshot zfs, opcional
+#TODO: whatsapp electgron ou o outro repo
+#TODO: fazer app de backup
+#TODO: fazer seleção de base o q instar, loja loja com snap loja com flatpack por exemplo
+#TODO: validar se home antiga realmente eh home, validar se home antiga tem o arquivo pra restaurar, por exemplo se nao tiver team viewer nao mostrar opcao
+#TODO: https://launchpad.net/~dallen.wilson/+archive/ubuntu/ppa?field.series_filter=focal
+#sudo add-apt-repository ppa:dallen.wilson/ppa
+#sudo apt install gstm
+
+
+
+#backup e restore e com hd antigo, backup home toda ?, criptografar ? comprimir ?
+#perguntar o que restaurar , e do home tbm
+#grive, sshuttle and sshoot(snap), notepad++ (snap), geany, slimbookbattery, nextcloud, mackup , anbox, gitahead
+
+#? tmux, fetch bash 
+# https://github.com/ohmybash/oh-my-bash
+# https://github.com/powerline/powerline
+#todo GitAhead - Git Gui Client https://gitahead.github.io/gitahead.com/
+#todo clip grab
+#https://clipgrab.org/
+#apt install ffmpeg
+# snap install sqlitebrowser-casept
