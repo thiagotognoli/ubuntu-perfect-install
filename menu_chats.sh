@@ -8,13 +8,13 @@ function menu_chats() {
     options_selected+=(FALSE)
     options_id+=("addSnap \"telegram-desktop\"")
 
+    options_title+=("Skype [web apt]")
+    options_selected+=(TRUE)
+    options_id+=("install_skype_apt")
+
     options_title+=("Skype [snap classic]")
     options_selected+=(FALSE)
     options_id+=("addSnapClassic \"skype\"")
-
-    options_title+=("Skype [apt]")
-    options_selected+=(FALSE)
-    options_id+=("install_skype_apt")
 
     options_title+=("Slack [snap classic]")
     options_selected+=(FALSE)
