@@ -4,10 +4,6 @@ function menuApps() {
     options_id=();
     options_selected=();
 
-    options_title+=("Synaptic [apt]")
-    options_selected+=(TRUE)
-    options_id+=("addApt \"synaptic\"")
-
     options_title+=("Timeshift [apt]")
     options_selected+=(TRUE)
     options_id+=("addApt \"timeshift\"")
