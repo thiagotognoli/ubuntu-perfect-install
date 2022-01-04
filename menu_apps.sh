@@ -20,11 +20,6 @@ function menuApps() {
     options_selected+=(TRUE)
     options_id+=("addPreCommand \"install_ubuntu_restricted_extras\"")
 
-    options_title+=("Timeshift [apt]")
-    options_selected+=(TRUE)
-    options_id+=("addApt \"timeshift\"")
-
-
     options_title+=("Alternative Terminals [seleção]")
     options_selected+=(TRUE)
     options_id+=("menu_alternative_terminals")
