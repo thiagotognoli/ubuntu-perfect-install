@@ -4,6 +4,18 @@ function menuApps() {
     options_id=();
     options_selected=();
 
+    options_title+=("Synaptic [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"synaptic\"")
+
+    options_title+=("Timeshift [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"timeshift\"")
+
+    options_title+=("Timeshift AutoSnap APT [git]")
+    options_selected+=(TRUE)
+    options_id+=("install_timeshift_autosnap_apt")
+
     options_title+=("Ubuntu Restricted Extras [apt]")
     options_selected+=(TRUE)
     options_id+=("addPreCommand \"install_ubuntu_restricted_extras\"")
@@ -141,8 +153,12 @@ function menuApps() {
     options_id+=("addSnap \"gimp\"")
 
     options_title+=("DarkTable (Visualizador de Fotos/Imagens) [snap]")
-    options_selected+=(TRUE)
+    options_selected+=(FALSE)
     options_id+=("addSnap \"darktable\"")
+
+    options_title+=("VLC Video Player [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addSnap \"vlc\"")  
 
     options_title+=("VLC Video Player [snap]")
     options_selected+=(FALSE)
@@ -160,9 +176,9 @@ function menuApps() {
     options_selected+=(FALSE)
     options_id+=("addPosCommand \"install_teamviewer\"")
 
-    options_title+=("Hotfix Snap (Ubuntu+ZFS bug) [apt]")
-    options_selected+=(FALSE)
-    options_id+=("addPreCommand \"pre_install_base_hotfixSnap\"")
+    #options_title+=("Hotfix Snap (Ubuntu+ZFS bug) [apt]")
+    #options_selected+=(FALSE)
+    #options_id+=("addPreCommand \"pre_install_base_hotfixSnap\"")
     
     optionsLength=${#options_id[@]}
     optionsToShow=();
@@ -202,6 +218,15 @@ function install_gmail_app() {
         && sudo -u $currentUser git clone https://github.com/thiagotognoli/gmail-app-linux.git "$currentHomeDir/tmp/gmail-app-linux" \
         && sudo -u $currentUser bash "$currentHomeDir/tmp/gmail-app-linux/install-zip.sh"
     sudo -u $currentUser rm -rf "$currentHomeDir/tmp/gmail-app-linux"
+    addPreFinishCommand "sudo rm -rf \"$currentHomeDir/tmp\""
+}
+
+function install_timeshift_autosnap_apt() {
+    sudo -u $currentUser mkdir -p "$currentHomeDir/tmp/timeshift-autosnap-apt" \
+        && sudo -u $currentUser git clone https://github.com/wmutschl/timeshift-autosnap-apt.git "$currentHomeDir/tmp/timeshift-autosnap-apt" \
+        && sudo -u $currentUser cd "$currentHomeDir/tmp/timeshift-autosnap-apt" \
+        && sudo make install
+    sudo -u $currentUser rm -rf "$currentHomeDir/tmp/timeshift-autosnap-apt"
     addPreFinishCommand "sudo rm -rf \"$currentHomeDir/tmp\""
 }
 
