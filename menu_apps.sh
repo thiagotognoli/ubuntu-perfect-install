@@ -92,6 +92,10 @@ function menuApps() {
     options_selected+=(TRUE)
     options_id+=("addApt \"gocryptfs\"")
 
+    options_title+=("RClone [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"rclone\"")
+
     options_title+=("Nextcloud Client [apt oficial repo]")
     options_selected+=(TRUE)
     options_id+=("addApt \"nextcloud-desktop\"")
