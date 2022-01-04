@@ -100,8 +100,12 @@ function menuApps() {
     options_selected+=(FALSE)
     options_id+=("addApt \"sirikali\"")
 
-    options_title+=("KeepasXC [flat]")
+    options_title+=("KeepasXC [apt]")
     options_selected+=(TRUE)
+    options_id+=("addApt \"keepassxc\"")
+
+    options_title+=("KeepasXC [flat]")
+    options_selected+=(FALSE)
     options_id+=("addFlatpak \"org.keepassxc.KeePassXC\"")
 
     options_title+=("Authenticator (2FA) [flat]")
@@ -129,7 +133,7 @@ function menuApps() {
     options_id+=("addSnap \"darktable\"")
 
     options_title+=("VLC Video Player [snap]")
-    options_selected+=(TRUE)
+    options_selected+=(FALSE)
     options_id+=("addSnap \"vlc\"")  
 
     options_title+=("Chats [seleção]")

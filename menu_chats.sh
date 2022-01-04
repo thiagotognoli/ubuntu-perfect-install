@@ -12,9 +12,9 @@ function menu_chats() {
     options_selected+=(FALSE)
     options_id+=("addSnapClassic \"skype\"")
 
-    options_title+=("Skype [apt]")
-    options_selected+=(TRUE)
-    options_id+=("addSnapClassic \"skype\"")
+#    options_title+=("Skype [apt]")
+#    options_selected+=(TRUE)
+#    options_id+=("addSnapClassic \"skype\"")
 
 
     options_title+=("Slack [snap classic]")

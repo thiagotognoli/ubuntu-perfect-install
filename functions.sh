@@ -275,4 +275,14 @@ function install_ppa() {
 }
 
 
+function check_page_exist() {
+    CURL=$(curl --fail -O "$1" 2>&1)
+    # check if error and 404, and save in file
+    if [ $? -ne 0 ]; then
+        echo $CURL | grep --quiet 'The requested URL returned error: 404'
+        #[ $? -eq 0 ] && echo "$url" >> "files.txt"
+    fi    
+    #http://download.virtualbox.org/virtualbox/debian/dists/groovy/
+}
+
 #TODO: adicionar add repositorio apt com chave
