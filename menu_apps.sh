@@ -20,9 +20,10 @@ function menuApps() {
     options_selected+=(TRUE)
     options_id+=("addPreCommand \"install_ubuntu_restricted_extras\"")
 
-    options_title+=("Syncthing [apt]")
+    options_title+=("Timeshift [apt]")
     options_selected+=(TRUE)
-    options_id+=("install_syncthing_apt")
+    options_id+=("addApt \"timeshift\"")
+
 
     options_title+=("Alternative Terminals [seleção]")
     options_selected+=(TRUE)
@@ -45,16 +46,17 @@ function menuApps() {
     options_id+=("addApt \"synaptic\"")
 
     options_title+=("Gnome Software [apt]")
-    options_selected+=(TRUE)
+    options_selected+=(FALSE)
     options_id+=("addApt \"gnome-software gnome-software-plugin-snap gnome-software-plugin-flatpak\"")
 
     options_title+=("NFS Client [apt]")
     options_selected+=(TRUE)
     options_id+=("addApt \"nfs-common\"")
 
-    options_title+=("Gmail App [git]")
+    options_title+=("Syncthing [apt]")
     options_selected+=(TRUE)
-    options_id+=("addPosAptCommand \"install_gmail_app\"")
+    options_id+=("install_syncthing_apt")
+
 
     options_title+=("Monitoramento - htop [apt]")
     options_selected+=(TRUE)
@@ -92,12 +94,20 @@ function menuApps() {
     options_selected+=(TRUE)
     options_id+=("addPosCommand \"install_googlechrome\"")
 
+    options_title+=("Gmail App [git]")
+    options_selected+=(TRUE)
+    options_id+=("addPosAptCommand \"install_gmail_app\"")
+
+    options_title+=("Caffeine (manter tela ligada) [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"caffeine\"")
+
     options_title+=("Chromium Browser [snap]")
     options_selected+=(FALSE)
     options_id+=("addSnap \"chromium\"")
 
     options_title+=("Chromium Browser [flat]")
-    options_selected+=(FALSE)
+    options_selected+=(TRUE)
     options_id+=("addFlatpak \"org.chromium.Chromium\"")
 
     options_title+=("Flameshot Screen Shot [apt & app icon]")
@@ -121,7 +131,7 @@ function menuApps() {
     options_id+=("install_ppa \"ppa:nextcloud-devs/client\" \"nextcloud-desktop\"")
 
     options_title+=("Sirikali [apt]")
-    options_selected+=(FALSE)
+    options_selected+=(TRUE)
     options_id+=("addApt \"sirikali\"")
 
     options_title+=("KeepasXC [apt]")
