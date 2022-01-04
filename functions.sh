@@ -218,7 +218,7 @@ function installNpm() {
 
     npmToInstall=()
 
-    for line in "${apt[@]}"
+    for line in "${npm[@]}"
     do
         local IF="\ "
         for i in $line # note that $var must NOT be quoted here!
