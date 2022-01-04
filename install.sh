@@ -36,14 +36,14 @@ function install_base() {
 
     #addApt "ubuntu-restricted-extras"
 
-    addPreCommand "pre_install_zfs_snapshot"
+    #addPreCommand "pre_install_zfs_snapshot"
 
     #addPreCommand "pre_install_base_hotfixSnap"
     
     addApt "apt-transport-https ca-certificates curl gnupg-agent software-properties-common"
 
     addApt "flatpak "
-    addPosAptCommand "flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"
+    #addPosAptCommand "flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo"
 
     addApt "wget curl rsync git bash dbus perl less mawk sed"
 

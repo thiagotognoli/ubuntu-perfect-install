@@ -77,8 +77,12 @@ function menuApps() {
     options_id+=("addPosCommand \"install_googlechrome\"")
 
     options_title+=("Chromium Browser [snap]")
-    options_selected+=(TRUE)
+    options_selected+=(FALSE)
     options_id+=("addSnap \"chromium\"")
+
+    options_title+=("Chromium Browser [flat]")
+    options_selected+=(FALSE)
+    options_id+=("addFlatpak \"org.chromium.Chromium\"")
 
     options_title+=("Flameshot Screen Shot [apt & app icon]")
     options_selected+=(TRUE)
@@ -109,7 +113,7 @@ function menuApps() {
     options_id+=("addFlatpak \"org.keepassxc.KeePassXC\"")
 
     options_title+=("Authenticator (2FA) [flat]")
-    options_selected+=(TRUE)
+    options_selected+=(FALSE)
     options_id+=("addFlatpak \"com.github.bilelmoussaoui.Authenticator\"")
 
     options_title+=("Inkscape (Editor de Desenhos Vetorial) [apt]")
