@@ -16,9 +16,13 @@ function menuApps() {
     options_selected+=(TRUE)
     options_id+=("menu_alternative_terminals")
 
-    options_title+=("LVM 2 [apt]")
-    options_selected+=(TRUE)
-    options_id+=("addApt \"lvm2\"")
+    options_title+=("SSH (Client e Server) [apt]")
+    options_selected+=(FALSE)
+    options_id+=("addApt \"ssh\"")
+
+    #options_title+=("LVM 2 [apt]")
+    #options_selected+=(TRUE)
+    #options_id+=("addApt \"lvm2\"")
 
     options_title+=("Aptitude [apt]")
     options_selected+=(TRUE)
