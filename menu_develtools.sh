@@ -174,12 +174,12 @@ function install_insomnia() {
 
 function pre_install_insomnia_apt() {
     # Add to sources
-    echo "deb https://dl.bintray.com/getinsomnia/Insomnia /" \
+    echo "deb [trusted=yes arch=amd64] https://download.konghq.com/insomnia-ubuntu/ default all" \
         | sudo tee -a /etc/apt/sources.list.d/insomnia.list
 
     # Add public key used to verify code signature
-    wget --quiet -O - https://insomnia.rest/keys/debian-public.key.asc \
-        | sudo apt-key add -
+    #wget --quiet -O - https://insomnia.rest/keys/debian-public.key.asc \
+    #    | sudo apt-key add -
 }
 
 function pos_install_vscode_snap() {
@@ -217,7 +217,7 @@ function pos_install_docker() {
     #zenity --question --width=600 --height=400 --text "Instalar Docker?" || return 0
     localUbuntuRelease="$ubuntuRelease"
 
-    sudo apt remove -y docker docker-engine docker.io containerd runc
+    sudo apt remove -y docker docker-engine docker.io containerd runc &>2 /dev/null
 
 
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - \
