@@ -70,7 +70,7 @@ function menuApps() {
     options_id+=("addSnapClassic \"mackup\"")
 
     options_title+=("LSD (ls deluxe) [web deb]")
-    options_selected+=(TRUE)
+    options_selected+=(FALSE)
     options_id+=("addPosCommand \"pos_install_lsd\"")
 
     options_title+=("Config Gnome Shell [apt & bash]")
