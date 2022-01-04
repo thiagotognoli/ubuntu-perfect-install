@@ -12,10 +12,9 @@ function menu_chats() {
     options_selected+=(FALSE)
     options_id+=("addSnapClassic \"skype\"")
 
-#    options_title+=("Skype [apt]")
-#    options_selected+=(TRUE)
-#    options_id+=("addSnapClassic \"skype\"")
-
+    options_title+=("Skype [apt]")
+    options_selected+=(FALSE)
+    options_id+=("install_skype_apt")
 
     options_title+=("Slack [snap classic]")
     options_selected+=(FALSE)
@@ -29,9 +28,6 @@ function menu_chats() {
     options_selected+=(FALSE)
     options_id+=("addFlatpak \"com.discordapp.Discord\"")
 
-    options_title+=("LSD (ls deluxe) [web deb]")
-    options_selected+=(FALSE)
-    options_id+=("addPosCommand \"pos_install_lsd\"")
 
     options_title+=("WhatsDesk Fork TT [web deb]")
     options_selected+=(TRUE)
