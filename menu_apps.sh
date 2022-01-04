@@ -159,7 +159,7 @@ function menuApps() {
 
     options_title+=("VLC Video Player [apt]")
     options_selected+=(TRUE)
-    options_id+=("addSnap \"vlc\"")  
+    options_id+=("addApt \"vlc\"")  
 
     options_title+=("VLC Video Player [snap]")
     options_selected+=(FALSE)
