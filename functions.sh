@@ -55,6 +55,13 @@ function addFlatpak() {
     flatpak+=("$1")
 }
 
+function addAptRepo() {
+    addPreCommand "sudo sh -c 'echo \"$1\" >> \"/etc/apt/sources.list.d/$2.list\"'"
+}
+
+function replaceAptRepo() {
+    addPreCommand "sudo sh -c 'echo \"$1\" > \"/etc/apt/sources.list.d/$2.list\"'"
+}
 
 apt=()
 apt_second=()
@@ -101,6 +108,8 @@ function installApt() {
     echo " Instalando APT"
     echo "============================="
 
+    sudo apt update
+
     aptToInstall=()
 
     for line in "${apt[@]}"
@@ -122,6 +131,8 @@ function installAptSecond() {
     echo "============================="
     echo " Instalando Segundo Passo APT"
     echo "============================="
+
+    sudo apt update
 
     aptToInstall=()
 

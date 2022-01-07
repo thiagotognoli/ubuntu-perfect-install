@@ -40,14 +40,6 @@ function menuApps() {
     options_selected+=(FALSE)
     options_id+=("addApt \"gnome-software gnome-software-plugin-snap gnome-software-plugin-flatpak\"")
 
-    options_title+=("NFS Client [apt]")
-    options_selected+=(TRUE)
-    options_id+=("addApt \"nfs-common\"")
-
-    options_title+=("Syncthing [apt]")
-    options_selected+=(TRUE)
-    options_id+=("install_syncthing_apt")
-
 
     options_title+=("Monitoramento - htop [apt]")
     options_selected+=(TRUE)
@@ -65,9 +57,6 @@ function menuApps() {
     options_selected+=(TRUE)
     options_id+=("addApt \"sshuttle\"")
 
-    options_title+=("Mackup [snap]")
-    options_selected+=(TRUE)
-    options_id+=("addSnapClassic \"mackup\"")
 
     options_title+=("LSD (ls deluxe) [web deb]")
     options_selected+=(FALSE)
@@ -85,14 +74,6 @@ function menuApps() {
     options_selected+=(TRUE)
     options_id+=("addPosCommand \"install_googlechrome\"")
 
-    options_title+=("Gmail App [git]")
-    options_selected+=(TRUE)
-    options_id+=("addPosAptCommand \"install_gmail_app\"")
-
-    options_title+=("Caffeine (manter tela ligada) [apt]")
-    options_selected+=(TRUE)
-    options_id+=("addApt \"caffeine\"")
-
     options_title+=("Chromium Browser [snap]")
     options_selected+=(FALSE)
     options_id+=("addSnap \"chromium\"")
@@ -100,6 +81,20 @@ function menuApps() {
     options_title+=("Chromium Browser [flat]")
     options_selected+=(TRUE)
     options_id+=("addFlatpak \"org.chromium.Chromium\"")
+
+    options_title+=("Microsoft Edge Browser [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addAptRepo \"deb [arch=amd64] https://packages.microsoft.com/repos/edge/ stable main\" \"microsoft-edge.list\" && addApt \"microsoft-edge-stable\"")
+
+
+
+    options_title+=("Gmail App [git]")
+    options_selected+=(TRUE)
+    options_id+=("addPosAptCommand \"install_gmail_app\"")
+
+    options_title+=("Caffeine (manter tela ligada) [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"caffeine\"")
 
     options_title+=("Flameshot Screen Shot [apt & app icon]")
     options_selected+=(TRUE)
@@ -120,6 +115,18 @@ function menuApps() {
     options_title+=("Nextcloud Client [apt ppa repo]")
     options_selected+=(FALSE)
     options_id+=("install_ppa \"ppa:nextcloud-devs/client\" \"nextcloud-desktop\"")
+
+    options_title+=("Syncthing [apt]")
+    options_selected+=(TRUE)
+    options_id+=("install_syncthing_apt")
+
+    options_title+=("NFS Client [apt]")
+    options_selected+=(TRUE)
+    options_id+=("addApt \"nfs-common\"")
+
+    options_title+=("Mackup [snap]")
+    options_selected+=(TRUE)
+    options_id+=("addSnapClassic \"mackup\"")
 
     options_title+=("Sirikali [apt]")
     options_selected+=(TRUE)
@@ -301,8 +308,8 @@ function pos_install_ohmyzsh() {
     plugins["docker-compose"]="docker-compose"
     plugins["web-search"]="web-search"
     plugins["vscode"]="vscode"
-    plugins["laravel"]="laravel"
-    plugins["laravel5"]="laravel5"
+    #plugins["laravel"]="laravel"
+    #plugins["laravel5"]="laravel5"
     plugins["npm"]="npm"
     plugins["yarn"]="yarn"
 
