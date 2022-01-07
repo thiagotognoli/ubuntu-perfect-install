@@ -190,13 +190,13 @@ function restore_home_configs() {
     fi
 
     if [[ -e "$oldHome/.vscode" || -L "$oldHome/.vscode" ]]; then
-        options_title+=("Visual Studio Code Modules [apt]")
+        options_title+=("Visual Studio Code Modules")
         options_selected+=(TRUE)
         options_id+=("sudo $rsyncCommand '$oldHome/.vscode' '$homeDir/'")
     fi
 
     if [[ -e "$oldHome/.config/Code" || -L "$oldHome/.config/Code" ]]; then
-        options_title+=("Visual Studio Code Configs [apt]")
+        options_title+=("Visual Studio Code Configs")
         options_selected+=(TRUE)
         options_id+=("sudo $rsyncCommand '$oldHome/.config/Code' '$homeDir/'")
     fi

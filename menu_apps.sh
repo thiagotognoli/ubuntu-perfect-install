@@ -84,7 +84,7 @@ function menuApps() {
 
     options_title+=("Microsoft Edge Browser [apt]")
     options_selected+=(TRUE)
-    options_id+=("addAptRepo \"deb [arch=amd64] https://packages.microsoft.com/repos/edge/ stable main\" \"microsoft-edge.list\" && addApt \"microsoft-edge-stable\"")
+    options_id+=("replaceAptRepo \"deb [arch=amd64] https://packages.microsoft.com/repos/edge/ stable main\" \"microsoft-edge.list\" && addApt \"microsoft-edge-stable\"")
 
 
 
