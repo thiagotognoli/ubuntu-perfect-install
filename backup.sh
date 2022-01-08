@@ -420,9 +420,15 @@ function restore_system_old() {
         options_id+=("sudo $rsyncCommand '$oldRoot/etc/NetworkManager/system-connections' '$currentRoot/etc/NetworkManager/' && sudo service network-manager reload")
     fi
 
+    if [[ -e "$oldRoot/usr/share/fonts" ]]; then
+        options_title+=("Fontes do Sistema antigo")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldRoot/usr/share/fonts' '$currentRoot/usr/share/' && sudo fc-cache -vf /usr/share/fonts")
+    fi
+
     if [[ -e "$oldRoot/data" ]]; then
         options_title+=("/data")
-        options_selected+=(TRUE)
+        options_selected+=(FALSE)
         options_id+=("sudo $rsyncCommand '$oldRoot/data' '$currentRoot/'")
     fi
 
