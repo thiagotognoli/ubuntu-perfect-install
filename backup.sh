@@ -93,6 +93,12 @@ function restore_home_configs() {
         options_id+=("sudo $rsyncCommand '$oldHome/AppImage' '$homeDir/'")
     fi
 
+    if [[ -e "$oldHome/AndroidStudio" || -L "$oldHome/AndroidStudio" ]]; then
+        options_title+=("AndroidStudio")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/AndroidStudio' '$homeDir/'")
+    fi
+
     if [[ -e "$oldHome/VirtualBox VMs" || -L "$oldHome/VirtualBox VMs" ]]; then
         options_title+=("VirtualBox VM's")
         options_selected+=(TRUE)
@@ -105,7 +111,7 @@ function restore_home_configs() {
         options_id+=("sudo $rsyncCommand '$oldHome/go' '$homeDir/'")
     fi
 
-    if [[ -e "$oldHome/.config/rclone" ]]; then
+    if [[ -e "$oldHome/.config/rclone" || -L "$oldHome/.config/rclone" ]]; then
         options_title+=("RClone Configs")
         options_selected+=(TRUE)
         options_id+=("sudo $rsyncCommand '$oldHome/.config/rclone' '$homeDir/.config/'")
