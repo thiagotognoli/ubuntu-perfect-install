@@ -129,6 +129,12 @@ function restore_home_configs() {
         options_id+=("sudo $rsyncCommand '$oldHome/.bashrc' '$homeDir/'")
     fi
 
+    if [[ -e "$oldHome/.bash_logout" || -L "$oldHome/.bash_logout" ]]; then
+        options_title+=("Bash Logout")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.bash_logout' '$homeDir/'")
+    fi
+
     if [[ -e "$oldHome/.profile" || -L "$oldHome/.profile" ]]; then
         options_title+=("Profile Config")
         options_selected+=(TRUE)
@@ -139,6 +145,24 @@ function restore_home_configs() {
         options_title+=("Zsh Config")
         options_selected+=(TRUE)
         options_id+=("sudo $rsyncCommand '$oldHome/.zshrc' '$homeDir/'")
+    fi
+
+    if [[ -e "$oldHome/.zprofile" || -L "$oldHome/.zprofile" ]]; then
+        options_title+=("ZProfile Config")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.zprofile' '$homeDir/'")
+    fi
+
+    if [[ -e "$oldHome/.oh-my-zsh" || -L "$oldHome/.oh-my-zsh" ]]; then
+        options_title+=("Oh my zsh")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.oh-my-zsh' '$homeDir/'")
+    fi
+
+    if [[ -e "$oldHome/.p10k" || -L "$oldHome/.p10k" ]]; then
+        options_title+=("Power Level 10K")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.p10k' '$homeDir/'")
     fi
 
     if [[ -e "$oldHome/.p10k.zsh" || -L "$oldHome/.p10k.zsh" ]]; then
@@ -183,18 +207,6 @@ function restore_home_configs() {
         options_id+=("sudo $rsyncCommand '$oldHome/.thunderbird' '$homeDir/'")
     fi
 
-    if [[ -e "$oldHome/.config/SiriKali" || -L "$oldHome/.config/SiriKali" ]]; then
-        options_title+=("SiriKali Config")
-        options_selected+=(TRUE)
-        options_id+=("sudo $rsyncCommand '$oldHome/.config/SiriKali' '$homeDir/.config/';")
-    fi
-
-    if [[ -e "$oldHome/.SiriKali" || -L "$oldHome/.SiriKali" ]]; then
-        options_title+=("SiriKali Diretórios")
-        options_selected+=(TRUE)
-        options_id+=("sudo $rsyncCommand '$oldHome/.SiriKali/' '$homeDir/.SiriKali/' --exclude '*/*' --include '*'")
-    fi
-
     if [[ -e "$oldHome/.wine" || -L "$oldHome/.wine" ]]; then
         options_title+=("Wine")
         options_selected+=(TRUE)
@@ -225,6 +237,30 @@ function restore_home_configs() {
         options_id+=("sudo $rsyncCommand '$oldHome/.config/Nextcloud' '$homeDir/.config/'")
     fi
 
+    if [[ -e "$oldHome/.config/SiriKali" || -L "$oldHome/.config/SiriKali" ]]; then
+        options_title+=("SiriKali Config")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.config/SiriKali' '$homeDir/.config/';")
+    fi
+
+    if [[ -e "$oldHome/.SiriKali" || -L "$oldHome/.SiriKali" ]]; then
+        options_title+=("SiriKali Diretórios")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.SiriKali/' '$homeDir/.SiriKali/' --exclude '*/*' --include '*'")
+    fi
+
+    if [[ -e "$oldHome/vault" || -L "$oldHome/vault" ]]; then
+        options_title+=("vault")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/vault' '$homeDir/'")
+    fi
+
+    if [[ -e "$oldHome/.config/keepasxc" || -L "$oldHome/.config/keepasxc" ]]; then
+        options_title+=("KeepasXC Config")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.config/keepasxc' '$homeDir/.config/'")
+    fi
+
     if [[ -e "$oldHome/.snap/netbeans" || -L "$oldHome/.snap/netbeans" ]]; then
         options_title+=("Netbeans Snap Config")
         options_selected+=(TRUE)
@@ -253,6 +289,18 @@ function restore_home_configs() {
         options_title+=("Google Chrome Dados e Config")
         options_selected+=(TRUE)
         options_id+=("sudo $rsyncCommand '$oldHome/.config/google-chrome' '$homeDir/.config/'")
+    fi
+
+    if [[ -e "$oldHome/.whatsdesk" || -L "$oldHome/.whatsdesk" ]]; then
+        options_title+=("Whatsdesk Config")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.whatsdesk' '$homeDir/'")
+    fi
+
+    if [[ -e "$oldHome/.config/whatsdesk" || -L "$oldHome/.config/whatsdesk" ]]; then
+        options_title+=("Whatsdesk Config/Session")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.config/whatsdesk' '$homeDir/.config/'")
     fi
 
     if [[ -e "$oldHome/.mozilla" || -L "$oldHome/.mozilla" ]]; then

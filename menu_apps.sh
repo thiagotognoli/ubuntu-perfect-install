@@ -86,8 +86,6 @@ function menuApps() {
     options_selected+=(TRUE)
     options_id+=("replaceAptRepo \"deb [arch=amd64] https://packages.microsoft.com/repos/edge/ stable main\" \"microsoft-edge.list\" && addApt \"microsoft-edge-stable\"")
 
-
-
     options_title+=("Gmail App [git]")
     options_selected+=(TRUE)
     options_id+=("addPosAptCommand \"install_gmail_app\"")
@@ -184,6 +182,10 @@ function menuApps() {
     options_selected+=(FALSE)
     options_id+=("addPosCommand \"install_teamviewer\"")
 
+    options_title+=("Linux Dynamic Wallpapers (like MacOS) [git]")
+    options_selected+=(TRUE)
+    options_id+=("addPosAptCommand \"install_linux_dynamic_wallpapers\"")
+
     #options_title+=("Hotfix Snap (Ubuntu+ZFS bug) [apt]")
     #options_selected+=(FALSE)
     #options_id+=("addPreCommand \"pre_install_base_hotfixSnap\"")
@@ -220,11 +222,11 @@ function pos_install_flameshotscreenshot() {
     sudo -u $currentUser bash -c "echo -e '[Desktop Entry]\nVersion=1.1\nType=Application\nName=Flameshot Screenshot\nComment=Screenshot.\nIcon=flameshot\nExec=flameshot gui\nActions=\nCategories=Graphics;' | tee '$currentHomeDir/.local/share/applications/flameshot-screenshot.desktop'" \
         && sudo -u $currentUser chmod +x "$currentHomeDir/.local/share/applications/flameshot-screenshot.desktop"
 
-        sudo -u $currentUser bash -c "gsettings set org.gnome.settings-daemon.plugins.media-keys screenshot '[]' \
-            && gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings \"['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']\" \
-            && gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ name 'flameshot' \
-            && gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ command '/usr/bin/flameshot gui' \
-            && gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ binding 'Print'"
+    sudo -u $currentUser bash -c "gsettings set org.gnome.settings-daemon.plugins.media-keys screenshot '[]' \
+        && gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings \"['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']\" \
+        && gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ name 'flameshot' \
+        && gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ command '/usr/bin/flameshot gui' \
+        && gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ binding 'Print'"
 
 }
 
@@ -233,6 +235,14 @@ function install_gmail_app() {
         && sudo -u $currentUser git clone https://github.com/thiagotognoli/gmail-app-linux.git "$currentHomeDir/tmp/gmail-app-linux" \
         && sudo -u $currentUser bash "$currentHomeDir/tmp/gmail-app-linux/install-zip.sh"
     sudo -u $currentUser rm -rf "$currentHomeDir/tmp/gmail-app-linux"
+    addPreFinishCommand "sudo rm -rf \"$currentHomeDir/tmp\""
+}
+
+function install_linux_dynamic_wallpapers() {
+    sudo -u $currentUser mkdir -p "$currentHomeDir/tmp/linux_dynamic_wallpapers" \
+        && sudo -u $currentUser git clone https://github.com/thiagotognoli/Linux_Dynamic_Wallpapers.git "$currentHomeDir/tmp/linux_dynamic_wallpapers" \
+        && sudo -u $currentUser bash "(cd $currentHomeDir/tmp/linux_dynamic_wallpapers && $currentHomeDir/tmp/linux_dynamic_wallpapers/install.sh || cd $currentHomeDir)"
+    sudo -u $currentUser rm -rf "$currentHomeDir/tmp/linux_dynamic_wallpapers"
     addPreFinishCommand "sudo rm -rf \"$currentHomeDir/tmp\""
 }
 
