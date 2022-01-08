@@ -362,7 +362,7 @@ function pos_install_ohmyzsh() {
     #    https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraCode/Light/complete/Fira%20Code%20Light%20Nerd%20Font%20Complete%20Mono.ttf \
     #    https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraCode/Medium/complete/Fira%20Code%20Medium%20Nerd%20Font%20Complete%20Mono.ttf
         
-    sudo cp -R $basePath/nerdfonts/usr/share/fonts/. 
+    sudo cp -R $basePath/devfonts /usr/share/fonts/. 
 
     while read profile; do
         if [[ "$profile" != "list" && "$profile" != "default" ]]; then
