@@ -1,3 +1,5 @@
+source "$basePath/lib/read-config.sh"
+
 function menu_gnomeshellextensions_group() {
 
     addApt "wget bash curl dbus perl git less"
@@ -7,7 +9,10 @@ function menu_gnomeshellextensions_group() {
     options_id=();
     options_selected=();
 
-    eval "$(bash "$basePath/read-config.sh" -g)"
+    
+
+    #eval "$(bash "$basePath/lib/read-config.sh" -g)"
+    eval "$(read_gnomeShellExtensionGroups)"
 
     optionsLength=${#options_id[@]}
     if [ $optionsLength = 1 ]; then
@@ -46,7 +51,8 @@ function menu_gnomeshellextensions() {
     options_selected=();
 
     local groupFilter="$1"
-    eval "$(bash "$basePath/read-config.sh" -e "$groupFilter")"
+    #eval "$(bash "$basePath/lib/read-config.sh" -e "$groupFilter")"
+    eval "$(read_gnomeShellExtensions "$groupFilter")"
 
     optionsLength=${#options_id[@]}
     if [ $optionsLength = 0 ]; then

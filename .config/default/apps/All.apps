@@ -1,0 +1,14 @@
+[Synaptic]
+id=10
+name=Synaptic
+group=Geral
+selected=TRUE
+command=addApt 'synaptic'
+
+[Ubuntu Restricted Extras]
+id=20
+name=Ubuntu Restricted Extras
+group=Geral
+selected=TRUE
+command=echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+addApt "ubuntu-restricted-extras"

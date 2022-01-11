@@ -1,9 +1,37 @@
+DATE_INI=$(date '+%Y/%m/%d-%H:%M:%S')
+
+argScript="$(readlink -f "$0")"
+#basePath="${argScript%/*}"
+basePath="$(cd ${argScript%/*} && pwd)"
+
+binDir="${basePath}/bin"
+
+
 
 function checkRoot() {
     if [ "$EUID" -ne 0 ]
         then echo "Please run as root"
         exit
     fi
+}
+
+function setEnvs() {
+    currentUser=`logname`
+    currentGroup=`id -gn $currentUser`
+
+    currentHomeDir="$(sudo -u $currentUser bash -c "echo ~")"
+
+    ubuntuRelease=`lsb_release -cs`
+
+    currentDate=$(date +%Y-%m-%d_%H-%M-%S.%N)
+
+    source "$basePath/lib/read-config.sh"
+
+    set -a # export all variables created next
+    source $basePath/conf.conf
+    set +a # stop exporting
+
+
 }
 
 function addNpm() {
@@ -108,23 +136,26 @@ function installApt() {
     echo " Instalando APT"
     echo "============================="
 
-    sudo apt update
+    if [ ${#apt[@]} -eq 0 ]; then
+        echo "Nenhum pacote para o APT instalar"
+    else
+        sudo apt update
+        aptToInstall=()
 
-    aptToInstall=()
-
-    for line in "${apt[@]}"
-    do
-        local IF="\ "
-        for i in $line # note that $var must NOT be quoted here!
+        for line in "${apt[@]}"
         do
-            if [[ $(sudo apt-cache search "^$i$") ]]; then
-                aptToInstall+=("$i")
-            fi
+            local IF="\ "
+            for i in $line # note that $var must NOT be quoted here!
+            do
+                if [[ $(sudo apt-cache search "^$i$") ]]; then
+                    aptToInstall+=("$i")
+                fi
+            done
         done
-    done
 
-    echo "Executando> sudo apt install -y -f \"${aptToInstall[@]}\""
-    sudo apt install -y -f "${aptToInstall[@]}"
+        echo "Executando> sudo apt install -y -f \"${aptToInstall[@]}\""
+        sudo apt install -y -f "${aptToInstall[@]}"
+    fi
 }
 
 function installAptSecond() {
@@ -132,23 +163,27 @@ function installAptSecond() {
     echo " Instalando Segundo Passo APT"
     echo "============================="
 
-    sudo apt update
+    if [ ${#apt_second[@]} -eq 0 ]; then
+        echo "Nenhum pacote para o APT instalar"
+    else
+        sudo apt update
 
-    aptToInstall=()
+        aptToInstall=()
 
-    for line in "${apt_second[@]}"
-    do
-        local IF="\ "
-        for i in $line # note that $var must NOT be quoted here!
+        for line in "${apt_second[@]}"
         do
-            if [[ $(sudo apt-cache search "^$i$") ]]; then
-                aptToInstall+=("$i")
-            fi
+            local IF="\ "
+            for i in $line # note that $var must NOT be quoted here!
+            do
+                if [[ $(sudo apt-cache search "^$i$") ]]; then
+                    aptToInstall+=("$i")
+                fi
+            done
         done
-    done
 
-    echo "Executando> sudo apt install -y -f \"${aptToInstall[@]}\""
-    sudo apt install -y -f "${aptToInstall[@]}"
+        echo "Executando> sudo apt install -y -f \"${aptToInstall[@]}\""
+        sudo apt install -y -f "${aptToInstall[@]}"
+    fi
 }
 
 function intstallSnap() {
@@ -156,21 +191,33 @@ function intstallSnap() {
     echo " Instalando Snaps"
     echo "============================="
 
-    for i in "${snap[@]}"
-    do
-        echo "Executando> sudo snap install \"$i\""
-        sudo snap install "$i"
-    done
-    for i in "${snapClassic[@]}"
-    do
-        echo "Executando> sudo snap install --classic \"$i\""
-        sudo snap install --classic "$i"
-    done
-    for i in "${snapEdgeClassic[@]}"
-    do
-        echo "Executando> sudo snap install --edge --classic \"$i\""
-        sudo snap install --edge --classic "$i"
-    done
+    if [ ${#snap[@]} -eq 0 ]; then
+        echo "Nenhum pacote para o snap instalar"
+    else
+        for i in "${snap[@]}"
+        do
+            echo "Executando> sudo snap install \"$i\""
+            sudo snap install "$i"
+        done
+    fi
+    if [ ${#snapClassic[@]} -eq 0 ]; then
+        echo "Nenhum pacote para o snap [classic] instalar"
+    else
+        for i in "${snapClassic[@]}"
+        do
+            echo "Executando> sudo snap install --classic \"$i\""
+            sudo snap install --classic "$i"
+        done
+    fi
+    if [ ${#snapEdgeClassic[@]} -eq 0 ]; then
+        echo "Nenhum pacote para o snap [edge classic] instalar"
+    else    
+        for i in "${snapEdgeClassic[@]}"
+        do
+            echo "Executando> sudo snap install --edge --classic \"$i\""
+            sudo snap install --edge --classic "$i"
+        done
+    fi
 }
 
 function installFlatpak() {
@@ -178,12 +225,16 @@ function installFlatpak() {
     echo " Instalando Flatpaks"
     echo "============================="
 
-    #executar apos o pos, ou add o repo before this after apt
-    for i in "${flatpak[@]}"
-    do
-        echo "Executando> sudo -u $currentUser flatpak install -y \"$i\""
-        sudo -u $currentUser flatpak install -y "$i"
-    done    
+    if [ ${#flatpak[@]} -eq 0 ]; then
+        echo "Nenhum pacote para o flat instalar"
+    else 
+        #executar apos o pos, ou add o repo before this after apt
+        for i in "${flatpak[@]}"
+        do
+            echo "Executando> sudo -u $currentUser flatpak install -y \"$i\""
+            sudo -u $currentUser flatpak install -y "$i"
+        done    
+    fi
 }
 
 function installPosAptCommands() {
@@ -225,23 +276,27 @@ function installNpm() {
     echo " Instalando npm"
     echo "============================="
 
-    sudo npm install -g npm
+    if [ ${#npm[@]} -eq 0 ]; then
+        echo "Nenhum pacote para o npm instalar"
+    else 
+        sudo npm install -g npm
 
-    npmToInstall=()
+        npmToInstall=()
 
-    for line in "${npm[@]}"
-    do
-        local IF="\ "
-        for i in $line # note that $var must NOT be quoted here!
+        for line in "${npm[@]}"
         do
-            #if [[ $(sudo apt-cache search "^$i$") ]]; then
-                npmToInstall+=("$i")
-            #fi
+            local IF="\ "
+            for i in $line # note that $var must NOT be quoted here!
+            do
+                #if [[ $(sudo apt-cache search "^$i$") ]]; then
+                    npmToInstall+=("$i")
+                #fi
+            done
         done
-    done
 
-    echo "Executando> sudo npm install -g \"${npmToInstall[@]}\""
-    sudo npm install -g "${npmToInstall[@]}"
+        echo "Executando> sudo npm install -g \"${npmToInstall[@]}\""
+        sudo npm install -g "${npmToInstall[@]}"
+    fi
 }
 
 function callAppsFunctions() {
@@ -258,6 +313,22 @@ function callAppsFunctions() {
         done
     done
 }
+
+function callAppsFunctionsDebug() {
+	local _optionsTitles=("${options_title[@]}")
+	local _optionsCommands=("${options_id[@]}")
+	local _optionsLength=("${optionsLength[@]}")
+	
+    local IFS="|"
+    for app in $1;
+    do
+        for (( i=0; i<${_optionsLength}; i++ ));
+        do
+            [[ "${_optionsTitles[$i]}" == "$app" ]] && echo "${_optionsCommands[$i]}"
+        done
+    done
+}
+
 
 
 function getLatestedGitFileLink() {

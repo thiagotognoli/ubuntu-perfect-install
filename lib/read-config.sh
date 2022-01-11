@@ -1,8 +1,6 @@
-#!/bin/bash
+configDir="$basePath/.config"
+tmpDir="$basePath/tmp"
 
-configDir=".config"
-
-tmpDir="tmp"
 
 log() {
     echo "$1"
@@ -219,6 +217,101 @@ parseConfigs() {
 }
 
 
+function parseAppsGroups() {
+    local _commandGroup="$1" 
+
+    local _fileExtension _configDir _configCustomDir
+    _fileExtension="group"
+    _configDir="$configDir/default/apps"
+    _configCustomDir="$configDir/custom/apps"
+
+    local sectionField sectionRegex sectionRegexValue
+    sectionField="name"
+    sectionRegex="^\[.*\]"
+    sectionRegexValue="s/^\[([^\[]*)\]/\1/"
+
+    local _fields='"selected" "order" "disabled"'
+    local _fieldsDefaultValue='["selected"]=FALSE ["order"]=99999 ["disabled"]=FALSE'
+
+    local _fieldsRequired=''
+
+    #local _fieldsFilterValue='["disabled"]=false ["group"]="General"'
+    local _fieldsFilterValue='["disabled"]=FALSE'
+    #local _fieldsFilterValue=''
+
+        
+    local _sortConfigs="order:numeric,10;name:string,250"
+    #local _sortConfigs=""
+
+    #local _outputString="$1"
+    local _outputString='options_title+=(\"$name\"); options_selected+=($selected); options_id+=(\""$command\"");\n'
+
+    local _customProcessValue='command="'$1' \\\"$name\\\"";'
+
+    parseConfigs \
+        "$_fileExtension" \
+        "$_configDir" \
+        "$_configCustomDir" \
+        "$sectionField" \
+        "$sectionRegex" \
+        "$sectionRegexValue" \
+        "$_fields" \
+        "$_fieldsDefaultValue" \
+        "$_fieldsRequired" \
+        "$_fieldsFilterValue" \
+        "$_sortConfigs" \
+        "$_outputString" \
+        "$_customProcessValue"
+}
+
+
+function parseApps() {
+    local _filterGroup="$1"
+
+    local _fileExtension _configDir _configCustomDir
+    _fileExtension="apps"
+    _configDir="$configDir/default/apps"
+    _configCustomDir="$configDir/custom/apps"
+
+    local sectionField sectionRegex sectionRegexValue
+    sectionField="code"
+    sectionRegex="^\[.*\]"
+    sectionRegexValue="s/^\[([^\[]*)\]/\1/"
+
+    local _fields='"id" "name" "description" "group" "selected" "command" "order" "disabled"'
+    local _fieldsDefaultValue='["group"]="General" ["selected"]=FALSE ["order"]=99999 ["disabled"]=FALSE'
+
+    local _fieldsRequired='"id" "name"'
+
+    #local _fieldsFilterValue='["disabled"]=false ["group"]="General"'
+    local _fieldsFilterValue="[\"disabled\"]=FALSE [\"group\"]=\"$_filterGroup\""
+    #local _fieldsFilterValue=''
+
+        
+    local _sortConfigs="order:numeric,10;name:string,250"
+    #local _sortConfigs=""
+
+    #local _outputString="Id: \$id\nName: \$name\nSelected: \$selected\n"
+    local _outputString='options_title+=(\"$name\"); options_selected+=($selected); options_id+=(\""$command\"");\n'
+
+    local _customProcessValue='[[ "$command" ]] || command="echo \\\"Nada a fazer em $name\\\"";'
+
+    parseConfigs \
+        "$_fileExtension" \
+        "$_configDir" \
+        "$_configCustomDir" \
+        "$sectionField" \
+        "$sectionRegex" \
+        "$sectionRegexValue" \
+        "$_fields" \
+        "$_fieldsDefaultValue" \
+        "$_fieldsRequired" \
+        "$_fieldsFilterValue" \
+        "$_sortConfigs" \
+        "$_outputString" \
+        "$_customProcessValue"
+}
+
 
 function parseGnomeShellExtensionGroups() {
     local _fileExtension _configDir _configCustomDir
@@ -312,30 +405,47 @@ function parseGnomeShellExtensions() {
         "$_customProcessValue"
 }
 
-while [ "$1" != "" ]; do
-    case $1 in
-        -e | --extensions )     shift
-                                filterGroup="$1"
-                                parseGnomeShellExtensions "$filterGroup"
-                                exit
-                                ;;
-        -g | --groups )         parseGnomeShellExtensionGroups
-                                exit
-                                ;;
-        # -h | --help )           usage
-        #                         exit
-        #                         ;;
-        # * )                     usage
-        #                         exit 1
-    esac
-    shift
-done
+# while [ "$1" != "" ]; do
+#     case $1 in
+#         -e | --extensions )     shift
+#                                 filterGroup="$1"
+#                                 parseGnomeShellExtensions "$filterGroup"
+#                                 exit
+#                                 ;;
+#         -g | --groups )         parseGnomeShellExtensionGroups
+#                                 exit
+#                                 ;;
+#         # -h | --help )           usage
+#         #                         exit
+#         #                         ;;
+#         # * )                     usage
+#         #                         exit 1
+#     esac
+#     shift
+# done
+function read_appsGroups () {
+    callFunction="$1"
+    parseAppsGroups "$callFunction"
+}
+
+function read_apps () {
+    filterGroup="$1"
+    parseApps "$filterGroup"
+}
 
 
-exit
+function read_gnomeShellExtensionGroups () {
+    parseGnomeShellExtensionGroups
+}
+
+function read_gnomeShellExtensions() {
+    filterGroup="$1"
+    parseGnomeShellExtensions "$filterGroup"
+}
+#exit
 
 
-gnome_shell_extension.gsextension
+#gnome_shell_extension.gsextension
 #config file fields
 # [code]
 # id=<integer>
