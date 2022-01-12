@@ -25,6 +25,11 @@ function setEnvs() {
 
     currentDate=$(date +%Y-%m-%d_%H-%M-%S.%N)
 
+    configDir="$basePath/.config"
+    tmpDir="$basePath/tmp"
+    configDirSubPathDefault="default"
+    configDirSubPathCustom="custom"    
+
     source "$basePath/lib/read-config.sh"
 
     set -a # export all variables created next
@@ -33,6 +38,17 @@ function setEnvs() {
 
 
 }
+
+log() {
+    echo "$1"
+}
+
+logDebug() {
+    #echo -ne "$1"
+    echo ""
+    #"$1"
+}
+
 
 function addNpm() {
     npm+=("$1")

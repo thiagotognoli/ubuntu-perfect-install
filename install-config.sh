@@ -18,7 +18,8 @@ function menu_apps_group() {
     local options_selected=();
 
     eval "$(read_appsGroups 'menu_apps')"
-    
+    echo
+
     local optionsLength=${#options_id[@]}
     local optionsToShow
     if [ $optionsLength = 1 ]; then
@@ -57,7 +58,8 @@ function menu_apps() {
     local options_selected=();
 
     local groupFilter="$1"
-    eval "$(read_apps "$groupFilter")"
+    eval "$(read_apps \"$groupFilter\")"
+    echo
 
     local optionsLength=${#options_id[@]}
     local optionsToShow
@@ -87,6 +89,7 @@ function menu_apps() {
     #echo "$appsSelected"
 
     callAppsFunctionsDebug "$appsSelected"
+    #callAppsFunctions "$appsSelected"
 }
 
 
@@ -94,7 +97,7 @@ echo "Diálogos"
 #addPreCommand "install_base"
 
 loadCommands
-teste
+
 menu_apps_group
 
 installAllAfterSelections

@@ -1,3 +1,8 @@
+#Add slashes scape para command
+#order
+utf8 pra ler arquivo e ou ver se arquivo esta em utf8
+
+#TODO: flat gittyup
 #TODO: apt libsecret-tools
 #TODO: no node colocr o node-typescript
 #TODO: quando for linik na home, sem o destino, criar link mesmo inválido trocando a base da url

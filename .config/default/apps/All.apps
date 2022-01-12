@@ -30,7 +30,7 @@ command=menu_alternative_terminals
 id=050
 name=SSH (Client e Server) [apt]
 group=Geral
-selected=ALSE
+selected=FALSE
 command=addApt 'ssh'
 
 [Aptitude [apt]]
@@ -51,7 +51,7 @@ command=addApt 'synaptic'
 id=080
 name=Gnome Software [apt]
 group=Geral
-selected=ALSE
+selected=FALSE
 command=addApt 'gnome-software gnome-software-plugin-snap gnome-software-plugin-flatpak'
 
 
@@ -87,21 +87,21 @@ command=addApt 'sshuttle'
 id=130
 name=LSD (ls deluxe) [web deb]
 group=Geral
-selected=ALSE
+selected=FALSE
 command=addPosCommand "pos_install_lsd"
 
 [Config Gnome Shell [apt & bash]]
 id=140
 name=Config Gnome Shell [apt & bash]
 group=Geral
-selected=ALSE
+selected=FALSE
 command=config_gnomeshell
 
 [Gnome Shell Extensions [seleção]]
 id=150
 name=Gnome Shell Extensions [seleção]
 group=Geral
-selected=ALSE
+selected=FALSE
 command=menu_gnomeshellextensions_group
 
 [Google Chrome [web deb & apt repo]]
@@ -115,7 +115,7 @@ command=addPosCommand "install_googlechrome"
 id=170
 name=Chromium Browser [snap]
 group=Geral
-selected=ALSE
+selected=FALSE
 command=addSnap "chromium"
 
 [Chromium Browser [flat]]
@@ -130,7 +130,7 @@ id=190
 name=Microsoft Edge Browser [apt]
 group=Geral
 selected=TRUE
-command=replaceAptRepo "deb [arch=amd64] https://packages.microsoft.com/repos/edge/ stable main" "microsoft-edge.list" && addApt 'microsoft'ge-stable'
+command=replaceAptRepo 'deb [arch=amd64] https://packages.microsoft.com/repos/edge/ stable main' 'microsoft-edge.list' && addApt 'microsoft-edge-stable'
 
 [Gmail App [git]]
 id=200
@@ -178,7 +178,7 @@ command=addApt 'nextcloud-desktop'
 id=260
 name=Nextcloud Client [apt ppa repo]
 group=Geral
-selected=ALSE
+selected=FALSE
 command=install_ppa "ppa:nextcloud-devs/client" "nextcloud-desktop"
 
 [Syncthing [apt]]
@@ -220,14 +220,14 @@ command=addApt 'keepassxc'
 id=320
 name=KeepasXC [flat]
 group=Geral
-selected=ALSE
+selected=FALSE
 command=addFlatpak "org.keepassxc.KeePassXC"
 
 [Authenticator (2FA) [flat]]
 id=330
 name=Authenticator (2FA) [flat]
 group=Geral
-selected=ALSE
+selected=FALSE
 command=addFlatpak "com.github.bilelmoussaoui.Authenticator"
 
 [Inkscape (Editor de Desenhos Vetorial) [apt]]
@@ -241,7 +241,7 @@ command=addApt 'inkscape'
 id=350
 name=Inkscape (Editor de Desenhos Vetorial) [snap]
 group=Geral
-selected=ALSE
+selected=FALSE
 command=addSnap "inkscape"
 
 [GIMP (Editor de Imagens) [apt]]
@@ -249,34 +249,34 @@ id=360
 name=GIMP (Editor de Imagens) [apt]
 group=Geral
 selected=TRUE
-commnd=addApt 'gimp'
+command=addApt 'gimp'
 
 [GIMP (Editor de Imagens) [snap]]
 id=370
 name=GIMP (Editor de Imagens) [snap]
 group=Geral
-selected=ALSE
+selected=FALSE
 command=addSnap "gimp"
 
 [DarkTable (Visualizador de Fotos/Imagens) [snap]]
 id=380
 name=DarkTable (Visualizador de Fotos/Imagens) [snap]
 group=Geral
-selected=ALSE
-commnd=addSnap "darktable"
+selected=FALSE
+command=addSnap "darktable"
 
 [VLC Video Player [apt]]
 id=390
 name=VLC Video Player [apt]
 group=Geral
 selected=TRUE
-comand=addApt 'vlc'
+command=addApt 'vlc'
 
 [VLC Video Player [snap]]
 id=400
 name=VLC Video Player [snap]
 group=Geral
-selected=ALSE
+selected=FALSE
 command=addSnap "vlc"
 
 [Chats [seleção]]
@@ -297,7 +297,7 @@ command=menu_develtools
 id=430
 name=Team Viewer [web deb & apt repo]
 group=Geral
-selected=ALSE
+selected=FALSE
 command=addPosCommand "install_teamviewer"
 
 [Linux Dynamic Wallpapers (like MacOS) [git]]
