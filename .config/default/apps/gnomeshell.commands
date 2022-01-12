@@ -1,0 +1,22 @@
+#!/bin/bash
+
+function config_gnomeshell() {
+
+    addApt "gnome-tweaks chrome-gnome-shell"
+    addApt "font-manager"
+    addApt "xdotool"
+    addPosCommand "pos_config_gnomeshell"
+
+}
+
+function pos_config_gnomeshell() {
+
+    sudo -u $currentUser bash -c "echo -e '[Desktop Entry]\nVersion=1.0\nName=Show Desktop\nExec=xdotool key --clearmodifiers Ctrl+Super+d\nIcon=desktop\nType=Application\nCategories=Application' | tee '$currentHomeDir/.local/share/applications/show-desktop.desktop'" \
+        && sudo -u $currentUser chmod +x "$currentHomeDir/.local/share/applications/show-desktop.desktop"
+
+    # Config Click App Icon to Minimize
+    sudo -u $currentUser gsettings set org.gnome.shell.extensions.dash-to-dock click-action minimize
+
+    ## Restore to default action
+    #sudo -u $currentUser gsettings reset org.gnome.shell.extensions.dash-to-dock click-action
+}

@@ -7,6 +7,8 @@ setEnvs
 
 source "$basePath/lib/install-commons.sh"
 
+loadCommands
+
 addPreCommand "install_base"
 
 source $basePath/menu_apps.sh

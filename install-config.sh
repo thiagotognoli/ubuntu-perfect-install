@@ -13,13 +13,14 @@ function menu_apps_group() {
     #addApt "wget bash curl dbus perl git less"
     #addPosCommand "pos_install_gnomeshellextensions"
 
-    options_title=();
-    options_id=();
-    options_selected=();
+    local options_title=();
+    local options_id=();
+    local options_selected=();
 
     eval "$(read_appsGroups 'menu_apps')"
     
-    optionsLength=${#options_id[@]}
+    local optionsLength=${#options_id[@]}
+    local optionsToShow
     if [ $optionsLength = 1 ]; then
         eval "${options_id[0]}"
         return
@@ -33,13 +34,13 @@ function menu_apps_group() {
         done
     fi
 
-    appsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione os Grupos de Apps para Instalar" \
+    local appsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione os Grupos de Apps para Instalar" \
         --checklist \
         --column "Marcar" \
         --column "Grupo de Apps" \
         "${optionsToShow[@]}")
 
-	cancelSelection=$?
+	local cancelSelection=$?
     if [[ $cancelSelection = 1 ]] ;
 	then
 		echo "Cancelado!";
@@ -51,15 +52,15 @@ function menu_apps_group() {
 
 
 function menu_apps() {
-    options_title=();
-    options_id=();
-    options_selected=();
+    local options_title=();
+    local options_id=();
+    local options_selected=();
 
     local groupFilter="$1"
     eval "$(read_apps "$groupFilter")"
-    echo "$(read_apps "$groupFilter")"
 
-    optionsLength=${#options_id[@]}
+    local optionsLength=${#options_id[@]}
+    local optionsToShow
     if [ $optionsLength = 0 ]; then
         return;
     else
@@ -70,30 +71,35 @@ function menu_apps() {
         done
     fi
 
-    appsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione Apps do [$groupFilter]" \
+    local appsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione Apps do [$groupFilter]" \
         --checklist \
         --column "Marcar" \
         --column "App" \
         "${optionsToShow[@]}")
 
-	cancelSelection=$?
+	local cancelSelection=$?
     if [[ $cancelSelection = 1 ]] ;
 	then
 		echo "Cancelado!";
 		return 0
 	fi
 
-    echo "$appsSelected"
+    #echo "$appsSelected"
 
     callAppsFunctionsDebug "$appsSelected"
 }
 
 
+echo "Diálogos"
 #addPreCommand "install_base"
 
+loadCommands
+teste
 menu_apps_group
 
 installAllAfterSelections
+
+exit 0
 
 createTemplates
 

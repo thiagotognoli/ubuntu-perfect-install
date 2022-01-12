@@ -1,14 +1,308 @@
-[Synaptic]
-id=10
-name=Synaptic
+[Timeshift [apt]]
+id=010
+name=Timeshift [apt]
+group=Geral
+selected=TRUE
+command=addApt 'timeshift'
+
+[Timeshift AutoSnap APT [git]]
+id=020
+name=Timeshift AutoSnap APT [git]
+group=Geral
+selected=TRUE
+command=install_timeshift_autosnap_apt
+
+[Ubuntu Restricted Extras [apt]]
+id=030
+name=Ubuntu Restricted Extras [apt]
+group=Geral
+selected=TRUE
+command=addPreCommand "install_ubuntu_restricted_extras"
+
+[Alternative Terminals [seleção]]
+id=040
+name=Alternative Terminals [seleção]
+group=Geral
+selected=TRUE
+command=menu_alternative_terminals
+
+[SSH (Client e Server) [apt]]
+id=050
+name=SSH (Client e Server) [apt]
+group=Geral
+selected=ALSE
+command=addApt 'ssh'
+
+[Aptitude [apt]]
+id=060
+name=Aptitude [apt]
+group=Geral
+selected=TRUE
+command=addApt 'aptitude'
+
+[Synaptic [apt]]
+id=070
+name=Synaptic [apt]
 group=Geral
 selected=TRUE
 command=addApt 'synaptic'
 
-[Ubuntu Restricted Extras]
-id=20
-name=Ubuntu Restricted Extras
+[Gnome Software [apt]]
+id=080
+name=Gnome Software [apt]
+group=Geral
+selected=ALSE
+command=addApt 'gnome-software gnome-software-plugin-snap gnome-software-plugin-flatpak'
+
+
+[Monitoramento - htop [apt]]
+id=090
+name=Monitoramento - htop [apt]
 group=Geral
 selected=TRUE
-command=echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
-addApt "ubuntu-restricted-extras"
+command=addApt 'htop'
+
+[Monitoramento - iotop [apt]]
+id=100
+name=Monitoramento - iotop [apt]
+group=Geral
+selected=TRUE
+command=addApt 'iotop'
+
+[ZSH & Oh My ZSH [apt & git]]
+id=110
+name=ZSH & Oh My ZSH [apt & git]
+group=Geral
+selected=TRUE
+command=addApt 'zsh fonts-powerline' && addPosCommand 'pos_install_ohmyzsh'
+
+[sshuttle (ssh VPN) [apt]]
+id=120
+name=sshuttle (ssh VPN) [apt]
+group=Geral
+selected=TRUE
+command=addApt 'sshuttle'
+
+[LSD (ls deluxe) [web deb]]
+id=130
+name=LSD (ls deluxe) [web deb]
+group=Geral
+selected=ALSE
+command=addPosCommand "pos_install_lsd"
+
+[Config Gnome Shell [apt & bash]]
+id=140
+name=Config Gnome Shell [apt & bash]
+group=Geral
+selected=ALSE
+command=config_gnomeshell
+
+[Gnome Shell Extensions [seleção]]
+id=150
+name=Gnome Shell Extensions [seleção]
+group=Geral
+selected=ALSE
+command=menu_gnomeshellextensions_group
+
+[Google Chrome [web deb & apt repo]]
+id=160
+name=Google Chrome [web deb & apt repo]
+group=Geral
+selected=TRUE
+command=addPosCommand "install_googlechrome"
+
+[Chromium Browser [snap]]
+id=170
+name=Chromium Browser [snap]
+group=Geral
+selected=ALSE
+command=addSnap "chromium"
+
+[Chromium Browser [flat]]
+id=180
+name=Chromium Browser [flat]
+group=Geral
+selected=TRUE
+command=addFlatpak "org.chromium.Chromium"
+
+[Microsoft Edge Browser [apt]]
+id=190
+name=Microsoft Edge Browser [apt]
+group=Geral
+selected=TRUE
+command=replaceAptRepo "deb [arch=amd64] https://packages.microsoft.com/repos/edge/ stable main" "microsoft-edge.list" && addApt 'microsoft'ge-stable'
+
+[Gmail App [git]]
+id=200
+name=Gmail App [git]
+group=Geral
+selected=TRUE
+command=addPosAptCommand "install_gmail_app"
+
+[Caffeine (manter tela ligada) [apt]]
+id=210
+name=Caffeine (manter tela ligada) [apt]
+group=Geral
+selected=TRUE
+command=addApt 'caffeine'
+
+[Flameshot Screen Shot [apt & app icon]]
+id=220
+name=Flameshot Screen Shot [apt & app icon]
+group=Geral
+selected=TRUE
+command=addApt 'flameshot' && addPosCommand "pos_install_flameshotscreenshot"
+
+[Gocryptfs [apt]]
+id=230
+name=Gocryptfs [apt]
+group=Geral
+selected=TRUE
+command=addApt 'gocryptfs'
+
+[RClone [apt]]
+id=240
+name=RClone [apt]
+group=Geral
+selected=TRUE
+command=addApt 'rclone'
+
+[Nextcloud Client [apt oficial repo]]
+id=250
+name=Nextcloud Client [apt oficial repo]
+group=Geral
+selected=TRUE
+command=addApt 'nextcloud-desktop'
+
+[Nextcloud Client [apt ppa repo]]
+id=260
+name=Nextcloud Client [apt ppa repo]
+group=Geral
+selected=ALSE
+command=install_ppa "ppa:nextcloud-devs/client" "nextcloud-desktop"
+
+[Syncthing [apt]]
+id=270
+name=Syncthing [apt]
+group=Geral
+selected=TRUE
+command=install_syncthing_apt
+
+[NFS Client [apt]]
+id=280
+name=NFS Client [apt]
+group=Geral
+selected=TRUE
+command=addApt 'nfs-common'
+
+[Mackup [snap]]
+id=290
+name=Mackup [snap]
+group=Geral
+selected=TRUE
+command=addSnapClassic "mackup"
+
+[Sirikali [apt]]
+id=300
+name=Sirikali [apt]
+group=Geral
+selected=TRUE
+command=addApt 'sirikali'
+
+[KeepasXC [apt]]
+id=310
+name=KeepasXC [apt]
+group=Geral
+selected=TRUE
+command=addApt 'keepassxc'
+
+[KeepasXC [flat]]
+id=320
+name=KeepasXC [flat]
+group=Geral
+selected=ALSE
+command=addFlatpak "org.keepassxc.KeePassXC"
+
+[Authenticator (2FA) [flat]]
+id=330
+name=Authenticator (2FA) [flat]
+group=Geral
+selected=ALSE
+command=addFlatpak "com.github.bilelmoussaoui.Authenticator"
+
+[Inkscape (Editor de Desenhos Vetorial) [apt]]
+id=340
+name=Inkscape (Editor de Desenhos Vetorial) [apt]
+group=Geral
+selected=TRUE
+command=addApt 'inkscape'
+
+[Inkscape (Editor de Desenhos Vetorial) [snap]]
+id=350
+name=Inkscape (Editor de Desenhos Vetorial) [snap]
+group=Geral
+selected=ALSE
+command=addSnap "inkscape"
+
+[GIMP (Editor de Imagens) [apt]]
+id=360
+name=GIMP (Editor de Imagens) [apt]
+group=Geral
+selected=TRUE
+commnd=addApt 'gimp'
+
+[GIMP (Editor de Imagens) [snap]]
+id=370
+name=GIMP (Editor de Imagens) [snap]
+group=Geral
+selected=ALSE
+command=addSnap "gimp"
+
+[DarkTable (Visualizador de Fotos/Imagens) [snap]]
+id=380
+name=DarkTable (Visualizador de Fotos/Imagens) [snap]
+group=Geral
+selected=ALSE
+commnd=addSnap "darktable"
+
+[VLC Video Player [apt]]
+id=390
+name=VLC Video Player [apt]
+group=Geral
+selected=TRUE
+comand=addApt 'vlc'
+
+[VLC Video Player [snap]]
+id=400
+name=VLC Video Player [snap]
+group=Geral
+selected=ALSE
+command=addSnap "vlc"
+
+[Chats [seleção]]
+id=410
+name=Chats [seleção]
+group=Geral
+selected=TRUE
+command=menu_chats
+
+[Devel Tools [seleção]]
+id=420
+name=Devel Tools [seleção]
+group=Geral
+selected=TRUE
+command=menu_develtools
+
+[Team Viewer [web deb & apt repo]]
+id=430
+name=Team Viewer [web deb & apt repo]
+group=Geral
+selected=ALSE
+command=addPosCommand "install_teamviewer"
+
+[Linux Dynamic Wallpapers (like MacOS) [git]]
+id=440
+name=Linux Dynamic Wallpapers (like MacOS) [git]
+group=Geral
+selected=TRUE
+command=addPosAptCommand "install_linux_dynamic_wallpapers"

@@ -1,35 +1,58 @@
 configDir="$basePath/.config"
 tmpDir="$basePath/tmp"
+configDirSubPathDefault="default"
+configDirSubPathCustom="custom"
 
 
 log() {
     echo "$1"
 }
 
+logDebug() {
+    #echo -ne "$1"
+    echo ""
+    #"$1"
+}
+
+loadCommands() {
+    local _fileExtension="commands"
+    local commands="$(find $configDir/$configDirSubPathDefault -name "*.$_fileExtension")"
+    local commandsCustom="$(find $configDir/$configDirSubPathCustom -name "*.$_fileExtension")"
+    local command
+    for command in "${commands[@]}";
+    do
+        source "$command"
+    done
+    for command in "${commandsCustom[@]}";
+    do
+        source "$command"
+    done
+}
 parseConfigs() {
 
-    local _fileExtension _configDir _configCustomDir
-    _fileExtension="${1}"; _configDir="${2}"; _configCustomDir="${3}";
+    local _fileExtension="${1}";
+    local _configDir="${2}";
+    local _configCustomDir="${3}";
 
-    local sectionField sectionRegex sectionRegexValue
-    sectionField="${4}"; sectionRegex="${5}"; sectionRegexValue="${6}"
+    local sectionField="${4}";
+    local sectionRegex="${5}";
+    local sectionRegexValue="${6}"
 
-    local _fields _fieldsDefaultValue _fieldsRequired _fieldsFilterValue
-    _fields="${7}"
-    _fieldsDefaultValue="${8}"
-    _fieldsRequired="${9}"
-    _fieldsFilterValue="${10}"
+    local _fields="${7}"
+    local _fieldsDefaultValue="${8}"
+    local _fieldsRequired="${9}"
+    local _fieldsFilterValue="${10}"
 
-    local _sortConfigs
-    _sortConfigs="${11}"
+    local _sortConfigs="${11}"
 
     local _outputString="${12}"
 
     local _customFields="${13}"
 
-    local configs configsCustom
-    configs="$(find $_configDir -name "*.$_fileExtension" -exec bash -c "cat {} && echo" \;)"
-    configsCustom="$(find $_configCustomDir -name "*.$_fileExtension" -exec bash -c "cat {} && echo" \;)"
+    local IFS
+
+    local configs="$(find $_configDir -name "*.$_fileExtension" -exec bash -c "cat {} && echo" \;)"
+    local configsCustom="$(find $_configCustomDir -name "*.$_fileExtension" -exec bash -c "cat {} && echo" \;)"
     configs="$(echo -e "$configs\n$configsCustom" | sed -r -e "s/(#.*)//" -e "/^[[:space:]]*$/d" -e "s/^([[:space:]]*)([^[[:space:]].*)/\2/")"
     configs="$(echo "$configs" | tac)"
 
@@ -55,12 +78,17 @@ parseConfigs() {
     local -A fieldsToSortLenght
 
     local sortConfigs="$_sortConfigs"
-
     sortConfigs=(${sortConfigs//;/ })
+
     local sortConfigRegex="(.*)\:(.*)\,([0-9]*)"
+    local sortConfig 
+
+    IFS=" "
     for sortConfig in "${sortConfigs[@]}";
     do
+
         if [[ $sortConfig =~ $sortConfigRegex ]]; then
+
             sort=true
             fieldsToSort+=("${BASH_REMATCH[1]}")
             fieldsToSortTypes["${BASH_REMATCH[1]}"]="${BASH_REMATCH[2]}"
@@ -76,6 +104,7 @@ parseConfigs() {
     local -A fieldsValueRegex
     fieldsValueRegex["$sectionField"]="$sectionRegexValue"
 
+    local field
     for field in "${fields[@]}"
     do
         #echo "preenchendo $field"
@@ -95,12 +124,13 @@ parseConfigs() {
     done
 
     local -A currentFieldsValues
+    local fieldDefault
     for fieldDefault in "${fields[@]}"
     do
         currentFieldsValues["$fieldDefault"]="${fieldsDefaultValue["$fieldDefault"]}"
     done
 
-    declare -A fieldsValues
+    local -A fieldsValues
     local fieldsValuesOrders=()
 
     local line
@@ -166,14 +196,15 @@ parseConfigs() {
         fi
     done <<< "$configs"
 
-
     if [[ "${sections[@]}" && "$sort" = "true" ]]; then
         local sectionsToOrderKey=()
         local -A sectionsOrderKey
-        local orderKey=""
 
+        local section
         for section in "${sections[@]}";
         do
+            local orderKey=""
+            local fieldToSort
             for fieldToSort in "${fieldsToSort[@]}";
             do
                 local value="${fieldsValues["$section","$fieldToSort"]}"
@@ -192,23 +223,25 @@ parseConfigs() {
             done
             sectionsOrderKey["$orderKey"]="$section"
             sectionsToOrderKey+=("$orderKey")
-            orderKey=""
         done
 
         sections=()
         local element
-        while IFS= read -r -d '' element; do
+        IFS= 
+        while read -r -d '' element; do
             sections+=( "${sectionsOrderKey["$element"]}" )
         done < <(printf "%s\0" "${sectionsToOrderKey[@]}" | LC_ALL=C sort -z)
     fi
 
-
+    local section
     for section in "${sections[@]}";
     do
-        for field in "${fields[@]}";
+        local _tField
+        for _tField in "${fields[@]}";
         do
-            sectionField="$section,$field"
-            eval "local $field=\"${fieldsValues["$sectionField"]}\""
+            local _sectionField="$section,$field"
+            echo "local $_tField=\"${fieldsValues["$_sectionField"]}\"" >> fin.log
+            eval "local $_tField=\"${fieldsValues["$_sectionField"]}\""
         done
         eval "$_customFields"
         eval "echo -ne \"$_outputString\""
@@ -222,21 +255,21 @@ function parseAppsGroups() {
 
     local _fileExtension _configDir _configCustomDir
     _fileExtension="group"
-    _configDir="$configDir/default/apps"
-    _configCustomDir="$configDir/custom/apps"
+    _configDir="$configDir/$configDirSubPathDefault/apps"
+    _configCustomDir="$configDir/$configDirSubPathCustom/apps"
 
     local sectionField sectionRegex sectionRegexValue
     sectionField="name"
     sectionRegex="^\[.*\]"
     sectionRegexValue="s/^\[([^\[]*)\]/\1/"
 
-    local _fields='"selected" "order" "disabled"'
-    local _fieldsDefaultValue='["selected"]=FALSE ["order"]=99999 ["disabled"]=FALSE'
+    local _fields='"selected" "order" "disabled" "command"'
+    local _fieldsDefaultValue='[selected]=FALSE [order]=99999 [disabled]=FALSE'
 
     local _fieldsRequired=''
 
     #local _fieldsFilterValue='["disabled"]=false ["group"]="General"'
-    local _fieldsFilterValue='["disabled"]=FALSE'
+    local _fieldsFilterValue='[disabled]=FALSE'
     #local _fieldsFilterValue=''
 
         
@@ -246,7 +279,9 @@ function parseAppsGroups() {
     #local _outputString="$1"
     local _outputString='options_title+=(\"$name\"); options_selected+=($selected); options_id+=(\""$command\"");\n'
 
-    local _customProcessValue='command="'$1' \\\"$name\\\"";'
+    #local _customProcessValue='command="'$1' \\\"$name\\\"";'
+    local _customProcessValue='[[ "$command" ]] && command="$command" || command="'"$1"'";'
+
 
     parseConfigs \
         "$_fileExtension" \
@@ -270,31 +305,33 @@ function parseApps() {
 
     local _fileExtension _configDir _configCustomDir
     _fileExtension="apps"
-    _configDir="$configDir/default/apps"
-    _configCustomDir="$configDir/custom/apps"
+    _configDir="$configDir/$configDirSubPathDefault/apps"
+    _configCustomDir="$configDir/$configDirSubPathCustom/apps"
 
     local sectionField sectionRegex sectionRegexValue
     sectionField="code"
     sectionRegex="^\[.*\]"
     sectionRegexValue="s/^\[([^\[]*)\]/\1/"
 
-    local _fields='"id" "name" "description" "group" "selected" "command" "order" "disabled"'
-    local _fieldsDefaultValue='["group"]="General" ["selected"]=FALSE ["order"]=99999 ["disabled"]=FALSE'
+    local _fields='id name description group selected command order disabled'
+    local _fieldsDefaultValue='[group]=General [selected]=FALSE [order]=99999 [disabled]=FALSE'
 
-    local _fieldsRequired='"id" "name"'
+    local _fieldsRequired='id name'
 
     #local _fieldsFilterValue='["disabled"]=false ["group"]="General"'
-    local _fieldsFilterValue="[\"disabled\"]=FALSE [\"group\"]=\"$_filterGroup\""
+    local _fieldsFilterValue="[disabled]=FALSE [group]=\"$_filterGroup\""
     #local _fieldsFilterValue=''
 
         
+    #local _sortConfigs="order:numeric,10;name:string,250"
     local _sortConfigs="order:numeric,10;name:string,250"
+
     #local _sortConfigs=""
 
     #local _outputString="Id: \$id\nName: \$name\nSelected: \$selected\n"
     local _outputString='options_title+=(\"$name\"); options_selected+=($selected); options_id+=(\""$command\"");\n'
 
-    local _customProcessValue='[[ "$command" ]] || command="echo \\\"Nada a fazer em $name\\\"";'
+    local _customProcessValue='[[ "$command" ]] || command="echo \\"Nada a fazer em $name\\"";'
 
     parseConfigs \
         "$_fileExtension" \
@@ -316,8 +353,8 @@ function parseApps() {
 function parseGnomeShellExtensionGroups() {
     local _fileExtension _configDir _configCustomDir
     _fileExtension="gsegroup"
-    _configDir="$configDir/default/gnome-shell-extension"
-    _configCustomDir="$configDir/custom/gnome-shell-extension"
+    _configDir="$configDir/$configDirSubPathDefault/gnome-shell-extension"
+    _configCustomDir="$configDir/$configDirSubPathCustom/gnome-shell-extension"
 
     local sectionField sectionRegex sectionRegexValue
     sectionField="name"
@@ -363,8 +400,8 @@ function parseGnomeShellExtensions() {
 
     local _fileExtension _configDir _configCustomDir
     _fileExtension="gsextension"
-    _configDir="$configDir/default/gnome-shell-extension"
-    _configCustomDir="$configDir/custom/gnome-shell-extension"
+    _configDir="$configDir/$configDirSubPathDefault/gnome-shell-extension"
+    _configCustomDir="$configDir/$configDirSubPathCustom/gnome-shell-extension"
 
     local sectionField sectionRegex sectionRegexValue
     sectionField="code"
