@@ -91,13 +91,13 @@ function menu_apps() {
     ##echo "$appsSelected"
 
     #callAppsFunctionsDebug "$appsSelected"
-    ##callAppsFunctions "$appsSelected"
+    callAppsFunctions "$appsSelected"
 }
 
 
 echo "Iniciando Diálogos"
 
-#addPreCommand "install_base"
+addPreCommand "install_base"
 
 loadCommands
 
@@ -105,11 +105,11 @@ menu_apps_group
 
 installAllAfterSelections
 
-exit 0
+#exit 0
 
 createTemplates
 
-source $basePath/backup.sh
+source $basePath/lib/backup.sh
 
 restore_home_old
 restore_system_old

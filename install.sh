@@ -23,7 +23,7 @@ installAllAfterSelections
 
 createTemplates
 
-source $basePath/backup.sh
+source $basePath/lib/backup.sh
 
 restore_home_old
 restore_system_old
