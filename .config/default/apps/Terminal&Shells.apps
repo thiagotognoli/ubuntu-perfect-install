@@ -1,0 +1,20 @@
+[Terminator [apt]]
+name=Terminator [apt]
+id=010
+selected=FALSE
+group=Terminals & Shells
+command=addApt "terminator"
+
+[Terminology [snap edge classic]]
+name=Terminology [snap edge classic]
+id=020
+selected=FALSE
+group=Terminals & Shells
+command=addSnapEdgeClassic "terminology"
+
+[Cool Retro Term [snap classic]]
+name=Cool Retro Term [snap classic]
+id=030
+selected=FALSE
+group=Terminals & Shells
+command=addSnapClassic "cool-retro-term"

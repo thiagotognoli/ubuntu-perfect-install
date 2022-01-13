@@ -1,0 +1,153 @@
+[Docker e Docker Compose [apt repo]]
+name=Docker e Docker Compose [apt repo]
+id=010
+selected=TRUE
+group=Developer Tools
+command=install_docker
+
+[VirtualBox 6.1 [apt repo]]
+name=VirtualBox 6.1 [apt repo]
+id=020
+selected=FALSE
+group=Developer Tools
+command=install_virtualbox "6.1"
+
+[Java JRE (Open JRE) [apt]]
+name=Java JRE (Open JRE) [apt]
+id=030
+selected=TRUE
+group=Developer Tools
+command=addApt "default-jre"
+
+[Java JDK (Open JDK) [apt]]
+name=Java JDK (Open JDK) [apt]
+id=040
+selected=TRUE
+group=Developer Tools
+command=addApt "default-jdk"
+
+[Go Lang & Yaegi [snap classic & go]]
+name=Go Lang & Yaegi [snap classic & go]
+id=050
+selected=TRUE
+group=Developer Tools
+command=addSnapClassic "go" && addPosCommand "pos_install_golang"
+    
+#[NodeJS [official apt]]
+#name=[NodeJS [official apt]
+#id=060
+#selected=FALSE
+#group=Developer Tools
+#command=addApt "nodejs npm"
+
+[NodeJS [snap edge classic]]
+name=NodeJS [snap edge classic]
+id=070
+selected=FALSE
+group=Developer Tools
+command=addSnapEdgeClassic "node"
+
+[NVM, node 15, yarn [script]]
+name=NVM, node 15, yarn [script]
+id=080
+selected=TRUE
+group=Developer Tools
+command=install_nvm
+
+[Yarn [apt]]
+name=Yarn [apt]
+id=090
+selected=FALSE
+group=Developer Tools
+command=install_yarn_apt
+
+#[Yarn [npm]]
+#name=[Yarn [npm]
+#id=100
+#selected=FALSE
+#group=Developer Tools
+#command=install_yarn_apt
+
+[Visual Studio Code [apt repo]]
+name=Visual Studio Code [apt repo]
+id=110
+selected=TRUE
+group=Developer Tools
+command=install_vscode_apt
+
+[Visual Studio Code [snap classic]]
+name=Visual Studio Code [snap classic]
+id=120
+selected=FALSE
+group=Developer Tools
+command=addSnapClassic "code" && addPosCommand "pos_install_vscode_snap"
+
+[Netbeans [snap classic]]
+name=Netbeans [snap classic]
+id=130
+selected=FALSE
+group=Developer Tools
+command=addSnapClassic "netbeans"
+
+[Filezilla (FTP GUI Client) [apt]]
+name=Filezilla (FTP GUI Client) [apt]
+id=140
+selected=TRUE
+group=Developer Tools
+command=addApt "filezilla"
+    
+[BaseX [apt]]
+name=BaseX [apt]
+id=150
+selected=TRUE
+group=Developer Tools
+command=addApt "basex default-jre libtagsoup-java libjing-java"
+
+[MySQL Workbench (Mysql GUI Client) [apt]]
+name=MySQL Workbench (Mysql GUI Client) [apt]
+id=160
+selected=TRUE
+group=Developer Tools
+command=addApt "mysql-workbench"
+
+[Robot3t (MongoDB Gui Client) [snap]]
+name=Robot3t (MongoDB Gui Client) [snap]
+id=170
+selected=TRUE
+group=Developer Tools
+command=addSnap "robo3t-snap"
+
+[Git Kraken (Git Gui Client) [snap]]
+name=Git Kraken (Git Gui Client) [snap]
+id=180
+selected=TRUE
+group=Developer Tools
+command=addSnap "gitkraken"
+
+[Gitmoji [npm]]
+name=Gitmoji [npm]
+id=190
+selected=TRUE
+group=Developer Tools
+command=addNpm gitmoji
+
+[Insomnia (HTTP Rest Client) [apt]]
+name=Insomnia (HTTP Rest Client) [apt]
+id=200
+selected=TRUE
+group=Developer Tools
+command=install_insomnia
+
+[Insomnia (HTTP Rest Client) [snap]]
+name=Insomnia (HTTP Rest Client) [snap]
+id=210
+selected=FALSE
+group=Developer Tools
+command=addSnap "insomnia"
+
+[GhostWriter (MKD Editor) [flat]]
+name=GhostWriter (MKD Editor) [flat]
+id=220
+selected=TRUE
+group=Developer Tools
+command=addFlatpak "io.github.wereturtle.ghostwriter"

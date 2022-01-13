@@ -1,0 +1,19 @@
+[Geral]
+selected=TRUE
+order=100
+disabled=FALSE
+
+[Developer Tools]
+selected=TRUE
+order=101
+disabled=FALSE
+
+[Chats]
+selected=TRUE
+order=102
+disabled=FALSE
+
+[Terminals & Shells]
+selected=TRUE
+order=103
+disabled=FALSE

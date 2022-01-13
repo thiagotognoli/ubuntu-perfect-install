@@ -1,0 +1,63 @@
+[Telegram Desktop [snap]]
+name=Telegram Desktop [snap]
+id=010
+selected=FALSE
+group=Chats
+command=addSnap "telegram-desktop"
+
+[Skype [web apt]]
+name=Skype [web apt]
+id=020
+selected=TRUE
+group=Chats
+command=install_skype_apt
+
+[Skype [snap classic]]
+name=Skype [snap classic]
+id=030
+selected=FALSE
+group=Chats
+command=addSnapClassic "skype"
+
+[Slack [snap classic]]
+name=Slack [snap classic]
+id=040
+selected=FALSE
+group=Chats
+command=addSnapClassic "slack"
+
+[Microsoft Teams [web deb]]
+name=Microsoft Teams [web deb]
+id=050
+selected=FALSE
+group=Chats
+command=addPosCommand "pos_install_chats_teams"
+
+[Discord [flatpak]]
+name=Discord [flatpak]
+id=060
+selected=FALSE
+group=Chats
+command=addFlatpak "com.discordapp.Discord"
+
+
+[WhatsDesk Fork TT [web deb]]
+name=WhatsDesk Fork TT [web deb]
+id=070
+selected=TRUE
+group=Chats
+command=addPosAptCommand "install_whatsdesk_apt"
+
+#[WhatsApp Electrom [git]]
+#name=[WhatsApp Electrom [git]
+#id=080
+#selected=FALSE
+#group=Chats
+#command=addPosCommand "pos_install_chats_whatsappelectron"
+
+#[WhatsDesk [snap]]
+#name=[WhatsDesk [snap]
+#id=090
+#selected=FALSE
+#group=Chats
+#command=addSnap "whatsdesk"

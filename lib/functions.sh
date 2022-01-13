@@ -6,7 +6,11 @@ basePath="$(cd ${argScript%/*} && pwd)"
 
 binDir="${basePath}/bin"
 
-
+function encodeHtml() {
+    local value="$1"
+    value="${value//\&/\&amp;}"
+    echo "$value"
+}
 
 function checkRoot() {
     if [ "$EUID" -ne 0 ]

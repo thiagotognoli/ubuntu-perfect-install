@@ -35,6 +35,8 @@ function menu_apps_group() {
         done
     fi
 
+    #|recode html..ascii
+
     local appsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione os Grupos de Apps para Instalar" \
         --checklist \
         --column "Marcar" \
@@ -59,7 +61,7 @@ function menu_apps() {
 
     local groupFilter="$1"
     eval "$(read_apps \"$groupFilter\")"
-    echo
+    echo "$(read_apps \"$groupFilter\")"
 
     local optionsLength=${#options_id[@]}
     local optionsToShow
@@ -73,7 +75,7 @@ function menu_apps() {
         done
     fi
 
-    local appsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione Apps do [$groupFilter]" \
+    local appsSelected=$(zenity  --list  --width=800 --height=640 --text "Selecione Apps do [$(encodeHtml "$groupFilter")]" \
         --checklist \
         --column "Marcar" \
         --column "App" \
@@ -86,14 +88,15 @@ function menu_apps() {
 		return 0
 	fi
 
-    #echo "$appsSelected"
+    ##echo "$appsSelected"
 
-    callAppsFunctionsDebug "$appsSelected"
-    #callAppsFunctions "$appsSelected"
+    #callAppsFunctionsDebug "$appsSelected"
+    ##callAppsFunctions "$appsSelected"
 }
 
 
-echo "Diálogos"
+echo "Iniciando Diálogos"
+
 #addPreCommand "install_base"
 
 loadCommands

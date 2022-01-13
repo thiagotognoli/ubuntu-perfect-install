@@ -35,13 +35,18 @@ parseConfigs() {
 
     local _customFields="${13}"
 
+    #local _slashesFileds=
+    local fieldsToSlashes=("${14}")
+
+    #local _htmlEncodeFields=
+    local fieldsToHtmlEncode=("${15}")
+
     local IFS
 
-    local configs="$(find $_configDir -name "*.$_fileExtension" -exec bash -c "cat {} && echo" \;)"
-    local configsCustom="$(find $_configCustomDir -name "*.$_fileExtension" -exec bash -c "cat {} && echo" \;)"
+    local configs="$(find $_configDir -name "*.$_fileExtension" -exec bash -c "cat '{}' && echo" \;)"
+    local configsCustom="$(find $_configCustomDir -name "*.$_fileExtension" -exec bash -c "cat '{}' && echo" \;)"
     #local configs="$(find $_configDir -name "*.$_fileExtension" -exec bash -c "iconv -f utf8 {} && echo" \;)"
 
-    local configsCustom="$(find $_configCustomDir -name "*.$_fileExtension" -exec bash -c "cat {} && echo" \;)"
     configs="$(echo -e "$configs\n$configsCustom" | sed -r -e "s/(#.*)//" -e "/^[[:space:]]*$/d" -e "s/^([[:space:]]*)([^[[:space:]].*)/\2/")"
     configs="$(echo "$configs" | tac)"
 
@@ -55,7 +60,7 @@ parseConfigs() {
     eval "fieldsRequired+=($_fieldsRequired)"
 
     local -A fieldsFilterValue
-    eval "fieldsFilterValue+=(\"$_fieldsFilterValue\")"
+    eval "fieldsFilterValue+=( $_fieldsFilterValue )"
 
     local -A fieldsDefaultValue
     eval "fieldsDefaultValue+=($_fieldsDefaultValue)"
@@ -140,10 +145,17 @@ parseConfigs() {
             #local 
             #currentFieldsValues["$field"]="$(sed -r "${fieldsValueRegex["$field"]}" <<< "$line" )"
             #[ "$field" == "command" ] && currentFieldsValues["$field"]="$(printf "%q" "$value")" || currentFieldsValues["$field"]="$value"
-            if [ "$field" == "command" ]; then
-                value="${value/\"/\\\\\"}"
-                value="${value/$/\\$}"
-            fi
+
+            #if [ "$field" == "command" ]; then
+            #if printf '%s\n' "${filedsToSlash[@]}" | grep -Fxq "$field"; then
+            if printf '%s\0' "${fieldsToSlashes[@]}" | grep -Fxqz "$field"; then
+                value="${value//\"/\\\"}"
+                value="${value//$/\\$}"
+            fi 
+            if printf '%s\0' "${filedsToHtmlEncode[@]}" | grep -Fxqz "$field"; then
+                value="$(encodeHtml "$value")"
+            fi 
+
             currentFieldsValues["$field"]="$value"
             
             
@@ -166,6 +178,7 @@ parseConfigs() {
                     #testar valores requiridos
                     for fieldRequired in "${!fieldsFilterValue[@]}";
                     do
+#TODO ta certo ? nao era pra combianr com o de cima                    
                         if [[ "${currentFieldsValues["$fieldRequired"]}" != "${fieldsFilterValue["$fieldRequired"]}" ]]; then
                             requiredTest=false
                         fi;
@@ -294,7 +307,9 @@ function parseAppsGroups() {
         "$_fieldsFilterValue" \
         "$_sortConfigs" \
         "$_outputString" \
-        "$_customProcessValue"
+        "$_customProcessValue" \
+        "command" \
+        "name"
 }
 
 
@@ -317,7 +332,7 @@ function parseApps() {
     local _fieldsRequired='id name'
 
     #local _fieldsFilterValue='["disabled"]=false ["group"]="General"'
-    local _fieldsFilterValue="[disabled]=FALSE [group]=\"$_filterGroup\""
+    local _fieldsFilterValue="[disabled]=FALSE [group]=$_filterGroup"
     #local _fieldsFilterValue=''
 
         
@@ -344,7 +359,10 @@ function parseApps() {
         "$_fieldsFilterValue" \
         "$_sortConfigs" \
         "$_outputString" \
-        "$_customProcessValue"
+        "$_customProcessValue" \
+        "command" \
+        "name"
+
 }
 
 
