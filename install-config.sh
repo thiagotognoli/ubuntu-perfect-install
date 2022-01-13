@@ -20,7 +20,7 @@ function menu_apps_group() {
     eval "$(read_appsGroups 'menu_apps')"
     echo
 
-    local optionsLength=${#options_id[@]}
+    local optionsLength=${#options_title[@]}
     local optionsToShow
     if [ $optionsLength = 1 ]; then
         eval "${options_id[0]}"
@@ -61,9 +61,9 @@ function menu_apps() {
 
     local groupFilter="$1"
     eval "$(read_apps \"$groupFilter\")"
-    echo "$(read_apps \"$groupFilter\")"
+    echo
 
-    local optionsLength=${#options_id[@]}
+    local optionsLength=${#options_title[@]}
     local optionsToShow
     if [ $optionsLength = 0 ]; then
         return;
