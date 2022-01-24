@@ -480,6 +480,13 @@ function restore_system_old() {
         options_id+=("sudo $rsyncCommand '$oldRoot/data' '$currentRoot/'")
     fi
 
+    if [[ -e "$oldRoot/etc/hosts" ]]; then
+        options_title+=("/etc/hosts")
+        options_selected+=(FALSE)
+        options_id+=("sudo $rsyncCommand '$oldRoot/etc/hosts' '$currentRoot/etc/'")
+    fi
+
+
     optionsLength=${#options_id[@]}
     optionsToShow=();
     for (( i=0; i<${optionsLength}; i++ ));
