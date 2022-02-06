@@ -279,6 +279,12 @@ function restore_home_configs() {
         options_id+=("sudo $rsyncCommand '$oldHome/.config/filezilla' '$homeDir/.config/'")
     fi
 
+    if [[ -e "$oldHome/.smb" || -L "$oldHome/.smb" ]]; then
+        options_title+=("SmbNetFS Config")
+        options_selected+=(TRUE)
+        options_id+=("sudo $rsyncCommand '$oldHome/.smb' '$homeDir/'")
+    fi
+
     # if [[ -e "$oldHome/~/.local/share/keyrings" || -L "$oldHome/.local/share/keyrings" ]]; then
     #     options_title+=("Keyrings to ~/.local/share/_keyrings")
     #     options_selected+=(FALSE)
