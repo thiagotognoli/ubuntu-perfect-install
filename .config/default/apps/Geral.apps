@@ -314,3 +314,11 @@ name=Lib Secret Tools [apt]
 group=Geral
 selected=TRUE
 command=addApt "libsecret-tools"
+
+[Samba NetFS]
+id=460
+name=Samba NetFS [apt]
+group=Geral
+selected=TRUE
+command=addApt "smbnetfs"
+
