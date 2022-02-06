@@ -279,6 +279,12 @@ function restore_home_configs() {
         options_id+=("sudo $rsyncCommand '$oldHome/.config/filezilla' '$homeDir/.config/'")
     fi
 
+    # if [[ -e "$oldHome/~/.local/share/keyrings" || -L "$oldHome/.local/share/keyrings" ]]; then
+    #     options_title+=("Keyrings to ~/.local/share/_keyrings")
+    #     options_selected+=(FALSE)
+    #     options_id+=("sudo -u $currentUser mkdir -p '$homeDir/.local/share/_keyrings/'; sudo $rsyncCommand '$oldHome/.local/share/keyrings' '$homeDir/.local/share/_keyrings'")
+    # fi
+
     if [[ -e "$oldHome/.local/share/gnome-shell" || -L "$oldHome/.local/share/gnome-shell" ]]; then
         options_title+=("Gnome Shell Extensions e Configs")
         options_selected+=(FALSE)

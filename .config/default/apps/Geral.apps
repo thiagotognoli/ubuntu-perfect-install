@@ -306,3 +306,11 @@ name=Linux Dynamic Wallpapers (like MacOS) [git]
 group=Geral
 selected=TRUE
 command=addPosAptCommand "install_linux_dynamic_wallpapers"
+
+
+[Lib Secret tools]
+id=450
+name=Lib Secret Tools [apt]
+group=Geral
+selected=TRUE
+command=addApt "libsecret-tools"
