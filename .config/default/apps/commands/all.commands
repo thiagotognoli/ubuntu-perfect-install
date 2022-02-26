@@ -157,8 +157,8 @@ function pos_install_ohmyzsh() {
 
     while read profile; do
         if [[ "$profile" != "list" && "$profile" != "default" ]]; then
-            dconf write "/org/gnome/terminal/legacy/profiles:/${profile}font" "'FiraCode Nerd Font Mono Regular 12'"
-            dconf write "/org/gnome/terminal/legacy/profiles:/${profile}use-system-font" "false"
+            sudo -u $currentUser dconf write "/org/gnome/terminal/legacy/profiles:/${profile}font" "'FiraCode Nerd Font Mono Regular 12'"
+            sudo -u $currentUser dconf write "/org/gnome/terminal/legacy/profiles:/${profile}use-system-font" "false"
 
         fi;
     done <<< $(dconf list /org/gnome/terminal/legacy/profiles:/)
